@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import Card from '@/components/Card';
 import Map from '@/components/Map';
 import { Button } from '@/components/ui/button';
 import { projects } from '@/data/mockData';
-import { MapPin, Users, Calendar, Filter, Grid, Map as MapIcon } from 'lucide-react';
+import { MapPin, Users, Calendar, Grid, Map as MapIcon } from 'lucide-react';
 
 const Projects = () => {
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
@@ -146,7 +145,14 @@ const Projects = () => {
                 Clique nos marcadores para ver detalhes de cada projeto
               </p>
             </div>
-            <Map locations={filteredProjects} />
+            <Map locations={filteredProjects.map(p => ({
+              id: p.id,
+              title: p.title,
+              description: p.description,
+              location: p.location,
+              beneficiaries: p.beneficiaries,
+              coordinates: p.coordinates
+            }))} />
           </div>
         </section>
       )}

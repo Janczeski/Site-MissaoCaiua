@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { news } from '@/data/mockData';
-import { Calendar, User, ArrowLeft, Share2, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
 
 const NewsDetail = () => {
   const { id } = useParams();

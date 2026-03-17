@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import Modal from '@/components/Modal';
 import { children, testimonials } from '@/data/mockData';
-import { Heart, Users, Calendar, MapPin, Mail, Phone, User, CheckCircle, Star } from 'lucide-react';
+import { Heart, Users, Calendar, MapPin, Mail, Star } from 'lucide-react';
 
 interface Child {
   id: number;

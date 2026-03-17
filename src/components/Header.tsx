@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Heart, X } from 'lucide-react';
+import { Menu, Heart } from 'lucide-react';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);

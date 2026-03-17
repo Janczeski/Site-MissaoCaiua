@@ -17,10 +17,6 @@ interface MapProps {
 
 const Map = ({ locations }: MapProps) => {
   const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
-
-  // Coordenadas do centro do Brasil para o mapa base
-  const centerLat = -14.2350;
-  const centerLng = -51.9253;
   
   // Função para converter coordenadas em posição no mapa (simulação)
   const getMarkerPosition = (coordinates: [number, number]) => {

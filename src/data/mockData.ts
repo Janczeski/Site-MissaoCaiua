@@ -42,7 +42,7 @@ export const projects = [
     image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
     location: "São Paulo, SP",
     beneficiaries: 500,
-    coordinates: [-23.5505, -46.6333]
+    coordinates: [-23.5505, -46.6333] as [number, number]
   },
   {
     id: 2,
@@ -51,7 +51,7 @@ export const projects = [
     image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
     location: "Rio de Janeiro, RJ",
     beneficiaries: 800,
-    coordinates: [-22.9068, -43.1729]
+    coordinates: [-22.9068, -43.1729] as [number, number]
   },
   {
     id: 3,
@@ -60,7 +60,7 @@ export const projects = [
     image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
     location: "Belo Horizonte, MG",
     beneficiaries: 300,
-    coordinates: [-19.9191, -43.9386]
+    coordinates: [-19.9191, -43.9386] as [number, number]
   },
   {
     id: 4,
@@ -69,7 +69,7 @@ export const projects = [
     image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400&h=300&fit=crop",
     location: "Salvador, BA",
     beneficiaries: 400,
-    coordinates: [-12.9714, -38.5014]
+    coordinates: [-12.9714, -38.5014] as [number, number]
   }
 ];
 

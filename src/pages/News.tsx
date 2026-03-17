@@ -60,7 +60,7 @@ const News = () => {
   const filteredNews = expandedNews.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || (article as any).category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
