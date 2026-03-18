@@ -1,66 +1,36 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import Card from '@/components/Card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { news } from '@/data/mockData';
+import { getCurrentNews } from '@/data/mockData';
 import { Search, Calendar, User, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const News = () => {
+  const [allNews, setAllNews] = useState<any[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedCategory, setSelectedCategory] = useState('all');
   
   const itemsPerPage = 6;
 
-  // Expandir dados de notícias com mais conteúdo
-  const expandedNews = [
-    ...news,
-    {
-      id: 4,
-      title: "Novo Equipamento Médico no Hospital",
-      excerpt: "Hospital Indígena recebe equipamentos modernos para melhor atendimento à comunidade.",
-      content: "Graças a parceiros e doadores, o Hospital Indígena recebeu novos equipamentos de diagnóstico que vão melhorar significativamente a qualidade do atendimento prestado às comunidades indígenas.",
-      image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop",
-      date: "2023-10-15",
-      author: "Dra. Maria Santos",
-      category: "saude"
-    },
-    {
-      id: 5,
-      title: "Capacitação de Líderes Indígenas",
-      excerpt: "Realizado curso de capacitação bíblica para 40 líderes de diferentes aldeias.",
-      content: "Durante três dias, líderes indígenas participaram de um intenso curso de capacitação bíblica, fortalecendo seu conhecimento das Escrituras e habilidades ministeriais para servir melhor suas comunidades.",
-      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop",
-      date: "2023-09-20",
-      author: "Pastor Carlos Mendes",
-      category: "evangelizacao"
-    },
-    {
-      id: 6,
-      title: "Ação Social Beneficia Aldeia Jaguapiru",
-      excerpt: "Distribuição de alimentos e roupas alcança mais de 150 famílias na aldeia.",
-      content: "Nossa equipe realizou uma grande ação social na Aldeia Jaguapiru, distribuindo cestas básicas, roupas e materiais de higiene para as famílias mais necessitadas, demonstrando o amor prático de Cristo.",
-      image: "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=600&h=400&fit=crop",
-      date: "2023-08-10",
-      author: "Equipe Social",
-      category: "assistencia"
-    }
-  ];
+  useEffect(() => {
+    setAllNews(getCurrentNews());
+  }, []);
 
   const categories = [
     { id: 'all', name: 'Todas as Categorias' },
-    { id: 'saude', name: 'Saúde' },
-    { id: 'evangelizacao', name: 'Evangelização' },
-    { id: 'assistencia', name: 'Assistência Social' },
+    { id: 'saúde', name: 'Saúde' },
+    { id: 'evangelização', name: 'Evangelização' },
+    { id: 'assistência', name: 'Assistência Social' },
     { id: 'geral', name: 'Geral' }
   ];
 
   // Filtrar notícias
-  const filteredNews = expandedNews.filter(article => {
+  const filteredNews = allNews.filter(article => {
     const matchesSearch = article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         article.excerpt.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = selectedCategory === 'all' || (article as any).category === selectedCategory;
+                         (article.subtitle || '').toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = selectedCategory === 'all' || article.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 

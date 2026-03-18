@@ -1,79 +1,29 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Map from '@/components/Map';
 import { Button } from '@/components/ui/button';
-import { projects } from '@/data/mockData';
+import { getCurrentProjects } from '@/data/mockData';
 import { MapPin, Users, Calendar, Grid, Map as MapIcon } from 'lucide-react';
 
 const Projects = () => {
+  const [allProjects, setAllProjects] = useState<any[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
+  useEffect(() => {
+    setAllProjects(getCurrentProjects());
+  }, []);
+
   const categories = [
     { id: 'all', name: 'Todos os Projetos' },
-    { id: 'health', name: 'Saúde Indígena' },
-    { id: 'evangelization', name: 'Evangelização' },
-    { id: 'social', name: 'Assistência Social' },
-    { id: 'education', name: 'Educação' }
-  ];
-
-  const projectDetails = [
-    {
-      ...projects[0],
-      category: 'health',
-      startDate: '1928-01-15',
-      budget: 'Contínuo',
-      coordinator: 'Dra. Maria Santos',
-      fullDescription: 'O Hospital Indígena da Missão Caiuá atende as comunidades indígenas de Dourados e região há décadas. Oferecemos atendimento médico completo, odontológico e medicamentos. Nossa equipe é capacitada para trabalhar respeitando a cultura e tradições dos povos indígenas.',
-      achievements: [
-        'Mais de 5.000 indígenas atendidos anualmente',
-        'Equipe multicultural especializada em saúde indígena',
-        'Atendimento 24 horas com respeito à medicina tradicional'
-      ]
-    },
-    {
-      ...projects[1],
-      category: 'evangelization',
-      startDate: '1928-01-15',
-      budget: 'Contínuo',
-      coordinator: 'Rev. João Silva',
-      fullDescription: 'Trabalho de evangelização nas aldeias indígenas de Dourados, MS. Realizamos cultos, estudos bíblicos e visitação, sempre respeitando a cultura indígena. Traduzimos materiais para as línguas Guarani e Kaiowá.',
-      achievements: [
-        'Presença em 15+ aldeias da região',
-        'Materiais bíblicos traduzidos para línguas indígenas',
-        'Formação de líderes cristãos indígenas'
-      ]
-    },
-    {
-      ...projects[2],
-      category: 'social',
-      startDate: '1950-06-01',
-      budget: 'R$ 180.000/ano',
-      coordinator: 'Ana Paula Costa',
-      fullDescription: 'Programa de assistência social que distribui cestas básicas, roupas e itens de necessidade para famílias indígenas em situação de vulnerabilidade. Também oferecemos orientação e encaminhamento para serviços públicos.',
-      achievements: [
-        'Mais de 300 famílias atendidas mensalmente',
-        'Distribuição de cestas básicas e roupas',
-        'Apoio jurídico e orientação social'
-      ]
-    },
-    {
-      ...projects[3],
-      category: 'education',
-      startDate: '1970-03-01',
-      budget: 'R$ 120.000/ano',
-      coordinator: 'Pastor Carlos Mendes',
-      fullDescription: 'Oferecemos reforço escolar, ensino de música, artesanato e capacitação profissional para jovens indígenas. O objetivo é valorizar a cultura indígena enquanto preparamos os jovens para oportunidades de estudo e trabalho.',
-      achievements: [
-        'Apoio educacional para 200+ crianças e jovens',
-        'Aulas de artesanato e geração de renda',
-        'Preparação para vestibular e mercado de trabalho'
-      ]
-    }
+    { id: 'Saúde Indígena', name: 'Saúde Indígena' },
+    { id: 'Evangelização', name: 'Evangelização' },
+    { id: 'Assistência Social', name: 'Assistência Social' },
+    { id: 'Educação', name: 'Educação' }
   ];
 
   const filteredProjects = selectedCategory === 'all' 
-    ? projectDetails 
-    : projectDetails.filter(project => project.category === selectedCategory);
+    ? allProjects 
+    : allProjects.filter(project => project.category === selectedCategory);
 
   return (
     <div className="min-h-screen">
