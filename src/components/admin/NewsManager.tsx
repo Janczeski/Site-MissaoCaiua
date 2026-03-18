@@ -69,6 +69,12 @@ const NewsManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    // Validar se tem imagem
+    if (!formData.image) {
+      toast.error('Por favor, envie uma imagem ou cole uma URL');
+      return;
+    }
+    
     try {
       if (editingNews) {
         await updateNews(editingNews.id, formData);
@@ -219,7 +225,6 @@ const NewsManager = () => {
                   placeholder="Ou cole a URL da imagem"
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                  required
                   className="mt-2"
                 />
                 {formData.image && (

@@ -1,11 +1,39 @@
 import { useParams, Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { news } from '@/data/mockData';
+import { getCurrentNews } from '@/data/mockData';
 import { Calendar, User, ArrowLeft, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
+import type { NewsItem } from '@/lib/supabase';
 
 const NewsDetail = () => {
   const { id } = useParams();
-  const article = news.find(item => item.id === parseInt(id || '0'));
+  const [article, setArticle] = useState<NewsItem | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadArticle = async () => {
+      try {
+        const allNews = await getCurrentNews();
+        const found = allNews.find(item => item.id === parseInt(id || '0'));
+        setArticle(found || null);
+      } catch (error) {
+        console.error('Erro ao carregar notícia:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadArticle();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-600">Carregando...</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!article) {
     return (
