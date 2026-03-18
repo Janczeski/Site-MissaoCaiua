@@ -177,7 +177,7 @@ const News = () => {
                   <Card
                     key={article.id}
                     title={article.title}
-                    description={article.excerpt}
+                    description={article.subtitle}
                     image={article.image}
                     date={article.date}
                     author={article.author}

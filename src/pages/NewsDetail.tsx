@@ -8,6 +8,7 @@ import type { NewsItem } from '@/lib/supabase';
 const NewsDetail = () => {
   const { id } = useParams();
   const [article, setArticle] = useState<NewsItem | null>(null);
+  const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -16,6 +17,10 @@ const NewsDetail = () => {
         const allNews = await getCurrentNews();
         const found = allNews.find(item => item.id === parseInt(id || '0'));
         setArticle(found || null);
+        // Carregar notícias relacionadas (exclui a atual)
+        if (found) {
+          setRelatedNews(allNews.filter(item => item.id !== found.id).slice(0, 3));
+        }
       } catch (error) {
         console.error('Erro ao carregar notícia:', error);
       } finally {
@@ -78,21 +83,7 @@ const NewsDetail = () => {
   };
 
   // Conteúdo expandido da notícia
-  const fullContent = `
-    ${article.content}
-
-    Esta iniciativa representa mais um passo importante em nossa missão de transformar vidas através de ações concretas e sustentáveis. Nosso compromisso é sempre buscar formas inovadoras de atender às necessidades das comunidades que servimos.
-
-    "Estamos muito orgulhosos dos resultados alcançados e do impacto positivo que conseguimos gerar na vida das crianças e suas famílias", comenta ${article.author}, responsável pela coordenação do projeto.
-
-    O sucesso desta ação só foi possível graças ao apoio incansável de nossos doadores, voluntários e parceiros. Cada contribuição, por menor que seja, faz uma diferença significativa em nossa capacidade de continuar este trabalho transformador.
-
-    Para saber mais sobre como você pode contribuir com nossos projetos ou se tornar um voluntário, entre em contato conosco através dos nossos canais de comunicação. Juntos, podemos construir um futuro melhor para nossas crianças.
-
-    Acompanhe nossas redes sociais para ficar por dentro de todas as novidades e ações da Missão Caiuá. Sua participação e engajamento são fundamentais para ampliarmos nosso impacto social.
-  `;
-
-  const relatedNews = news.filter(item => item.id !== article.id).slice(0, 3);
+  const fullContent = article.content;
 
   return (
     <div className="min-h-screen">
@@ -180,17 +171,11 @@ const NewsDetail = () => {
             {/* Conteúdo */}
             <div className="prose prose-lg max-w-none font-nunito">
               <p className="text-xl text-gray-600 mb-6 leading-relaxed font-medium">
-                {article.excerpt}
+                {article.subtitle}
               </p>
               
-              <div className="text-gray-700 leading-relaxed space-y-4">
-                {fullContent.split('\n\n').map((paragraph, index) => (
-                  paragraph.trim() && (
-                    <p key={index} className="mb-4">
-                      {paragraph.trim()}
-                    </p>
-                  )
-                ))}
+              <div className="text-gray-700 leading-relaxed space-y-4 whitespace-pre-wrap">
+                {fullContent}
               </div>
             </div>
 
@@ -240,7 +225,7 @@ const NewsDetail = () => {
                       {relatedArticle.title}
                     </h3>
                     <p className="text-gray-600 text-sm font-nunito line-clamp-2">
-                      {relatedArticle.excerpt}
+                      {relatedArticle.subtitle}
                     </p>
                     <div className="mt-3 text-xs text-gray-500">
                       {formatDate(relatedArticle.date)}
