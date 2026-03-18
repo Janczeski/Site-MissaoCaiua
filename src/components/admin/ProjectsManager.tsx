@@ -6,13 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, MapPin, DollarSign } from 'lucide-react';
-import { getProjects, addProject, updateProject, deleteProject, type ProjectItem } from '@/utils/storage';
+import { Plus, Edit, Trash2, MapPin, DollarSign, Loader2 } from 'lucide-react';
+import { getProjects, addProject, updateProject, deleteProject, uploadImage, type ProjectItem } from '@/utils/storage';
 import { toast } from 'sonner';
 
 const ProjectsManager = () => {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [editingProject, setEditingProject] = useState<ProjectItem | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -29,24 +30,55 @@ const ProjectsManager = () => {
     loadProjects();
   }, []);
 
-  const loadProjects = () => {
-    setProjects(getProjects());
+  const loadProjects = async () => {
+    try {
+      const data = await getProjects();
+      setProjects(data);
+    } catch (error) {
+      toast.error('Erro ao carregar projetos');
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor, selecione uma imagem válida');
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Imagem muito grande. Máximo 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadImage(file, 'projects');
+      setFormData({ ...formData, image: imageUrl });
+      toast.success('Imagem enviada com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao enviar imagem');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       if (editingProject) {
-        updateProject(editingProject.id, formData);
+        await updateProject(editingProject.id, formData);
         toast.success('Projeto atualizado com sucesso!');
       } else {
-        addProject(formData);
+        await addProject(formData);
         toast.success('Projeto adicionado com sucesso!');
       }
       
       resetForm();
-      loadProjects();
+      await loadProjects();
       setIsDialogOpen(false);
     } catch (error) {
       toast.error('Erro ao salvar projeto');
@@ -60,7 +92,7 @@ const ProjectsManager = () => {
       description: item.description,
       category: item.category,
       location: item.location,
-      coordinates: item.coordinates,
+      coordinates: item.coordinates as [number, number],
       image: item.image,
       raised: item.raised,
       goal: item.goal
@@ -68,11 +100,15 @@ const ProjectsManager = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Tem certeza que deseja excluir este projeto?')) {
-      deleteProject(id);
-      loadProjects();
-      toast.success('Projeto excluído com sucesso!');
+      try {
+        await deleteProject(id);
+        await loadProjects();
+        toast.success('Projeto excluído com sucesso!');
+      } catch (error) {
+        toast.error('Erro ao excluir projeto');
+      }
     }
   };
 
@@ -198,15 +234,30 @@ const ProjectsManager = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">URL da Imagem *</Label>
+                <Label htmlFor="image">Imagem *</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="imageFile"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploading}
+                    className="flex-1"
+                  />
+                  {isUploading && <Loader2 className="h-5 w-5 animate-spin" />}
+                </div>
                 <Input
                   id="image"
                   type="url"
-                  placeholder="https://exemplo.com/imagem.jpg"
+                  placeholder="Ou cole a URL da imagem"
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   required
+                  className="mt-2"
                 />
+                {formData.image && (
+                  <img src={formData.image} alt="Preview" className="w-full h-32 object-cover rounded mt-2" />
+                )}
               </div>
 
               <div className="grid grid-cols-2 gap-4">

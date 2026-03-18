@@ -15,7 +15,11 @@ const News = () => {
   const itemsPerPage = 6;
 
   useEffect(() => {
-    setAllNews(getCurrentNews());
+    const loadNews = async () => {
+      const data = await getCurrentNews();
+      setAllNews(data);
+    };
+    loadNews();
   }, []);
 
   const categories = [

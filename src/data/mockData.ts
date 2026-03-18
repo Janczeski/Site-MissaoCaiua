@@ -1,5 +1,5 @@
 // Dados simulados para o site da ONG
-import { initializeDefaultData, getNews as getStoredNews, getProjects as getStoredProjects } from '@/utils/storage';
+import { getNews as getStoredNews, getProjects as getStoredProjects } from '@/utils/storage';
 
 export const heroSlides = [
   {
@@ -124,96 +124,11 @@ export const testimonials = [
 // Array vazio mantido para compatibilidade com página legada
 export const children: any[] = [];
 
-// Dados padrão para notícias
-const defaultNews = [
-  {
-    id: 1,
-    title: "Hospital Indígena Amplia Atendimento",
-    subtitle: "Novas especialidades médicas disponíveis para atender melhor as comunidades indígenas",
-    category: "saúde",
-    date: "2024-01-15",
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop",
-    author: "Equipe Missão Caiuá",
-    content: "O Hospital Indígena da Missão Caiuá ampliou sua capacidade de atendimento com a chegada de novos profissionais especializados. Agora oferecemos consultas em cardiologia, pediatria e ginecologia, fortalecendo nosso compromisso com a saúde dos povos indígenas."
-  },
-  {
-    id: 2,
-    title: "Campanha de Cestas Básicas Beneficia 200 Famílias",
-    subtitle: "Graças à generosidade de parceiros, distribuímos alimentos para famílias indígenas",
-    category: "assistência",
-    date: "2023-12-20",
-    image: "https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?w=600&h=400&fit=crop",
-    author: "Departamento Social",
-    content: "Nossa campanha mensal de distribuição de cestas básicas alcançou 200 famílias indígenas neste mês. Além de alimentos, também foram distribuídos kits de higiene e roupas, demonstrando o amor de Cristo através de ações práticas."
-  },
-  {
-    id: 3,
-    title: "Encontro de Líderes Indígenas Cristãos",
-    subtitle: "Realizado o 15º encontro anual de líderes indígenas cristãos em Dourados",
-    category: "evangelização",
-    date: "2023-11-10",
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=400&fit=crop",
-    author: "Pastor Carlos Mendes",
-    content: "Com a participação de mais de 80 líderes de diversas aldeias, o encontro promoveu capacitação bíblica, troca de experiências e fortalecimento da comunhão entre as igrejas indígenas. Um momento especial de crescimento espiritual."
-  }
-];
-
-// Dados padrão para projetos
-const defaultProjects = [
-  {
-    id: 1,
-    title: "Hospital Indígena",
-    description: "Único hospital indígena de média complexidade do Brasil, oferecendo atendimento médico gratuito.",
-    category: "Saúde Indígena",
-    location: "Dourados - MS",
-    coordinates: [-22.2211, -54.8056] as [number, number],
-    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=300&fit=crop",
-    raised: 125000,
-    goal: 200000
-  },
-  {
-    id: 2,
-    title: "Evangelização nas Aldeias",
-    description: "Trabalho missionário de evangelização e discipulado junto aos povos indígenas.",
-    category: "Evangelização",
-    location: "Dourados - MS",
-    coordinates: [-22.2211, -54.8056] as [number, number],
-    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=300&fit=crop",
-    raised: 45000,
-    goal: 80000
-  },
-  {
-    id: 3,
-    title: "Assistência Social",
-    description: "Distribuição de cestas básicas, roupas e itens de necessidade para as comunidades indígenas.",
-    category: "Assistência Social",
-    location: "Dourados - MS",
-    coordinates: [-22.2211, -54.8056] as [number, number],
-    image: "https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?w=400&h=300&fit=crop",
-    raised: 32000,
-    goal: 60000
-  },
-  {
-    id: 4,
-    title: "Apoio Educacional",
-    description: "Material escolar e apoio pedagógico para crianças e jovens indígenas.",
-    category: "Educação",
-    location: "Dourados - MS",
-    coordinates: [-22.2211, -54.8056] as [number, number],
-    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&h=300&fit=crop",
-    raised: 18000,
-    goal: 35000
-  }
-];
-
-// Inicializar localStorage com dados padrão
-initializeDefaultData(defaultNews, defaultProjects);
-
-// Funções para obter dados atualizados
-export function getCurrentNews() {
-  return getStoredNews();
+// Funções para obter dados atualizados do Supabase
+export async function getCurrentNews() {
+  return await getStoredNews();
 }
 
-export function getCurrentProjects() {
-  return getStoredProjects();
+export async function getCurrentProjects() {
+  return await getStoredProjects();
 }

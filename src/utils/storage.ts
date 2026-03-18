@@ -1,102 +1,141 @@
-// Funções para gerenciar dados no localStorage
+// Funções para gerenciar dados no Supabase
+import { supabase, type NewsItem, type ProjectItem } from '@/lib/supabase';
 
-export interface NewsItem {
-  id: number;
-  title: string;
-  subtitle: string;
-  date: string;
-  category: string;
-  image: string;
-  content: string;
-  author: string;
+// ==================== NOTÍCIAS ====================
+
+export async function getNews(): Promise<NewsItem[]> {
+  const { data, error } = await supabase
+    .from('news')
+    .select('*')
+    .order('date', { ascending: false });
+  
+  if (error) {
+    console.error('Erro ao buscar notícias:', error);
+    return [];
+  }
+  
+  return data || [];
 }
 
-export interface ProjectItem {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  location: string;
-  coordinates: [number, number];
-  image: string;
-  raised: number;
-  goal: number;
+export async function addNews(news: Omit<NewsItem, 'id'>): Promise<NewsItem | null> {
+  const { data, error } = await supabase
+    .from('news')
+    .insert([news])
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Erro ao adicionar notícia:', error);
+    throw error;
+  }
+  
+  return data;
 }
 
-// Notícias
-export function getNews(): NewsItem[] {
-  const stored = localStorage.getItem('missao_news');
-  return stored ? JSON.parse(stored) : [];
-}
-
-export function saveNews(news: NewsItem[]): void {
-  localStorage.setItem('missao_news', JSON.stringify(news));
-}
-
-export function addNews(news: Omit<NewsItem, 'id'>): NewsItem {
-  const allNews = getNews();
-  const newItem = {
-    ...news,
-    id: allNews.length > 0 ? Math.max(...allNews.map(n => n.id)) + 1 : 1
-  };
-  saveNews([...allNews, newItem]);
-  return newItem;
-}
-
-export function updateNews(id: number, updates: Partial<NewsItem>): void {
-  const allNews = getNews();
-  const index = allNews.findIndex(n => n.id === id);
-  if (index !== -1) {
-    allNews[index] = { ...allNews[index], ...updates };
-    saveNews(allNews);
+export async function updateNews(id: number, updates: Partial<NewsItem>): Promise<void> {
+  const { error } = await supabase
+    .from('news')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Erro ao atualizar notícia:', error);
+    throw error;
   }
 }
 
-export function deleteNews(id: number): void {
-  const allNews = getNews();
-  saveNews(allNews.filter(n => n.id !== id));
-}
-
-// Projetos
-export function getProjects(): ProjectItem[] {
-  const stored = localStorage.getItem('missao_projects');
-  return stored ? JSON.parse(stored) : [];
-}
-
-export function saveProjects(projects: ProjectItem[]): void {
-  localStorage.setItem('missao_projects', JSON.stringify(projects));
-}
-
-export function addProject(project: Omit<ProjectItem, 'id'>): ProjectItem {
-  const allProjects = getProjects();
-  const newItem = {
-    ...project,
-    id: allProjects.length > 0 ? Math.max(...allProjects.map(p => p.id)) + 1 : 1
-  };
-  saveProjects([...allProjects, newItem]);
-  return newItem;
-}
-
-export function updateProject(id: number, updates: Partial<ProjectItem>): void {
-  const allProjects = getProjects();
-  const index = allProjects.findIndex(p => p.id === id);
-  if (index !== -1) {
-    allProjects[index] = { ...allProjects[index], ...updates };
-    saveProjects(allProjects);
+export async function deleteNews(id: number): Promise<void> {
+  const { error } = await supabase
+    .from('news')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Erro ao deletar notícia:', error);
+    throw error;
   }
 }
 
-export function deleteProject(id: number): void {
-  const allProjects = getProjects();
-  saveProjects(allProjects.filter(p => p.id !== id));
+// ==================== PROJETOS ====================
+
+export async function getProjects(): Promise<ProjectItem[]> {
+  const { data, error } = await supabase
+    .from('projects')
+    .select('*')
+    .order('created_at', { ascending: false });
+  
+  if (error) {
+    console.error('Erro ao buscar projetos:', error);
+    return [];
+  }
+  
+  return data || [];
 }
 
-// Inicializar com dados padrão se não existir
-export function initializeDefaultData(defaultNews: NewsItem[], defaultProjects: ProjectItem[]): void {
-  if (!localStorage.getItem('missao_news')) {
-    saveNews(defaultNews);
+export async function addProject(project: Omit<ProjectItem, 'id'>): Promise<ProjectItem | null> {
+  const { data, error } = await supabase
+    .from('projects')
+    .insert([project])
+    .select()
+    .single();
+  
+  if (error) {
+    console.error('Erro ao adicionar projeto:', error);
+    throw error;
   }
-  if (!localStorage.getItem('missao_projects')) {
-    saveProjects(defaultProjects);
+  
+  return data;
+}
+
+export async function updateProject(id: number, updates: Partial<ProjectItem>): Promise<void> {
+  const { error } = await supabase
+    .from('projects')
+    .update({ ...updates, updated_at: new Date().toISOString() })
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Erro ao atualizar projeto:', error);
+    throw error;
   }
 }
+
+export async function deleteProject(id: number): Promise<void> {
+  const { error } = await supabase
+    .from('projects')
+    .delete()
+    .eq('id', id);
+  
+  if (error) {
+    console.error('Erro ao deletar projeto:', error);
+    throw error;
+  }
+}
+
+// ==================== UPLOAD DE IMAGENS ====================
+
+export async function uploadImage(file: File, folder: 'news' | 'projects'): Promise<string> {
+  // Gerar nome único para o arquivo
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${folder}/${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+  
+  const { data, error } = await supabase.storage
+    .from('images')
+    .upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+  
+  if (error) {
+    console.error('Erro ao fazer upload:', error);
+    throw error;
+  }
+  
+  // Obter URL pública da imagem
+  const { data: { publicUrl } } = supabase.storage
+    .from('images')
+    .getPublicUrl(data.path);
+  
+  return publicUrl;
+}
+
+export { type NewsItem, type ProjectItem };

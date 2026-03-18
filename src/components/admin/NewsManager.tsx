@@ -6,13 +6,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Plus, Edit, Trash2, Calendar } from 'lucide-react';
-import { getNews, addNews, updateNews, deleteNews, type NewsItem } from '@/utils/storage';
+import { Plus, Edit, Trash2, Calendar, Loader2 } from 'lucide-react';
+import { getNews, addNews, updateNews, deleteNews, uploadImage, type NewsItem } from '@/utils/storage';
 import { toast } from 'sonner';
 
 const NewsManager = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [editingNews, setEditingNews] = useState<NewsItem | null>(null);
   const [formData, setFormData] = useState({
     title: '',
@@ -28,24 +29,57 @@ const NewsManager = () => {
     loadNews();
   }, []);
 
-  const loadNews = () => {
-    setNews(getNews());
+  const loadNews = async () => {
+    try {
+      const data = await getNews();
+      setNews(data);
+    } catch (error) {
+      toast.error('Erro ao carregar notícias');
+    }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de arquivo
+    if (!file.type.startsWith('image/')) {
+      toast.error('Por favor, selecione uma imagem válida');
+      return;
+    }
+
+    // Validar tamanho (máx 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('Imagem muito grande. Máximo 5MB');
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const imageUrl = await uploadImage(file, 'news');
+      setFormData({ ...formData, image: imageUrl });
+      toast.success('Imagem enviada com sucesso!');
+    } catch (error) {
+      toast.error('Erro ao enviar imagem');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     try {
       if (editingNews) {
-        updateNews(editingNews.id, formData);
+        await updateNews(editingNews.id, formData);
         toast.success('Notícia atualizada com sucesso!');
       } else {
-        addNews(formData);
+        await addNews(formData);
         toast.success('Notícia adicionada com sucesso!');
       }
       
       resetForm();
-      loadNews();
+      await loadNews();
       setIsDialogOpen(false);
     } catch (error) {
       toast.error('Erro ao salvar notícia');
@@ -66,11 +100,15 @@ const NewsManager = () => {
     setIsDialogOpen(true);
   };
 
-  const handleDelete = (id: number) => {
+  const handleDelete = async (id: number) => {
     if (confirm('Tem certeza que deseja excluir esta notícia?')) {
-      deleteNews(id);
-      loadNews();
-      toast.success('Notícia excluída com sucesso!');
+      try {
+        await deleteNews(id);
+        await loadNews();
+        toast.success('Notícia excluída com sucesso!');
+      } catch (error) {
+        toast.error('Erro ao excluir notícia');
+      }
     }
   };
 
@@ -163,15 +201,30 @@ const NewsManager = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="image">URL da Imagem *</Label>
+                <Label htmlFor="image">Imagem *</Label>
+                <div className="flex gap-2">
+                  <Input
+                    id="imageFile"
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageUpload}
+                    disabled={isUploading}
+                    className="flex-1"
+                  />
+                  {isUploading && <Loader2 className="h-5 w-5 animate-spin" />}
+                </div>
                 <Input
                   id="image"
                   type="url"
-                  placeholder="https://exemplo.com/imagem.jpg"
+                  placeholder="Ou cole a URL da imagem"
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   required
+                  className="mt-2"
                 />
+                {formData.image && (
+                  <img src={formData.image} alt="Preview" className="w-full h-32 object-cover rounded mt-2" />
+                )}
               </div>
 
               <div className="space-y-2">
