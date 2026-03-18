@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 
 interface CarouselItem {
   id: number;
@@ -73,14 +74,16 @@ const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) =>
                   {item.subtitle}
                 </p>
                 <Button 
+                  asChild
                   size="lg" 
                   className="text-white px-8 py-3 text-lg"
                   style={{ backgroundColor: '#e8440d' }}
                   onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
                   onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
-                  onClick={() => window.location.href = item.ctaLink}
                 >
-                  {item.ctaText}
+                  <Link to={item.ctaLink}>
+                    {item.ctaText}
+                  </Link>
                 </Button>
               </div>
             </div>
