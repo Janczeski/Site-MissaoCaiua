@@ -13,7 +13,7 @@ const Header = () => {
     { name: 'Quem Somos', href: '/quem-somos' },
     { name: 'Projetos', href: '/projetos' },
     { name: 'Notícias', href: '/noticias' },
-    { name: 'Apadrinhamento', href: '/apadrinhamento' },
+    { name: 'Como Ajudar', href: '/como-ajudar' },
     { name: 'Contato', href: '/contato' },
   ];
 
@@ -24,8 +24,8 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <Heart className="h-8 w-8 text-blue-600" />
+          <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}>
+            <Heart className="h-8 w-8" style={{ color: '#3b660a' }} />
             <span className="text-xl font-bold text-gray-900 font-montserrat">
               Missão Caiuá
             </span>
@@ -37,11 +37,15 @@ const Header = () => {
               <Link
                 key={item.name}
                 to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-blue-600 font-nunito ${
+                onClick={() => window.scrollTo(0, 0)}
+                className={`text-sm font-medium transition-colors font-nunito ${
                   isActive(item.href)
-                    ? 'text-blue-600 border-b-2 border-blue-600 pb-1'
+                    ? 'border-b-2 pb-1'
                     : 'text-gray-700'
                 }`}
+                style={isActive(item.href) ? { color: '#3b660a', borderColor: '#3b660a' } : {}}
+                onMouseEnter={(e) => e.currentTarget.style.color = '#3b660a'}
+                onMouseLeave={(e) => { if (!isActive(item.href)) e.currentTarget.style.color = ''; }}
               >
                 {item.name}
               </Link>
@@ -50,7 +54,7 @@ const Header = () => {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild className="bg-orange-500 hover:bg-orange-600">
+            <Button asChild style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
               <Link to="/doacao">Doar Agora</Link>
             </Button>
           </div>
@@ -65,7 +69,7 @@ const Header = () => {
             <SheetContent side="right" className="w-80">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-2">
-                  <Heart className="h-6 w-6 text-blue-600" />
+                  <Heart className="h-6 w-6" style={{ color: '#3b660a' }} />
                   <span className="text-lg font-bold text-gray-900 font-montserrat">
                     Missão Caiuá
                   </span>
@@ -77,17 +81,23 @@ const Header = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`text-base font-medium transition-colors hover:text-blue-600 font-nunito py-2 ${
-                      isActive(item.href) ? 'text-blue-600' : 'text-gray-700'
+                    onClick={() => {
+                      setIsOpen(false);
+                      window.scrollTo(0, 0);
+                    }}
+                    className={`text-base font-medium transition-colors font-nunito py-2 ${
+                      isActive(item.href) ? '' : 'text-gray-700'
                     }`}
+                    style={isActive(item.href) ? { color: '#3b660a' } : {}}
+                    onMouseEnter={(e) => e.currentTarget.style.color = '#3b660a'}
+                    onMouseLeave={(e) => { if (!isActive(item.href)) e.currentTarget.style.color = ''; }}
                   >
                     {item.name}
                   </Link>
                 ))}
                 <div className="pt-4 border-t">
-                  <Button asChild className="w-full bg-orange-500 hover:bg-orange-600">
-                    <Link to="/doacao" onClick={() => setIsOpen(false)}>
+                  <Button asChild className="w-full" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                    <Link to="/doacao" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }}>
                       Doar Agora
                     </Link>
                   </Button>

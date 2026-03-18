@@ -29,44 +29,44 @@ const Donation = () => {
   };
 
   const impactExamples = {
-    50: "Alimentação para 1 criança por 1 mês",
-    100: "Material escolar para 2 crianças por 1 semestre",
-    200: "Consulta médica e medicamentos para 4 crianças",
-    500: "Bolsa de estudos parcial para 1 adolescente"
+    50: "Medicamentos para 5 famílias indígenas",
+    100: "Material de evangelização em língua indígena",
+    200: "Cesta básica para 4 famílias nas aldeias",
+    500: "Apoio educacional para 10 crianças indígenas"
   };
 
   const projects = [
     {
-      id: 'education',
-      name: 'Educação Transformadora',
-      description: 'Apoie nossos programas educacionais e de alfabetização',
-      icon: <GraduationCap className="h-8 w-8 text-blue-600" />,
+      id: 'hospital',
+      name: 'Hospital Indígena',
+      description: 'Medicamentos, equipamentos e atendimento médico gratuito',
+      icon: <Shield className="h-8 w-8" style={{ color: '#3b660a' }} />,
       goal: 250000,
-      raised: 180000
+      raised: 185000
     },
     {
-      id: 'nutrition',
-      name: 'Alimentação Saudável',
-      description: 'Garanta refeições nutritivas para crianças carentes',
-      icon: <Heart className="h-8 w-8 text-green-600" />,
+      id: 'evangelization',
+      name: 'Evangelização nas Aldeias',
+      description: 'Materiais bíblicos em línguas indígenas e visitas às aldeias',
+      icon: <Heart className="h-8 w-8" style={{ color: '#81a425' }} />,
+      goal: 150000,
+      raised: 95000
+    },
+    {
+      id: 'social',
+      name: 'Assistência Social',
+      description: 'Cestas básicas, roupas e itens de necessidade',
+      icon: <Gift className="h-8 w-8" style={{ color: '#e8440d' }} />,
       goal: 180000,
       raised: 120000
     },
     {
-      id: 'health',
-      name: 'Saúde Preventiva',
-      description: 'Proporcione cuidados médicos e odontológicos',
-      icon: <Shield className="h-8 w-8 text-red-600" />,
+      id: 'education',
+      name: 'Apoio Educacional',
+      description: 'Reforço escolar e capacitação para jovens indígenas',
+      icon: <GraduationCap className="h-8 w-8" style={{ color: '#47623d' }} />,
       goal: 120000,
-      raised: 85000
-    },
-    {
-      id: 'community',
-      name: 'Desenvolvimento Comunitário',
-      description: 'Capacite famílias para geração de renda',
-      icon: <Users className="h-8 w-8 text-purple-600" />,
-      goal: 200000,
-      raised: 95000
+      raised: 78000
     }
   ];
 
@@ -96,14 +96,14 @@ const Donation = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-orange-600 to-red-600">
+      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">
               Faça sua Doação
             </h1>
             <p className="text-xl md:text-2xl font-nunito opacity-90 mb-8">
-              Sua generosidade transforma vidas. Cada real doado faz a diferença no futuro de uma criança.
+              Sua generosidade transforma vidas. Ajude-nos a continuar servindo os povos indígenas.
             </p>
             <div className="flex justify-center items-center space-x-8 text-lg">
               <div className="flex items-center">
@@ -116,7 +116,7 @@ const Donation = () => {
               </div>
               <div className="flex items-center">
                 <Heart className="h-6 w-6 mr-2" />
-                <span>Impacto Real</span>
+                <span>96 Anos de História</span>
               </div>
             </div>
           </div>
@@ -197,11 +197,11 @@ const Donation = () => {
 
                       {/* Impacto da Doação */}
                       {selectedAmount && (
-                        <div className="bg-blue-50 p-4 rounded-lg">
-                          <h4 className="font-semibold text-blue-900 mb-2">Impacto da sua doação:</h4>
-                          <p className="text-blue-800">
+                        <div className="p-4 rounded-lg" style={{ backgroundColor: '#a0c93a20' }}>
+                          <h4 className="font-semibold mb-2" style={{ color: '#3b660a' }}>Impacto da sua doação:</h4>
+                          <p style={{ color: '#2b4744' }}>
                             {impactExamples[selectedAmount as keyof typeof impactExamples] || 
-                             `Com ${formatCurrency(selectedAmount)} você ajuda múltiplas crianças em nossos programas`}
+                             `Com ${formatCurrency(selectedAmount)} você ajuda famílias indígenas em nossos programas`}
                           </p>
                         </div>
                       )}
@@ -295,7 +295,7 @@ const Donation = () => {
                         </RadioGroup>
                       </div>
 
-                      <Button type="submit" className="w-full bg-orange-500 hover:bg-orange-600 h-12 text-lg">
+                      <Button type="submit" className="w-full h-12 text-lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
                         {donationType === 'monthly' ? 'Doar Mensalmente' : 'Doar Agora'} {selectedAmount ? formatCurrency(selectedAmount) : ''}
                       </Button>
                     </form>
@@ -308,21 +308,21 @@ const Donation = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center font-montserrat">
-                        <Shield className="h-5 w-5 mr-2 text-green-600" />
+                        <Shield className="h-5 w-5 mr-2" style={{ color: '#3b660a' }} />
                         Doação 100% Segura
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3 font-nunito">
                       <p className="flex items-center text-sm">
-                        <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                        <CheckCircle className="h-4 w-4 mr-2" style={{ color: '#3b660a' }} />
                         Certificado SSL de segurança
                       </p>
                       <p className="flex items-center text-sm">
-                        <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                        <CheckCircle className="h-4 w-4 mr-2" style={{ color: '#3b660a' }} />
                         Dados protegidos e criptografados
                       </p>
                       <p className="flex items-center text-sm">
-                        <CheckCircle className="h-4 w-4 mr-2 text-green-600" />
+                        <CheckCircle className="h-4 w-4 mr-2" style={{ color: '#3b660a' }} />
                         Transparência total no uso dos recursos
                       </p>
                     </CardContent>
@@ -332,7 +332,7 @@ const Donation = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center font-montserrat">
-                        <Gift className="h-5 w-5 mr-2 text-blue-600" />
+                        <Gift className="h-5 w-5 mr-2" style={{ color: '#81a425' }} />
                         Benefícios Fiscais
                       </CardTitle>
                     </CardHeader>
@@ -357,7 +357,7 @@ const Donation = () => {
                         <span className="font-semibold">85%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-600 h-2 rounded-full" style={{ width: '85%' }}></div>
+                        <div className="h-2 rounded-full" style={{ width: '85%', backgroundColor: '#3b660a' }}></div>
                       </div>
                       
                       <div className="flex justify-between items-center">
@@ -365,7 +365,7 @@ const Donation = () => {
                         <span className="font-semibold">10%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '10%' }}></div>
+                        <div className="h-2 rounded-full" style={{ width: '10%', backgroundColor: '#81a425' }}></div>
                       </div>
                       
                       <div className="flex justify-between items-center">
@@ -373,7 +373,7 @@ const Donation = () => {
                         <span className="font-semibold">5%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-orange-600 h-2 rounded-full" style={{ width: '5%' }}></div>
+                        <div className="h-2 rounded-full" style={{ width: '5%', backgroundColor: '#e8440d' }}></div>
                       </div>
                     </CardContent>
                   </Card>
@@ -404,8 +404,8 @@ const Donation = () => {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-3">
                             <div 
-                              className="bg-blue-600 h-3 rounded-full transition-all duration-300" 
-                              style={{ width: `${(project.raised / project.goal) * 100}%` }}
+                              className="h-3 rounded-full transition-all duration-300" 
+                              style={{ width: `${(project.raised / project.goal) * 100}%`, backgroundColor: '#3b660a' }}
                             ></div>
                           </div>
                           <p className="text-xs text-gray-600 mt-1">

@@ -54,7 +54,7 @@ const Map = ({ locations }: MapProps) => {
           >
             <div className="relative">
               <MapPin className="h-8 w-8 text-red-500 drop-shadow-lg group-hover:text-red-600 transition-colors" />
-              <div className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold">
+              <div className="absolute -top-2 -right-2 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold" style={{ backgroundColor: '#81a425' }}>
                 {location.beneficiaries > 999 ? '999+' : location.beneficiaries}
               </div>
             </div>

@@ -18,42 +18,42 @@ const News = () => {
     ...news,
     {
       id: 4,
-      title: "Novo Projeto de Capacitação Profissional",
-      excerpt: "Lançamos um programa inovador de capacitação em tecnologia para jovens de 16 a 24 anos.",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=600&h=400&fit=crop",
+      title: "Novo Equipamento Médico no Hospital",
+      excerpt: "Hospital Indígena recebe equipamentos modernos para melhor atendimento à comunidade.",
+      content: "Graças a parceiros e doadores, o Hospital Indígena recebeu novos equipamentos de diagnóstico que vão melhorar significativamente a qualidade do atendimento prestado às comunidades indígenas.",
+      image: "https://images.unsplash.com/photo-1538108149393-fbbd81895907?w=600&h=400&fit=crop",
       date: "2023-10-15",
-      author: "Pedro Almeida",
-      category: "educacao"
+      author: "Dra. Maria Santos",
+      category: "saude"
     },
     {
       id: 5,
-      title: "Parceria com Universidade Federal",
-      excerpt: "Firmamos parceria para pesquisa sobre desenvolvimento infantil em comunidades vulneráveis.",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=600&h=400&fit=crop",
+      title: "Capacitação de Líderes Indígenas",
+      excerpt: "Realizado curso de capacitação bíblica para 40 líderes de diferentes aldeias.",
+      content: "Durante três dias, líderes indígenas participaram de um intenso curso de capacitação bíblica, fortalecendo seu conhecimento das Escrituras e habilidades ministeriais para servir melhor suas comunidades.",
+      image: "https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?w=600&h=400&fit=crop",
       date: "2023-09-20",
-      author: "Dra. Ana Beatriz",
-      category: "pesquisa"
+      author: "Pastor Carlos Mendes",
+      category: "evangelizacao"
     },
     {
       id: 6,
-      title: "Festa Junina Arrecada R$ 50 Mil",
-      excerpt: "Nossa tradicional festa junina foi um sucesso e arrecadou fundos importantes para os projetos.",
-      content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-      image: "https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=600&h=400&fit=crop",
+      title: "Ação Social Beneficia Aldeia Jaguapiru",
+      excerpt: "Distribuição de alimentos e roupas alcança mais de 150 famílias na aldeia.",
+      content: "Nossa equipe realizou uma grande ação social na Aldeia Jaguapiru, distribuindo cestas básicas, roupas e materiais de higiene para as famílias mais necessitadas, demonstrando o amor prático de Cristo.",
+      image: "https://images.unsplash.com/photo-1559028012-481c04fa702d?w=600&h=400&fit=crop",
       date: "2023-08-10",
-      author: "Equipe de Eventos",
-      category: "eventos"
+      author: "Equipe Social",
+      category: "assistencia"
     }
   ];
 
   const categories = [
     { id: 'all', name: 'Todas as Categorias' },
-    { id: 'projetos', name: 'Projetos' },
-    { id: 'educacao', name: 'Educação' },
-    { id: 'eventos', name: 'Eventos' },
-    { id: 'pesquisa', name: 'Pesquisa' }
+    { id: 'saude', name: 'Saúde' },
+    { id: 'evangelizacao', name: 'Evangelização' },
+    { id: 'assistencia', name: 'Assistência Social' },
+    { id: 'geral', name: 'Geral' }
   ];
 
   // Filtrar notícias
@@ -80,7 +80,7 @@ const News = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-purple-600 to-blue-600">
+      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">
@@ -164,7 +164,7 @@ const News = () => {
                       {filteredNews[0].excerpt}
                     </p>
                     
-                    <Button asChild className="bg-blue-600 hover:bg-blue-700">
+                    <Button asChild style={{ backgroundColor: '#3b660a' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}>
                       <Link to={`/noticias/${filteredNews[0].id}`}>
                         Ler Matéria Completa
                         <ArrowRight className="ml-2 h-4 w-4" />
@@ -258,7 +258,7 @@ const News = () => {
       </section>
 
       {/* Newsletter CTA */}
-      <section className="py-16 bg-blue-600">
+      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">
@@ -267,7 +267,7 @@ const News = () => {
             <p className="text-xl mb-8 font-nunito opacity-90">
               Inscreva-se em nossa newsletter e receba as últimas atualizações sobre nossos projetos
             </p>
-            <Button asChild size="lg" className="bg-orange-500 hover:bg-orange-600">
+            <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
               <Link to="/#newsletter">
                 Inscrever-se na Newsletter
                 <ArrowRight className="ml-2 h-4 w-4" />

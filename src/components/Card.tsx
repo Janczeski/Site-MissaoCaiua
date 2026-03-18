@@ -49,7 +49,7 @@ const Card = ({
           className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
         />
         {variant === 'news' && date && (
-          <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+          <div className="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#3b660a' }}>
             {formatDate(date)}
           </div>
         )}
@@ -83,7 +83,7 @@ const Card = ({
 
           {author && (
             <div className="flex items-center text-sm text-gray-500">
-              <Calendar className="h-4 w-4 mr-2 text-orange-500" />
+              <Calendar className="h-4 w-4 mr-2" style={{ color: '#e8440d' }} />
               <span>Por {author}</span>
             </div>
           )}

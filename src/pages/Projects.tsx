@@ -10,63 +10,63 @@ const Projects = () => {
 
   const categories = [
     { id: 'all', name: 'Todos os Projetos' },
-    { id: 'education', name: 'Educação' },
-    { id: 'health', name: 'Saúde' },
-    { id: 'nutrition', name: 'Alimentação' },
-    { id: 'community', name: 'Desenvolvimento Comunitário' }
+    { id: 'health', name: 'Saúde Indígena' },
+    { id: 'evangelization', name: 'Evangelização' },
+    { id: 'social', name: 'Assistência Social' },
+    { id: 'education', name: 'Educação' }
   ];
 
   const projectDetails = [
     {
       ...projects[0],
-      category: 'education',
-      startDate: '2020-03-15',
-      budget: 'R$ 250.000',
-      coordinator: 'Ana Silva',
-      fullDescription: 'Nosso programa de educação transformadora oferece ensino de qualidade para crianças de 6 a 14 anos em comunidades carentes. Além das disciplinas básicas, oferecemos aulas de informática, inglês e atividades extracurriculares que desenvolvem habilidades socioemocionais.',
+      category: 'health',
+      startDate: '1928-01-15',
+      budget: 'Contínuo',
+      coordinator: 'Dra. Maria Santos',
+      fullDescription: 'O Hospital Indígena da Missão Caiuá atende as comunidades indígenas de Dourados e região há décadas. Oferecemos atendimento médico completo, odontológico e medicamentos. Nossa equipe é capacitada para trabalhar respeitando a cultura e tradições dos povos indígenas.',
       achievements: [
-        '95% de aprovação escolar',
-        '80% dos alunos melhoraram notas em matemática',
-        '100% das crianças alfabetizadas até os 8 anos'
+        'Mais de 5.000 indígenas atendidos anualmente',
+        'Equipe multicultural especializada em saúde indígena',
+        'Atendimento 24 horas com respeito à medicina tradicional'
       ]
     },
     {
       ...projects[1],
-      category: 'nutrition',
-      startDate: '2019-08-20',
-      budget: 'R$ 180.000',
-      coordinator: 'Roberto Santos',
-      fullDescription: 'Programa que garante alimentação nutritiva e balanceada para crianças em situação de insegurança alimentar. Inclui educação nutricional para famílias e hortas comunitárias.',
+      category: 'evangelization',
+      startDate: '1928-01-15',
+      budget: 'Contínuo',
+      coordinator: 'Rev. João Silva',
+      fullDescription: 'Trabalho de evangelização nas aldeias indígenas de Dourados, MS. Realizamos cultos, estudos bíblicos e visitação, sempre respeitando a cultura indígena. Traduzimos materiais para as línguas Guarani e Kaiowá.',
       achievements: [
-        '3 refeições diárias para 800 crianças',
-        '15 hortas comunitárias implementadas',
-        '200 famílias capacitadas em educação nutricional'
+        'Presença em 15+ aldeias da região',
+        'Materiais bíblicos traduzidos para línguas indígenas',
+        'Formação de líderes cristãos indígenas'
       ]
     },
     {
       ...projects[2],
-      category: 'health',
-      startDate: '2021-01-10',
-      budget: 'R$ 120.000',
-      coordinator: 'Dra. Mariana Costa',
-      fullDescription: 'Programa de saúde preventiva que oferece consultas médicas, odontológicas e acompanhamento psicológico para crianças e suas famílias.',
+      category: 'social',
+      startDate: '1950-06-01',
+      budget: 'R$ 180.000/ano',
+      coordinator: 'Ana Paula Costa',
+      fullDescription: 'Programa de assistência social que distribui cestas básicas, roupas e itens de necessidade para famílias indígenas em situação de vulnerabilidade. Também oferecemos orientação e encaminhamento para serviços públicos.',
       achievements: [
-        '2.500 consultas médicas realizadas',
-        '1.800 atendimentos odontológicos',
-        '500 crianças com acompanhamento psicológico'
+        'Mais de 300 famílias atendidas mensalmente',
+        'Distribuição de cestas básicas e roupas',
+        'Apoio jurídico e orientação social'
       ]
     },
     {
       ...projects[3],
-      category: 'community',
-      startDate: '2022-05-01',
-      budget: 'R$ 200.000',
-      coordinator: 'Carlos Oliveira',
-      fullDescription: 'Programa de capacitação profissional e geração de renda para pais e responsáveis, criando oportunidades de trabalho e empreendedorismo nas comunidades.',
+      category: 'education',
+      startDate: '1970-03-01',
+      budget: 'R$ 120.000/ano',
+      coordinator: 'Pastor Carlos Mendes',
+      fullDescription: 'Oferecemos reforço escolar, ensino de música, artesanato e capacitação profissional para jovens indígenas. O objetivo é valorizar a cultura indígena enquanto preparamos os jovens para oportunidades de estudo e trabalho.',
       achievements: [
-        '150 pessoas capacitadas profissionalmente',
-        '80 microempreendimentos criados',
-        '60% de aumento na renda familiar média'
+        'Apoio educacional para 200+ crianças e jovens',
+        'Aulas de artesanato e geração de renda',
+        'Preparação para vestibular e mercado de trabalho'
       ]
     }
   ];
@@ -78,14 +78,14 @@ const Projects = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-green-600 to-blue-600">
+      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">
               Nossos Projetos
             </h1>
             <p className="text-xl md:text-2xl font-nunito opacity-90">
-              Conheça como estamos transformando vidas em diferentes comunidades
+              Servindo os povos indígenas de Dourados e região desde 1928
             </p>
           </div>
         </div>
@@ -188,7 +188,10 @@ const Projects = () => {
                       <h3 className="text-2xl font-bold text-gray-900 font-montserrat">
                         {project.title}
                       </h3>
-                      <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                      <span className="text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ 
+                        backgroundColor: '#a0c93a20', 
+                        color: '#3b660a' 
+                      }}>
                         {categories.find(c => c.id === project.category)?.name}
                       </span>
                     </div>
@@ -239,7 +242,7 @@ const Projects = () => {
 
                     {/* Botões de Ação */}
                     <div className="flex gap-3">
-                      <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+                      <Button className="flex-1" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
                         Apoiar Projeto
                       </Button>
                       <Button variant="outline" className="flex-1">
@@ -264,31 +267,31 @@ const Projects = () => {
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2 font-montserrat">
-                  {projects.reduce((total, project) => total + project.beneficiaries, 0).toLocaleString()}
+                <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: '#3b660a' }}>
+                  5.000+
                 </div>
-                <div className="text-gray-600 font-nunito">Beneficiários Diretos</div>
+                <div className="text-gray-600 font-nunito">Indígenas Atendidos</div>
               </div>
               
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-green-600 mb-2 font-montserrat">
-                  {projects.length}
+                <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: '#81a425' }}>
+                  96
                 </div>
-                <div className="text-gray-600 font-nunito">Projetos Ativos</div>
+                <div className="text-gray-600 font-nunito">Anos de História</div>
               </div>
               
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-orange-600 mb-2 font-montserrat">
-                  4
+                <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: '#e8440d' }}>
+                  1
                 </div>
-                <div className="text-gray-600 font-nunito">Estados Atendidos</div>
+                <div className="text-gray-600 font-nunito">Hospital Indígena</div>
               </div>
               
               <div className="text-center">
-                <div className="text-3xl md:text-4xl font-bold text-purple-600 mb-2 font-montserrat">
-                  25
+                <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: '#47623d' }}>
+                  15+
                 </div>
-                <div className="text-gray-600 font-nunito">Comunidades</div>
+                <div className="text-gray-600 font-nunito">Aldeias Alcançadas</div>
               </div>
             </div>
           </div>
@@ -296,20 +299,20 @@ const Projects = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-gradient-to-r from-blue-600 to-green-600">
+      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">
-              Ajude-nos a Expandir Nosso Impacto
+              Ajude-nos a Continuar Esta Missão
             </h2>
             <p className="text-xl mb-8 font-nunito opacity-90">
-              Com sua ajuda, podemos levar nossos projetos para mais comunidades e transformar ainda mais vidas
+              Sua contribuição nos ajuda a continuar servindo os povos indígenas com amor e dedicação
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
+              <Button size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
                 Apoiar Projetos
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+              <Button size="lg" variant="outline" className="border-white" style={{ backgroundColor: 'transparent', color: 'white', borderColor: 'white' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
                 Seja Voluntário
               </Button>
             </div>

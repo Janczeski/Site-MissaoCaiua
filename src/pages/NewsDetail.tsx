@@ -72,7 +72,7 @@ const NewsDetail = () => {
       <section className="py-6 bg-gray-50 border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            <Button asChild variant="ghost" className="text-blue-600 hover:text-blue-700">
+            <Button asChild variant="ghost" className="hover:text-blue-700" style={{ color: '#3b660a' }}>
               <Link to="/noticias">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Voltar para Notícias
@@ -85,7 +85,8 @@ const NewsDetail = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleShare('facebook')}
-                className="text-blue-600 hover:text-blue-700"
+                className="hover:text-blue-700"
+                style={{ color: '#3b660a' }}
               >
                 <Facebook className="h-4 w-4" />
               </Button>
@@ -175,7 +176,7 @@ const NewsDetail = () => {
                 <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
                   Educação
                 </span>
-                <span className="bg-orange-100 text-orange-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: '#e8440d20', color: '#e8440d' }}>
                   Comunidade
                 </span>
               </div>
@@ -225,7 +226,7 @@ const NewsDetail = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16 bg-blue-600">
+      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">
@@ -235,11 +236,11 @@ const NewsDetail = () => {
               Sua contribuição pode fazer a diferença na vida de uma criança
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" className="bg-orange-500 hover:bg-orange-600">
+              <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
                 <Link to="/doacao">Fazer Doação</Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
-                <Link to="/apadrinhamento">Apadrinhar Criança</Link>
+              <Button asChild size="lg" variant="outline" className="border-white text-white" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
+                <Link to="/como-ajudar">Como Ajudar</Link>
               </Button>
             </div>
           </div>

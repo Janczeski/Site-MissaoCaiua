@@ -25,11 +25,11 @@ const Newsletter = () => {
 
   if (isSubscribed) {
     return (
-      <div className="bg-gradient-to-r from-blue-600 to-green-600 py-12">
+      <div className="py-12" style={{ backgroundColor: '#2b4744' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <div className="bg-white rounded-lg p-8 shadow-lg">
-              <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+              <CheckCircle className="h-16 w-16 mx-auto mb-4" style={{ color: '#3b660a' }} />
               <h3 className="text-2xl font-bold text-gray-900 mb-2 font-montserrat">
                 Obrigado por se inscrever!
               </h3>
@@ -44,7 +44,7 @@ const Newsletter = () => {
   }
 
   return (
-    <div className="bg-gradient-to-r from-blue-600 to-green-600 py-12">
+    <div className="py-12" style={{ backgroundColor: '#2b4744' }}>
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="mb-6">
@@ -52,7 +52,7 @@ const Newsletter = () => {
             <h3 className="text-2xl md:text-3xl font-bold text-white mb-2 font-montserrat">
               Fique por dentro das nossas ações
             </h3>
-            <p className="text-blue-100 font-nunito">
+            <p className="text-white opacity-90 font-nunito">
               Receba atualizações sobre nossos projetos, histórias inspiradoras e como você pode ajudar ainda mais.
             </p>
           </div>
@@ -69,13 +69,16 @@ const Newsletter = () => {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="bg-orange-500 hover:bg-orange-600 text-white h-12 px-8 whitespace-nowrap"
+              className="text-white h-12 px-8 whitespace-nowrap"
+              style={{ backgroundColor: '#e8440d' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
             >
               {isLoading ? 'Inscrevendo...' : 'Inscrever-se'}
             </Button>
           </form>
           
-          <p className="text-blue-100 text-sm mt-4 font-nunito">
+          <p className="text-white opacity-80 text-sm mt-4 font-nunito">
             Respeitamos sua privacidade. Você pode cancelar a inscrição a qualquer momento.
           </p>
         </div>

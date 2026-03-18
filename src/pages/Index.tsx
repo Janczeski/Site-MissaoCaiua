@@ -27,28 +27,28 @@ const Index = () => {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div className="text-center">
-                <Heart className="h-12 w-12 text-blue-600 mx-auto mb-4" />
+                <Heart className="h-12 w-12 mx-auto mb-4" style={{ color: '#e8440d' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 font-montserrat">Missão</h3>
                 <p className="text-gray-600 font-nunito">
                   Evangelizar e servir povos indígenas, promovendo cuidado espiritual, educacional, social e humano integral.
                 </p>
               </div>
               <div className="text-center">
-                <Target className="h-12 w-12 text-green-600 mx-auto mb-4" />
+                <Target className="h-12 w-12 mx-auto mb-4" style={{ color: '#3b660a' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 font-montserrat">Visão</h3>
                 <p className="text-gray-600 font-nunito">
                   Ser referência missionária no cuidado integral, promovendo transformação social e espiritual duradoura.
                 </p>
               </div>
               <div className="text-center">
-                <Award className="h-12 w-12 text-orange-600 mx-auto mb-4" />
+                <Award className="h-12 w-12 mx-auto mb-4" style={{ color: '#81a425' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 font-montserrat">Valores</h3>
                 <p className="text-gray-600 font-nunito">
                   Fé cristã, amor ao próximo, serviço, ética, respeito cultural, compromisso social e dignidade humana.
                 </p>
               </div>
             </div>
-            <Button asChild size="lg" className="bg-blue-600 hover:bg-blue-700">
+            <Button asChild size="lg" style={{ backgroundColor: '#3b660a' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}>
               <Link to="/quem-somos">
                 Conheça Nossa História
                 <ArrowRight className="ml-2 h-4 w-4" />
@@ -74,7 +74,7 @@ const Index = () => {
             {impactNumbers.map((item, index) => (
               <div key={index} className="text-center">
                 <div className="text-4xl mb-2">{item.icon}</div>
-                <div className="text-3xl md:text-4xl font-bold text-blue-600 mb-2 font-montserrat">
+                <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: '#3b660a' }}>
                   {item.number}
                 </div>
                 <div className="text-gray-600 font-nunito">{item.label}</div>
@@ -135,36 +135,36 @@ const Index = () => {
               Como Você Pode Ajudar
             </h2>
             <p className="text-lg text-gray-600 font-nunito">
-              Existem várias formas de fazer parte desta transformação
+              Faça parte desta missão de amor aos povos indígenas
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-8 text-center">
-              <Heart className="h-16 w-16 text-blue-600 mx-auto mb-4" />
+            <div className="rounded-lg p-8 text-center" style={{ background: 'linear-gradient(to bottom right, #a0c93a20, #81a42530)' }}>
+              <Heart className="h-16 w-16 mx-auto mb-4" style={{ color: '#e8440d' }} />
               <h3 className="text-2xl font-bold text-gray-900 mb-4 font-montserrat">
-                Apadrinhamento
+                Doações
               </h3>
               <p className="text-gray-600 mb-6 font-nunito">
-                Apadrinhe uma criança e acompanhe de perto seu desenvolvimento. 
-                Receba cartas, fotos e relatórios sobre o progresso do seu afilhado.
+                Contribua para o Hospital Indígena, evangelização nas aldeias e assistência social. 
+                Cada doação transforma vidas.
               </p>
-              <Button asChild className="bg-blue-600 hover:bg-blue-700">
-                <Link to="/apadrinhamento">Apadrinhar Criança</Link>
+              <Button asChild style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                <Link to="/como-ajudar">Fazer Doação</Link>
               </Button>
             </div>
             
-            <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg p-8 text-center">
-              <Users className="h-16 w-16 text-orange-600 mx-auto mb-4" />
+            <div className="rounded-lg p-8 text-center" style={{ background: 'linear-gradient(to bottom right, #47623d20, #2b474430)' }}>
+              <Users className="h-16 w-16 mx-auto mb-4" style={{ color: '#3b660a' }} />
               <h3 className="text-2xl font-bold text-gray-900 mb-4 font-montserrat">
-                Doação
+                Seja Missionário
               </h3>
               <p className="text-gray-600 mb-6 font-nunito">
-                Faça uma doação única ou recorrente para apoiar nossos projetos. 
-                Cada contribuição faz a diferença na vida de uma criança.
+                Sirva como voluntário ou missionário nas aldeias indígenas. 
+                Há oportunidades de curto e longo prazo.
               </p>
-              <Button asChild className="bg-orange-500 hover:bg-orange-600">
-                <Link to="/doacao">Fazer Doação</Link>
+              <Button asChild style={{ backgroundColor: '#3b660a' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}>
+                <Link to="/como-ajudar">Servir na Missão</Link>
               </Button>
             </div>
           </div>
@@ -217,7 +217,10 @@ const Index = () => {
       <div className="fixed bottom-6 right-6 z-40">
         <Button
           size="lg"
-          className="rounded-full bg-green-500 hover:bg-green-600 shadow-lg h-14 w-14 p-0"
+          className="rounded-full shadow-lg h-14 w-14 p-0"
+          style={{ backgroundColor: '#81a425' }}
+          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}
+          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#81a425'}
           title="Chat de Atendimento"
         >
           <MessageCircle className="h-6 w-6" />

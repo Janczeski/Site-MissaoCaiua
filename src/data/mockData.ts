@@ -6,8 +6,8 @@ export const heroSlides = [
     title: "Transforme Vidas Através da Fé",
     subtitle: "Único hospital indígena do Brasil, de média complexidade!",
     image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1200&h=600&fit=crop",
-    ctaText: "Apadrinhe Agora",
-    ctaLink: "/apadrinhamento"
+    ctaText: "Apoie a Missão",
+    ctaLink: "/como-ajudar"
   },
   {
     id: 2,
@@ -28,124 +28,94 @@ export const heroSlides = [
 ];
 
 export const impactNumbers = [
-  { number: "15,000+", label: "Crianças Atendidas", icon: "👶" },
-  { number: "250+", label: "Projetos Ativos", icon: "🏗️" },
-  { number: "50+", label: "Comunidades", icon: "🏘️" },
-  { number: "25", label: "Anos de Experiência", icon: "📅" }
+  { number: "5,000+", label: "Indígenas Atendidos", icon: "👥" },
+  { number: "96", label: "Anos de História", icon: "📅" },
+  { number: "1", label: "Hospital Indígena", icon: "🏥" },
+  { number: "15+", label: "Aldeias Alcançadas", icon: "🏘️" }
 ];
 
 export const projects = [
   {
     id: 1,
-    title: "Educação Transformadora",
-    description: "Oferecemos educação de qualidade para crianças em situação de vulnerabilidade social.",
-    image: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?w=400&h=300&fit=crop",
-    location: "São Paulo, SP",
-    beneficiaries: 500,
-    coordinates: [-23.5505, -46.6333] as [number, number]
+    title: "Hospital Indígena",
+    description: "Único hospital indígena de média complexidade do Brasil, oferecendo atendimento médico gratuito.",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=400&h=300&fit=crop",
+    location: "Dourados, MS",
+    beneficiaries: 2500,
+    coordinates: [-22.2211, -54.8056] as [number, number]
   },
   {
     id: 2,
-    title: "Alimentação Saudável",
-    description: "Programa de nutrição que garante refeições balanceadas para crianças carentes.",
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=400&h=300&fit=crop",
-    location: "Rio de Janeiro, RJ",
-    beneficiaries: 800,
-    coordinates: [-22.9068, -43.1729] as [number, number]
+    title: "Evangelização nas Aldeias",
+    description: "Trabalho missionário de evangelização e discipulado junto aos povos indígenas.",
+    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=400&h=300&fit=crop",
+    location: "Dourados, MS",
+    beneficiaries: 1500,
+    coordinates: [-22.2211, -54.8056] as [number, number]
   },
   {
     id: 3,
-    title: "Saúde Preventiva",
-    description: "Cuidados médicos e odontológicos preventivos para comunidades carentes.",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
-    location: "Belo Horizonte, MG",
-    beneficiaries: 300,
-    coordinates: [-19.9191, -43.9386] as [number, number]
+    title: "Assistência Social",
+    description: "Distribuição de cestas básicas, roupas e itens de necessidade para as comunidades indígenas.",
+    image: "https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?w=400&h=300&fit=crop",
+    location: "Dourados, MS",
+    beneficiaries: 800,
+    coordinates: [-22.2211, -54.8056] as [number, number]
   },
   {
     id: 4,
-    title: "Desenvolvimento Comunitário",
-    description: "Capacitação profissional e geração de renda para famílias em situação de pobreza.",
-    image: "https://images.unsplash.com/photo-1469571486292-0ba58a3f068b?w=400&h=300&fit=crop",
-    location: "Salvador, BA",
-    beneficiaries: 400,
-    coordinates: [-12.9714, -38.5014] as [number, number]
+    title: "Apoio Educacional",
+    description: "Material escolar e apoio pedagógico para crianças e jovens indígenas.",
+    image: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400&h=300&fit=crop",
+    location: "Dourados, MS",
+    beneficiaries: 600,
+    coordinates: [-22.2211, -54.8056] as [number, number]
   }
 ];
 
 export const news = [
   {
     id: 1,
-    title: "Nova Escola Inaugurada em São Paulo",
-    excerpt: "Mais 200 crianças terão acesso à educação de qualidade com a inauguração da nossa nova unidade.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    image: "https://images.unsplash.com/photo-1497486751825-1233686d5d80?w=600&h=400&fit=crop",
+    title: "Hospital Indígena Amplia Atendimento",
+    excerpt: "Novas especialidades médicas disponíveis para atender melhor as comunidades indígenas.",
+    content: "O Hospital Indígena da Missão Caiuá ampliou sua capacidade de atendimento com a chegada de novos profissionais especializados. Agora oferecemos consultas em cardiologia, pediatria e ginecologia, fortalecendo nosso compromisso com a saúde dos povos indígenas.",
+    image: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=600&h=400&fit=crop",
     date: "2024-01-15",
     author: "Equipe Missão Caiuá"
   },
   {
     id: 2,
-    title: "Campanha de Natal Arrecada 10 Toneladas de Alimentos",
-    excerpt: "Graças à generosidade de nossos apoiadores, conseguimos arrecadar alimentos para 1000 famílias.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    image: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=600&h=400&fit=crop",
+    title: "Campanha de Cestas Básicas Beneficia 200 Famílias",
+    excerpt: "Graças à generosidade de parceiros, distribuímos alimentos para famílias indígenas.",
+    content: "Nossa campanha mensal de distribuição de cestas básicas alcançou 200 famílias indígenas neste mês. Além de alimentos, também foram distribuídos kits de higiene e roupas, demonstrando o amor de Cristo através de ações práticas.",
+    image: "https://images.unsplash.com/photo-1593113646773-028c64a8f1b8?w=600&h=400&fit=crop",
     date: "2023-12-20",
-    author: "Maria Silva"
+    author: "Departamento Social"
   },
   {
     id: 3,
-    title: "Programa de Apadrinhamento Completa 5 Anos",
-    excerpt: "Celebramos 5 anos transformando vidas através do programa de apadrinhamento de crianças.",
-    content: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=600&h=400&fit=crop",
+    title: "Encontro de Líderes Indígenas Cristãos",
+    excerpt: "Realizado o 15º encontro anual de líderes indígenas cristãos em Dourados.",
+    content: "Com a participação de mais de 80 líderes de diversas aldeias, o encontro promoveu capacitação bíblica, troca de experiências e fortalecimento da comunhão entre as igrejas indígenas. Um momento especial de crescimento espiritual.",
+    image: "https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=600&h=400&fit=crop",
     date: "2023-11-10",
-    author: "João Santos"
-  }
-];
-
-export const children = [
-  {
-    id: 1,
-    name: "Ana",
-    age: 8,
-    location: "São Paulo, SP",
-    story: "Ana sonha em ser professora e adora matemática. Precisa de apoio para continuar seus estudos.",
-    image: "https://images.unsplash.com/photo-1544717297-fa95b6ee9643?w=300&h=300&fit=crop",
-    needs: ["Material escolar", "Uniforme", "Alimentação"]
-  },
-  {
-    id: 2,
-    name: "Pedro",
-    age: 10,
-    location: "Rio de Janeiro, RJ",
-    story: "Pedro é apaixonado por futebol e tem grande potencial. Busca oportunidades para desenvolver seu talento.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&h=300&fit=crop",
-    needs: ["Material esportivo", "Transporte", "Alimentação"]
-  },
-  {
-    id: 3,
-    name: "Lucia",
-    age: 7,
-    location: "Belo Horizonte, MG",
-    story: "Lucia adora desenhar e tem um talento natural para as artes. Sonha em ser artista.",
-    image: "https://images.unsplash.com/photo-1548142813-c348350df52b?w=300&h=300&fit=crop",
-    needs: ["Material de arte", "Livros", "Cuidados médicos"]
+    author: "Pastor Carlos Mendes"
   }
 ];
 
 export const testimonials = [
   {
     id: 1,
-    name: "Maria Oliveira",
-    role: "Madrinha há 3 anos",
-    content: "Apadrinhar a pequena Sofia foi uma das melhores decisões da minha vida. Ver seu crescimento e desenvolvimento é emocionante.",
-    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop"
+    name: "Paulo Oliveira",
+    role: "Apoiador há 5 anos",
+    content: "Contribuir com a Missão Caiuá é uma forma de levar esperança e o evangelho aos nossos irmãos indígenas. Ver o impacto do trabalho é transformador.",
+    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"
   },
   {
     id: 2,
-    name: "Carlos Santos",
-    role: "Padrinho há 2 anos",
-    content: "O programa de apadrinhamento me permitiu fazer a diferença na vida de uma criança de forma direta e significativa.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop"
+    name: "Ana Martins",
+    role: "Voluntária há 3 anos",
+    content: "Servir no hospital indígena mudou minha vida. É gratificante poder usar meus conhecimentos médicos para abençoar essas comunidades.",
+    image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop"
   }
 ];

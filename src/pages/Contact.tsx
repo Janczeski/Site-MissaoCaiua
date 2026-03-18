@@ -38,110 +38,112 @@ const Contact = () => {
 
   const contactReasons = [
     { value: 'donation', label: 'Informações sobre Doações' },
-    { value: 'sponsorship', label: 'Programa de Apadrinhamento' },
-    { value: 'volunteer', label: 'Trabalho Voluntário' },
+    { value: 'volunteer', label: 'Trabalho Voluntário / Missões' },
     { value: 'partnership', label: 'Parcerias Empresariais' },
-    { value: 'press', label: 'Imprensa' },
+    { value: 'prayer', label: 'Pedidos de Oração' },
+    { value: 'hospital', label: 'Hospital Indígena' },
     { value: 'general', label: 'Informações Gerais' },
     { value: 'other', label: 'Outros Assuntos' }
   ];
 
   const contactInfo = [
     {
-      icon: <MapPin className="h-6 w-6 text-blue-600" />,
+      icon: <MapPin className="h-6 w-6" style={{ color: '#3b660a' }} />,
       title: "Endereço Principal",
       details: [
-        "Rua das Flores, 123",
-        "Centro, São Paulo - SP",
-        "CEP: 01234-567"
+        "Av. Marcelino Pires, 1234",
+        "Dourados - MS",
+        "CEP: 79800-000"
       ]
     },
     {
-      icon: <Phone className="h-6 w-6 text-green-600" />,
+      icon: <Phone className="h-6 w-6" style={{ color: '#81a425' }} />,
       title: "Telefones",
       details: [
-        "(11) 1234-5678",
-        "(11) 9876-5432",
-        "0800 123 4567 (Gratuito)"
+        "(67) 3421-0000",
+        "(67) 99999-0000",
+        "Hospital: (67) 3421-0001"
       ]
     },
     {
-      icon: <Mail className="h-6 w-6 text-orange-600" />,
+      icon: <Mail className="h-6 w-6" style={{ color: '#e8440d' }} />,
       title: "E-mails",
       details: [
-        "contato@esperancaviva.org.br",
-        "doacao@esperancaviva.org.br",
-        "apadrinhamento@esperancaviva.org.br"
+        "contato@missaocaiua.org.br",
+        "doacao@missaocaiua.org.br",
+        "hospital@missaocaiua.org.br"
       ]
     },
     {
-      icon: <Clock className="h-6 w-6 text-purple-600" />,
+      icon: <Clock className="h-6 w-6" style={{ color: '#47623d' }} />,
       title: "Horário de Atendimento",
       details: [
-        "Segunda a Sexta: 8h às 18h",
+        "Segunda a Sexta: 8h às 17h",
         "Sábados: 8h às 12h",
-        "Domingos e Feriados: Fechado"
+        "Hospital: 24 horas"
       ]
     }
   ];
 
-  const offices = [
+  const locations = [
     {
-      city: "São Paulo - SP",
-      address: "Rua das Flores, 123 - Centro",
-      phone: "(11) 1234-5678",
-      email: "sp@esperancaviva.org.br"
+      title: "Sede Principal",
+      description: "Administração, Atendimento Social e Projetos de Evangelização",
+      address: "Av. Marcelino Pires, 1234 - Dourados, MS",
+      phone: "(67) 3421-0000"
     },
     {
-      city: "Rio de Janeiro - RJ",
-      address: "Av. Copacabana, 456 - Copacabana",
-      phone: "(21) 2345-6789",
-      email: "rj@esperancaviva.org.br"
+      title: "Hospital Indígena",
+      description: "Atendimento médico, odontológico e farmácia",
+      address: "Rua Caiuá, 567 - Dourados, MS",
+      phone: "(67) 3421-0001"
     },
     {
-      city: "Belo Horizonte - MG",
-      address: "Rua da Liberdade, 789 - Centro",
-      phone: "(31) 3456-7890",
-      email: "mg@esperancaviva.org.br"
-    },
-    {
-      city: "Salvador - BA",
-      address: "Av. Sete de Setembro, 321 - Pelourinho",
-      phone: "(71) 4567-8901",
-      email: "ba@esperancaviva.org.br"
+      title: "Aldeias Atendidas",
+      description: "Visitas e cultos em 15+ aldeias da região de Dourados",
+      address: "Reserva Indígena - Dourados, MS",
+      phone: "(67) 99999-0000"
     }
   ];
 
   const faqs = [
     {
       question: "Como posso fazer uma doação?",
-      answer: "Você pode fazer doações através do nosso site, por transferência bancária, PIX ou cartão de crédito. Acesse nossa página de doações para mais informações."
+      answer: "Você pode fazer doações através do nosso site, por transferência bancária, PIX ou cartão de crédito para apoiar nosso trabalho nas aldeias indígenas."
     },
     {
-      question: "Qual o valor mínimo para apadrinhar uma criança?",
-      answer: "O valor mínimo para apadrinhamento é de R$ 50,00 mensais, mas você pode contribuir com qualquer valor acima disso."
+      question: "Como funciona o Hospital Indígena?",
+      answer: "O Hospital atende gratuitamente a população indígena com médicos, dentistas e farmácia. Funciona 24 horas com equipe especializada em saúde indígena."
     },
     {
-      question: "Como posso me tornar voluntário?",
-      answer: "Entre em contato conosco através do formulário ou telefone. Temos diversas oportunidades de voluntariado adequadas a diferentes perfis e disponibilidades."
+      question: "Posso visitar a Missão e as aldeias?",
+      answer: "Sim! Entre em contato para agendar uma visita. As visitas às aldeias precisam ser agendadas com antecedência e acompanhadas por nossa equipe."
+    },
+    {
+      question: "Como posso servir como missionário?",
+      answer: "Temos oportunidades para missionários de curto e longo prazo. Entre em contato para conhecer as necessidades atuais e requisitos."
     },
     {
       question: "Vocês emitem recibo para dedução no IR?",
       answer: "Sim, todas as doações recebem recibo oficial que pode ser usado para dedução no Imposto de Renda, conforme legislação vigente."
+    },
+    {
+      question: "Como posso orar pela Missão?",
+      answer: "Você pode se inscrever em nossa lista de oração para receber atualizações mensais sobre nosso trabalho e pedidos específicos de oração."
     }
   ];
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20 bg-gradient-to-r from-teal-600 to-blue-600">
+      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">
               Entre em Contato
             </h1>
             <p className="text-xl md:text-2xl font-nunito opacity-90">
-              Estamos aqui para esclarecer suas dúvidas e ajudá-lo a fazer parte da nossa missão
+              Estamos aqui para esclarecer suas dúvidas e ajudá-lo a fazer parte desta missão
             </p>
           </div>
         </div>
@@ -155,7 +157,7 @@ const Contact = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center font-montserrat">
-                    <MessageCircle className="h-5 w-5 mr-2 text-blue-600" />
+                    <MessageCircle className="h-5 w-5 mr-2" style={{ color: '#3b660a' }} />
                     Envie sua Mensagem
                   </CardTitle>
                   <CardDescription>
@@ -236,7 +238,10 @@ const Contact = () => {
 
                     <Button 
                       type="submit" 
-                      className="w-full bg-blue-600 hover:bg-blue-700"
+                      className="w-full"
+                      style={{ backgroundColor: '#3b660a' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -289,7 +294,7 @@ const Contact = () => {
                     <div className="text-center text-gray-500">
                       <MapPin className="h-12 w-12 mx-auto mb-2" />
                       <p className="font-nunito">Mapa Interativo</p>
-                      <p className="text-sm">Sede Principal - São Paulo</p>
+                      <p className="text-sm">Dourados - MS</p>
                     </div>
                   </div>
                 </CardContent>
@@ -297,31 +302,30 @@ const Contact = () => {
             </div>
           </div>
 
-          {/* Escritórios */}
+          {/* Locais de Atendimento */}
           <section className="mt-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center font-montserrat">
-              Nossos Escritórios
+              Onde Atuamos
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {offices.map((office, index) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {locations.map((location, index) => (
                 <Card key={index} className="hover:shadow-lg transition-shadow">
                   <CardContent className="p-6">
-                    <h3 className="font-semibold text-gray-900 mb-3 font-montserrat">
-                      {office.city}
+                    <h3 className="font-semibold text-gray-900 mb-2 font-montserrat">
+                      {location.title}
                     </h3>
+                    <p className="text-sm text-gray-600 mb-3 font-nunito">
+                      {location.description}
+                    </p>
                     <div className="space-y-2 text-sm text-gray-600 font-nunito">
                       <p className="flex items-start">
-                        <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" />
-                        {office.address}
+                        <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" style={{ color: '#81a425' }} />
+                        {location.address}
                       </p>
                       <p className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2 flex-shrink-0" />
-                        {office.phone}
-                      </p>
-                      <p className="flex items-center">
-                        <Mail className="h-4 w-4 mr-2 flex-shrink-0" />
-                        {office.email}
+                        <Phone className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: '#81a425' }} />
+                        {location.phone}
                       </p>
                     </div>
                   </CardContent>
@@ -336,7 +340,7 @@ const Contact = () => {
               Perguntas Frequentes
             </h2>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {faqs.map((faq, index) => (
                 <Card key={index}>
                   <CardContent className="p-6">
@@ -353,21 +357,21 @@ const Contact = () => {
           </section>
 
           {/* Call to Action */}
-          <section className="mt-16 bg-gradient-to-r from-blue-600 to-green-600 rounded-lg p-8 text-white text-center">
+          <section className="mt-16 rounded-lg p-8 text-white text-center" style={{ backgroundColor: '#2b4744' }}>
             <h2 className="text-3xl font-bold mb-4 font-montserrat">
-              Pronto para Fazer a Diferença?
+              Faça Parte Desta Missão
             </h2>
             <p className="text-xl mb-6 font-nunito opacity-90">
-              Junte-se a nós e transforme vidas através da solidariedade
+              Juntos podemos levar esperança e amor aos povos indígenas
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600">
+              <Button size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
                 <Heart className="h-4 w-4 mr-2" />
                 Fazer Doação
               </Button>
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-blue-600">
+              <Button size="lg" variant="outline" className="border-white text-white" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
                 <Users className="h-4 w-4 mr-2" />
-                Ser Voluntário
+                Servir como Missionário
               </Button>
             </div>
           </section>

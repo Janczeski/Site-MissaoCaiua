@@ -74,7 +74,10 @@ const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) =>
                 </p>
                 <Button 
                   size="lg" 
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-8 py-3 text-lg"
+                  className="text-white px-8 py-3 text-lg"
+                  style={{ backgroundColor: '#e8440d' }}
+                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
+                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
                   onClick={() => window.location.href = item.ctaLink}
                 >
                   {item.ctaText}
