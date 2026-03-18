@@ -2,7 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { getCurrentNews } from '@/data/mockData';
-import { Calendar, User, ArrowLeft, Heart, Facebook, Twitter, Linkedin } from 'lucide-react';
+import { Calendar, User, ArrowLeft, Facebook, Twitter, Linkedin } from 'lucide-react';
 import type { NewsItem } from '@/lib/supabase';
 
 const NewsDetail = () => {
@@ -140,21 +140,14 @@ const NewsDetail = () => {
                 {article.title}
               </h1>
               
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-6 text-gray-500">
-                <div className="flex items-center space-x-4 mb-4 sm:mb-0">
-                  <div className="flex items-center">
-                    <Calendar className="h-4 w-4 mr-2" />
-                    <span className="font-nunito">{formatDate(article.date)}</span>
-                  </div>
-                  <div className="flex items-center">
-                    <User className="h-4 w-4 mr-2" />
-                    <span className="font-nunito">{article.author}</span>
-                  </div>
+              <div className="flex items-center space-x-4 mb-6 text-gray-500">
+                <div className="flex items-center">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  <span className="font-nunito">{formatDate(article.date)}</span>
                 </div>
-                
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-4 w-4 text-red-500" />
-                  <span className="text-sm font-nunito">Curtir esta notícia</span>
+                <div className="flex items-center">
+                  <User className="h-4 w-4 mr-2" />
+                  <span className="font-nunito">{article.author}</span>
                 </div>
               </div>
             </header>
