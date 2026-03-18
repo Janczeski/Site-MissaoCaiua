@@ -119,3 +119,6 @@ export const testimonials = [
     image: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop"
   }
 ];
+
+// Array vazio mantido para compatibilidade com página legada
+export const children: any[] = [];

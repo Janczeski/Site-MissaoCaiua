@@ -7,7 +7,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, CreditCard, Smartphone, Building, Shield, CheckCircle, Gift, Users, GraduationCap } from 'lucide-react';
+import { Heart, CreditCard, Smartphone, Building, Shield, CheckCircle, Gift, GraduationCap } from 'lucide-react';
 
 const Donation = () => {
   const [donationType, setDonationType] = useState('monthly');

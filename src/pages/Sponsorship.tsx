@@ -179,7 +179,7 @@ const Sponsorship = () => {
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {children.map((child) => (
+              {children.map((child: any) => (
                 <div key={child.id} className="bg-white border-2 border-gray-200 rounded-lg overflow-hidden hover:border-blue-300 transition-colors duration-300">
                   <div className="h-64 overflow-hidden">
                     <img
@@ -206,7 +206,7 @@ const Sponsorship = () => {
                     <div className="mb-4">
                       <h4 className="font-semibold text-gray-900 mb-2 font-montserrat">Necessidades:</h4>
                       <div className="flex flex-wrap gap-1">
-                        {child.needs.map((need, index) => (
+                        {child.needs.map((need: any, index: number) => (
                           <span key={index} className="bg-blue-100 text-blue-800 text-xs font-medium px-2 py-1 rounded">
                             {need}
                           </span>
