@@ -33,6 +33,8 @@ export interface ProjectItem {
   image: string;
   raised: number;
   goal: number;
+  donation_link?: string;
+  show_goal?: boolean;
   created_at?: string;
   updated_at?: string;
 }

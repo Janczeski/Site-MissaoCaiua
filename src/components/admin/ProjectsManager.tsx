@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { Plus, Edit, Trash2, MapPin, DollarSign, Loader2 } from 'lucide-react';
 import { getProjects, addProject, updateProject, deleteProject, uploadImage, type ProjectItem } from '@/utils/storage';
 import { toast } from 'sonner';
@@ -23,7 +24,9 @@ const ProjectsManager = () => {
     coordinates: [-22.2211, -54.8056] as [number, number],
     image: '',
     raised: 0,
-    goal: 50000
+    goal: 50000,
+    donation_link: '',
+    show_goal: true
   });
 
   useEffect(() => {
@@ -101,7 +104,9 @@ const ProjectsManager = () => {
       coordinates: item.coordinates as [number, number],
       image: item.image,
       raised: item.raised,
-      goal: item.goal
+      goal: item.goal,
+      donation_link: item.donation_link || '',
+      show_goal: item.show_goal !== false
     });
     setIsDialogOpen(true);
   };
@@ -128,7 +133,9 @@ const ProjectsManager = () => {
       coordinates: [-22.2211, -54.8056],
       image: '',
       raised: 0,
-      goal: 50000
+      goal: 50000,
+      donation_link: '',
+      show_goal: true
     });
   };
 
@@ -265,31 +272,57 @@ const ProjectsManager = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="raised">Valor Arrecadado (R$) *</Label>
-                  <Input
-                    id="raised"
-                    type="number"
-                    min="0"
-                    value={formData.raised}
-                    onChange={(e) => setFormData({ ...formData, raised: parseInt(e.target.value) })}
-                    required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="goal">Meta (R$) *</Label>
-                  <Input
-                    id="goal"
-                    type="number"
-                    min="0"
-                    value={formData.goal}
-                    onChange={(e) => setFormData({ ...formData, goal: parseInt(e.target.value) })}
-                    required
-                  />
-                </div>
+              <div className="space-y-2">
+                <Label htmlFor="donation_link">Link de Doação (Opcional)</Label>
+                <Input
+                  id="donation_link"
+                  type="url"
+                  placeholder="https://plataforma-de-doacao.com/projeto"
+                  value={formData.donation_link}
+                  onChange={(e) => setFormData({ ...formData, donation_link: e.target.value })}
+                />
+                <p className="text-xs text-gray-500">URL para redirecionar quando clicar em "Doar agora"</p>
               </div>
+
+              <div className="flex items-center justify-between space-x-2 p-4 border rounded-lg">
+                <div className="space-y-0.5">
+                  <Label htmlFor="show_goal" className="cursor-pointer">Exibir Meta de Arrecadação</Label>
+                  <p className="text-xs text-gray-500">Mostrar barra de progresso e valores no card do projeto</p>
+                </div>
+                <Switch
+                  id="show_goal"
+                  checked={formData.show_goal}
+                  onCheckedChange={(checked) => setFormData({ ...formData, show_goal: checked })}
+                />
+              </div>
+
+              {formData.show_goal && (
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="raised">Valor Arrecadado (R$) *</Label>
+                    <Input
+                      id="raised"
+                      type="number"
+                      min="0"
+                      value={formData.raised}
+                      onChange={(e) => setFormData({ ...formData, raised: parseInt(e.target.value) })}
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="goal">Meta (R$) *</Label>
+                    <Input
+                      id="goal"
+                      type="number"
+                      min="0"
+                      value={formData.goal}
+                      onChange={(e) => setFormData({ ...formData, goal: parseInt(e.target.value) })}
+                      required
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="flex gap-2 justify-end">
                 <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>

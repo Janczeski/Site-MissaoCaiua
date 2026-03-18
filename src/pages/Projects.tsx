@@ -179,6 +179,39 @@ const Projects = () => {
                       <span className="text-sm font-medium text-gray-900">{project.coordinator}</span>
                     </div>
 
+                    {/* Barra de Progresso de Arrecadação */}
+                    {project.show_goal !== false && project.goal && (
+                      <div className="mb-6">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-medium text-gray-700">Meta de Arrecadação</span>
+                          <span className="text-sm font-medium text-gray-900">
+                            {((project.raised / project.goal) * 100).toFixed(0)}%
+                          </span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
+                          <div 
+                            className="h-3 rounded-full transition-all duration-300" 
+                            style={{ 
+                              width: `${Math.min((project.raised / project.goal) * 100, 100)}%`,
+                              backgroundColor: '#3b660a'
+                            }}
+                          ></div>
+                        </div>
+                        <div className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            Arrecadado: <span className="font-semibold text-gray-900">
+                              R$ {project.raised.toLocaleString('pt-BR')}
+                            </span>
+                          </span>
+                          <span className="text-gray-600">
+                            Meta: <span className="font-semibold text-gray-900">
+                              R$ {project.goal.toLocaleString('pt-BR')}
+                            </span>
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
                     {/* Conquistas */}
                     <div className="mb-6">
                       <h4 className="text-lg font-semibold text-gray-900 mb-3 font-montserrat">
@@ -196,7 +229,19 @@ const Projects = () => {
 
                     {/* Botões de Ação */}
                     <div className="flex gap-3">
-                      <Button className="flex-1" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                      <Button 
+                        className="flex-1" 
+                        style={{ backgroundColor: '#e8440d' }} 
+                        onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} 
+                        onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
+                        onClick={() => {
+                          if (project.donation_link) {
+                            window.open(project.donation_link, '_blank');
+                          } else {
+                            window.location.href = '/como-ajudar';
+                          }
+                        }}
+                      >
                         Apoiar Projeto
                       </Button>
                       <Button variant="outline" className="flex-1">
