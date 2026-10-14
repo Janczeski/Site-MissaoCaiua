@@ -14,21 +14,19 @@ const AdminLogin = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
     setIsLoading(true);
-
-    setTimeout(() => {
-      const success = login(password);
-      if (success) {
-        navigate('/admin');
-      } else {
-        setError('Senha incorreta. Tente novamente.');
-        setPassword('');
-      }
+    try {
+      await login(password);
+      navigate('/admin');
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Não foi possível entrar. Tente novamente.');
+      setPassword('');
+    } finally {
       setIsLoading(false);
-    }, 500);
+    }
   };
 
   return (
@@ -76,10 +74,6 @@ const AdminLogin = () => {
             >
               {isLoading ? 'Verificando...' : 'Entrar'}
             </Button>
-
-            <p className="text-xs text-center text-gray-500 mt-4">
-              Senha padrão: password
-            </p>
           </form>
         </CardContent>
       </Card>

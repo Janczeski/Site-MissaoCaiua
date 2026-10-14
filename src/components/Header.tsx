@@ -3,18 +3,25 @@ import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu, Heart } from 'lucide-react';
+import { useContent } from '@/content/SiteContentContext';
+import { usePublicNews, usePublicProjects } from '@/hooks/use-public-data';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
+  const { siteName, nav } = useContent('global');
+  const { data: news = [] } = usePublicNews();
+  const { data: projects = [] } = usePublicProjects();
+
+  // Projetos e Notícias só aparecem no menu quando há algo publicado
   const navigation = [
-    { name: 'Início', href: '/' },
-    { name: 'Quem Somos', href: '/quem-somos' },
-    { name: 'Projetos', href: '/projetos' },
-    { name: 'Notícias', href: '/noticias' },
-    { name: 'Como Ajudar', href: '/como-ajudar' },
-    { name: 'Contato', href: '/contato' },
+    { name: nav.home, href: '/' },
+    { name: nav.about, href: '/quem-somos' },
+    ...(projects.length ? [{ name: nav.projects, href: '/projetos' }] : []),
+    ...(news.length ? [{ name: nav.news, href: '/noticias' }] : []),
+    { name: nav.help, href: '/como-ajudar' },
+    { name: nav.contact, href: '/contato' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -27,7 +34,7 @@ const Header = () => {
           <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}>
             <Heart className="h-8 w-8" style={{ color: '#3b660a' }} />
             <span className="text-xl font-bold text-gray-900 font-montserrat">
-              Missão Caiuá
+              {siteName}
             </span>
           </Link>
 
@@ -35,7 +42,7 @@ const Header = () => {
           <nav className="hidden md:flex items-center space-x-8">
             {navigation.map((item) => (
               <Link
-                key={item.name}
+                key={item.href}
                 to={item.href}
                 onClick={() => window.scrollTo(0, 0)}
                 className={`text-sm font-medium transition-colors font-nunito ${
@@ -55,7 +62,7 @@ const Header = () => {
           {/* CTA Button */}
           <div className="hidden md:flex items-center space-x-4">
             <Button asChild style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
-              <Link to="/doacao">Doar Agora</Link>
+              <Link to="/doacao">{nav.donate}</Link>
             </Button>
           </div>
 
@@ -71,7 +78,7 @@ const Header = () => {
                 <div className="flex items-center space-x-2">
                   <Heart className="h-6 w-6" style={{ color: '#3b660a' }} />
                   <span className="text-lg font-bold text-gray-900 font-montserrat">
-                    Missão Caiuá
+                    {siteName}
                   </span>
                 </div>
               </div>
@@ -79,7 +86,7 @@ const Header = () => {
               <nav className="flex flex-col space-y-4">
                 {navigation.map((item) => (
                   <Link
-                    key={item.name}
+                    key={item.href}
                     to={item.href}
                     onClick={() => {
                       setIsOpen(false);
@@ -98,7 +105,7 @@ const Header = () => {
                 <div className="pt-4 border-t">
                   <Button asChild className="w-full" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
                     <Link to="/doacao" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }}>
-                      Doar Agora
+                      {nav.donate}
                     </Link>
                   </Button>
                 </div>

@@ -1,0 +1,371 @@
+// API e servidor do site da Missão Caiuá.
+// - /api/*   : conteúdo editável, notícias, projetos, documentos e login do admin
+// - /files/* : imagens e PDFs enviados pelo admin (guardados no Postgres)
+// - resto    : site compilado (dist/) com fallback para o index.html (SPA)
+import express from 'express';
+import multer from 'multer';
+import pg from 'pg';
+import crypto from 'node:crypto';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const { DATABASE_URL, ADMIN_PASSWORD } = process.env;
+const PORT = Number(process.env.PORT || 3001);
+const TOKEN_SECRET = process.env.TOKEN_SECRET || ADMIN_PASSWORD;
+const TOKEN_TTL_MS = 12 * 60 * 60 * 1000;
+const MAX_UPLOAD_BYTES = 30 * 1024 * 1024;
+
+if (!DATABASE_URL) throw new Error('DATABASE_URL não configurada');
+if (!ADMIN_PASSWORD) throw new Error('ADMIN_PASSWORD não configurada');
+
+const pool = new pg.Pool({ connectionString: DATABASE_URL });
+
+// ==================== BANCO ====================
+
+async function migrate() {
+  // Lock evita corrida quando duas instâncias sobem juntas (ex.: deploy sem downtime)
+  const client = await pool.connect();
+  try {
+    await client.query('BEGIN');
+    await client.query('SELECT pg_advisory_xact_lock(19280828)');
+    await client.query(`
+    CREATE TABLE IF NOT EXISTS site_content (
+      key TEXT PRIMARY KEY,
+      value JSONB NOT NULL,
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS files (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      mime TEXT NOT NULL,
+      size INTEGER NOT NULL,
+      data BYTEA NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS news (
+      id BIGSERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      subtitle TEXT NOT NULL DEFAULT '',
+      date DATE NOT NULL DEFAULT CURRENT_DATE,
+      category TEXT NOT NULL DEFAULT 'geral',
+      image TEXT NOT NULL DEFAULT '',
+      content TEXT NOT NULL DEFAULT '',
+      author TEXT NOT NULL DEFAULT '',
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS projects (
+      id BIGSERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      category TEXT NOT NULL DEFAULT '',
+      location TEXT NOT NULL DEFAULT '',
+      coordinates JSONB NOT NULL DEFAULT '[-22.2211, -54.8056]',
+      image TEXT NOT NULL DEFAULT '',
+      raised NUMERIC NOT NULL DEFAULT 0,
+      goal NUMERIC NOT NULL DEFAULT 0,
+      donation_link TEXT NOT NULL DEFAULT '',
+      show_goal BOOLEAN NOT NULL DEFAULT TRUE,
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    CREATE TABLE IF NOT EXISTS documents (
+      id BIGSERIAL PRIMARY KEY,
+      title TEXT NOT NULL,
+      description TEXT NOT NULL DEFAULT '',
+      category TEXT NOT NULL DEFAULT '',
+      date DATE NOT NULL DEFAULT CURRENT_DATE,
+      file_url TEXT NOT NULL,
+      file_name TEXT NOT NULL DEFAULT '',
+      file_size INTEGER NOT NULL DEFAULT 0,
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+  `);
+    await client.query('COMMIT');
+  } catch (err) {
+    await client.query('ROLLBACK');
+    throw err;
+  } finally {
+    client.release();
+  }
+}
+
+// Colunas que o admin pode gravar em cada tabela, com o conversor de cada uma
+const str = (v) => (v == null ? '' : String(v));
+const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
+const bool = (v) => v !== false && v !== 'false';
+const date = (v) => (v ? String(v).slice(0, 10) : new Date().toISOString().slice(0, 10));
+const json = (v) => JSON.stringify(v ?? null);
+
+const TABLES = {
+  news: {
+    order: 'date DESC, id DESC',
+    columns: { title: str, subtitle: str, date, category: str, image: str, content: str, author: str, active: bool },
+  },
+  projects: {
+    order: 'created_at DESC, id DESC',
+    columns: {
+      title: str, description: str, category: str, location: str, coordinates: json, image: str,
+      raised: num, goal: num, donation_link: str, show_goal: bool, active: bool,
+    },
+  },
+  documents: {
+    order: 'date DESC, id DESC',
+    columns: {
+      title: str, description: str, category: str, date, file_url: str, file_name: str,
+      file_size: num, active: bool,
+    },
+  },
+};
+
+// NUMERIC volta como string do pg; converte para número na resposta
+function normalize(row) {
+  if (!row) return row;
+  const out = { ...row, id: Number(row.id) };
+  for (const k of ['raised', 'goal']) if (k in out) out[k] = Number(out[k]);
+  if (out.date instanceof Date) out.date = out.date.toISOString().slice(0, 10);
+  return out;
+}
+
+function pickColumns(table, body, partial) {
+  const { columns } = TABLES[table];
+  const keys = Object.keys(columns).filter((k) => !partial || k in body);
+  return { keys, values: keys.map((k) => columns[k](body[k])) };
+}
+
+// ==================== AUTENTICAÇÃO ====================
+
+function sign(payload) {
+  return crypto.createHmac('sha256', TOKEN_SECRET).update(payload).digest('base64url');
+}
+
+function createToken() {
+  const payload = String(Date.now() + TOKEN_TTL_MS);
+  return `${payload}.${sign(payload)}`;
+}
+
+function safeEqual(a, b) {
+  const ba = Buffer.from(String(a));
+  const bb = Buffer.from(String(b));
+  return ba.length === bb.length && crypto.timingSafeEqual(ba, bb);
+}
+
+function isValidToken(token) {
+  const [payload, signature] = String(token || '').split('.');
+  if (!payload || !signature || !safeEqual(signature, sign(payload))) return false;
+  return Number(payload) > Date.now();
+}
+
+function requireAdmin(req, res, next) {
+  const token = (req.headers.authorization || '').replace(/^Bearer /, '');
+  if (!isValidToken(token)) return res.status(401).json({ error: 'Não autorizado' });
+  next();
+}
+
+const isAdminRequest = (req) => isValidToken((req.headers.authorization || '').replace(/^Bearer /, ''));
+
+// Limita tentativas de login por IP (10 a cada 15 min)
+const loginAttempts = new Map();
+function loginRateLimit(req, res, next) {
+  const now = Date.now();
+  const entry = loginAttempts.get(req.ip) || { count: 0, reset: now + 15 * 60 * 1000 };
+  if (now > entry.reset) Object.assign(entry, { count: 0, reset: now + 15 * 60 * 1000 });
+  entry.count += 1;
+  loginAttempts.set(req.ip, entry);
+  if (entry.count > 10) return res.status(429).json({ error: 'Muitas tentativas. Aguarde alguns minutos.' });
+  next();
+}
+
+// ==================== APP ====================
+
+const app = express();
+app.set('trust proxy', true);
+app.use(express.json({ limit: '2mb' }));
+
+const asyncRoute = (fn) => (req, res, next) => fn(req, res, next).catch(next);
+
+app.post('/api/login', loginRateLimit, (req, res) => {
+  if (!safeEqual(req.body?.password ?? '', ADMIN_PASSWORD)) {
+    return res.status(401).json({ error: 'Senha incorreta' });
+  }
+  loginAttempts.delete(req.ip);
+  res.json({ token: createToken() });
+});
+
+app.get('/api/health', asyncRoute(async (_req, res) => {
+  await pool.query('SELECT 1');
+  res.json({ ok: true });
+}));
+
+app.get('/api/session', (req, res) => res.json({ valid: isAdminRequest(req) }));
+
+// ---------- Conteúdo editável ----------
+
+async function loadContent() {
+  const { rows } = await pool.query('SELECT key, value FROM site_content');
+  return Object.fromEntries(rows.map((r) => [r.key, r.value]));
+}
+
+app.get('/api/content', asyncRoute(async (_req, res) => {
+  res.set('Cache-Control', 'no-cache');
+  res.json(await loadContent());
+}));
+
+app.put('/api/content/:key', requireAdmin, asyncRoute(async (req, res) => {
+  const { key } = req.params;
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(key)) return res.status(400).json({ error: 'Chave inválida' });
+  if (typeof req.body !== 'object' || req.body === null) return res.status(400).json({ error: 'Conteúdo inválido' });
+  await pool.query(
+    `INSERT INTO site_content (key, value, updated_at) VALUES ($1, $2, NOW())
+     ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = NOW()`,
+    [key, JSON.stringify(req.body)],
+  );
+  res.json({ ok: true });
+}));
+
+// ---------- CRUD de notícias, projetos e documentos ----------
+
+for (const table of Object.keys(TABLES)) {
+  const base = `/api/${table}`;
+  const { order } = TABLES[table];
+
+  // Público vê só os ativos; o admin vê tudo
+  app.get(base, asyncRoute(async (req, res) => {
+    const all = isAdminRequest(req);
+    const { rows } = await pool.query(
+      `SELECT * FROM ${table} ${all ? '' : 'WHERE active'} ORDER BY ${order}`,
+    );
+    res.set('Cache-Control', 'no-cache');
+    res.json(rows.map(normalize));
+  }));
+
+  app.get(`${base}/:id`, asyncRoute(async (req, res) => {
+    const all = isAdminRequest(req);
+    const { rows } = await pool.query(
+      `SELECT * FROM ${table} WHERE id = $1 ${all ? '' : 'AND active'}`,
+      [Number(req.params.id) || 0],
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Não encontrado' });
+    res.json(normalize(rows[0]));
+  }));
+
+  app.post(base, requireAdmin, asyncRoute(async (req, res) => {
+    const { keys, values } = pickColumns(table, req.body || {}, false);
+    const { rows } = await pool.query(
+      `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${keys.map((_, i) => `$${i + 1}`).join(', ')}) RETURNING *`,
+      values,
+    );
+    res.status(201).json(normalize(rows[0]));
+  }));
+
+  app.put(`${base}/:id`, requireAdmin, asyncRoute(async (req, res) => {
+    const { keys, values } = pickColumns(table, req.body || {}, true);
+    if (!keys.length) return res.status(400).json({ error: 'Nada para atualizar' });
+    const id = Number(req.params.id) || 0;
+    const previous = table === 'documents'
+      ? (await pool.query('SELECT file_url FROM documents WHERE id = $1', [id])).rows[0]
+      : null;
+    const sets = keys.map((k, i) => `${k} = $${i + 1}`).join(', ');
+    const { rows } = await pool.query(
+      `UPDATE ${table} SET ${sets}, updated_at = NOW() WHERE id = $${keys.length + 1} RETURNING *`,
+      [...values, id],
+    );
+    if (!rows[0]) return res.status(404).json({ error: 'Não encontrado' });
+    // PDF trocado: apaga o arquivo antigo
+    if (previous && previous.file_url !== rows[0].file_url) await deleteStoredFile(previous.file_url);
+    res.json(normalize(rows[0]));
+  }));
+
+  app.delete(`${base}/:id`, requireAdmin, asyncRoute(async (req, res) => {
+    const { rows } = await pool.query(`DELETE FROM ${table} WHERE id = $1 RETURNING *`, [Number(req.params.id) || 0]);
+    // Documento excluído: apaga também o PDF
+    if (table === 'documents' && rows[0]) await deleteStoredFile(rows[0].file_url);
+    res.json({ ok: true });
+  }));
+}
+
+// ---------- Arquivos (imagens e PDFs) ----------
+
+async function deleteStoredFile(url) {
+  const id = /^\/files\/([a-f0-9]+)/.exec(url || '')?.[1];
+  if (id) await pool.query('DELETE FROM files WHERE id = $1', [id]);
+}
+
+const ALLOWED_MIME = /^(image\/(png|jpe?g|gif|webp|svg\+xml|avif)|application\/pdf)$/;
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: MAX_UPLOAD_BYTES },
+  defParamCharset: 'utf8', // mantém acentos no nome do arquivo
+});
+
+app.post('/api/upload', requireAdmin, upload.single('file'), asyncRoute(async (req, res) => {
+  const file = req.file;
+  if (!file) return res.status(400).json({ error: 'Nenhum arquivo enviado' });
+  if (!ALLOWED_MIME.test(file.mimetype)) return res.status(400).json({ error: 'Tipo de arquivo não permitido' });
+
+  const originalName = file.originalname;
+  const id = crypto.randomBytes(12).toString('hex');
+  await pool.query(
+    'INSERT INTO files (id, name, mime, size, data) VALUES ($1, $2, $3, $4, $5)',
+    [id, originalName, file.mimetype, file.size, file.buffer],
+  );
+  const slug = originalName.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-zA-Z0-9._-]+/g, '-');
+  res.status(201).json({ url: `/files/${id}/${slug}`, name: originalName, size: file.size });
+}));
+
+app.get('/files/:id/:name?', asyncRoute(async (req, res) => {
+  const { rows } = await pool.query('SELECT name, mime, data FROM files WHERE id = $1', [req.params.id]);
+  const file = rows[0];
+  if (!file) return res.status(404).send('Arquivo não encontrado');
+  res.set('Content-Type', file.mime);
+  res.set('Cache-Control', 'public, max-age=31536000, immutable');
+  res.set('X-Content-Type-Options', 'nosniff');
+  if (file.mime === 'image/svg+xml') res.set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'");
+  res.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(file.name)}`);
+  res.send(file.data);
+}));
+
+app.use('/api', (_req, res) => res.status(404).json({ error: 'Rota não encontrada' }));
+
+// ---------- Site compilado ----------
+
+const distDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../dist');
+const indexFile = path.join(distDir, 'index.html');
+
+if (fs.existsSync(indexFile)) {
+  const indexHtml = fs.readFileSync(indexFile, 'utf8');
+  app.use(express.static(distDir, { index: false, maxAge: '1h' }));
+
+  // Injeta o conteúdo no HTML para a página já abrir com os textos certos
+  app.get('*', asyncRoute(async (_req, res) => {
+    let content = {};
+    try {
+      content = await loadContent();
+    } catch (err) {
+      console.error('Erro ao carregar conteúdo:', err);
+    }
+    const payload = JSON.stringify(content).replace(/</g, '\\u003c');
+    res.set('Cache-Control', 'no-cache');
+    res.type('html').send(indexHtml.replace('</head>', `<script>window.__SITE_CONTENT__=${payload}</script></head>`));
+  }));
+}
+
+app.use((err, _req, res, _next) => {
+  if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
+    return res.status(413).json({ error: 'Arquivo muito grande (máximo 30MB)' });
+  }
+  console.error(err);
+  res.status(500).json({ error: 'Erro interno' });
+});
+
+await migrate();
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

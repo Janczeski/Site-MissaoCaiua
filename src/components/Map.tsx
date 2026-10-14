@@ -1,13 +1,14 @@
 import { useState } from 'react';
 import { MapPin, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useContent } from '@/content/SiteContentContext';
 
 interface MapLocation {
   id: number;
   title: string;
   description: string;
   location: string;
-  beneficiaries: number;
+  beneficiaries?: number;
   coordinates: [number, number];
 }
 
@@ -17,6 +18,7 @@ interface MapProps {
 
 const Map = ({ locations }: MapProps) => {
   const [selectedLocation, setSelectedLocation] = useState<MapLocation | null>(null);
+  const t = useContent('projects');
   
   // Função para converter coordenadas em posição no mapa (simulação)
   const getMarkerPosition = (coordinates: [number, number]) => {
@@ -54,9 +56,11 @@ const Map = ({ locations }: MapProps) => {
           >
             <div className="relative">
               <MapPin className="h-8 w-8 text-red-500 drop-shadow-lg group-hover:text-red-600 transition-colors" />
-              <div className="absolute -top-2 -right-2 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold" style={{ backgroundColor: '#81a425' }}>
-                {location.beneficiaries > 999 ? '999+' : location.beneficiaries}
-              </div>
+              {!!location.beneficiaries && (
+                <div className="absolute -top-2 -right-2 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold" style={{ backgroundColor: '#81a425' }}>
+                  {location.beneficiaries > 999 ? '999+' : location.beneficiaries}
+                </div>
+              )}
             </div>
             
             {/* Tooltip */}
@@ -72,10 +76,10 @@ const Map = ({ locations }: MapProps) => {
       <div className="absolute bottom-4 left-4 bg-white bg-opacity-90 rounded-lg p-3 shadow-lg">
         <div className="flex items-center space-x-2 text-sm">
           <MapPin className="h-4 w-4 text-red-500" />
-          <span className="font-medium text-gray-700">Projetos Ativos</span>
+          <span className="font-medium text-gray-700">{t.mapLegend}</span>
         </div>
         <div className="text-xs text-gray-600 mt-1">
-          Clique nos marcadores para mais detalhes
+          {t.mapSubtitle}
         </div>
       </div>
 
@@ -105,12 +109,14 @@ const Map = ({ locations }: MapProps) => {
                 <MapPin className="h-4 w-4 mr-2 text-blue-500" />
                 <span>{selectedLocation.location}</span>
               </div>
-              <div className="flex items-center text-gray-500">
-                <span className="font-medium">Beneficiários:</span>
-                <span className="ml-2 text-green-600 font-semibold">
-                  {selectedLocation.beneficiaries}
-                </span>
-              </div>
+              {!!selectedLocation.beneficiaries && (
+                <div className="flex items-center text-gray-500">
+                  <span className="font-medium">Beneficiários:</span>
+                  <span className="ml-2 text-green-600 font-semibold">
+                    {selectedLocation.beneficiaries}
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         </div>

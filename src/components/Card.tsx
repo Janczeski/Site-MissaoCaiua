@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { MapPin, Users, Calendar } from 'lucide-react';
+import { formatDate } from '@/lib/format';
 
 interface CardProps {
   title: string;
@@ -27,13 +28,6 @@ const Card = ({
   author,
   variant = 'default'
 }: CardProps) => {
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
 
   const truncateText = (text: string, maxLength: number = 120) => {
     return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
@@ -43,11 +37,15 @@ const Card = ({
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Image */}
       <div className="relative h-48 overflow-hidden">
-        <img
-          src={image}
-          alt={title}
-          className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-        />
+        {image ? (
+          <img
+            src={image}
+            alt={title}
+            className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, #a0c93a40, #3b660a40)' }} />
+        )}
         {variant === 'news' && date && (
           <div className="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#3b660a' }}>
             {formatDate(date)}

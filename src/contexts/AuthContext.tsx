@@ -1,45 +1,49 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { checkSession, getToken, login as apiLogin, setToken } from '@/lib/api';
 
 interface AuthContextType {
   isAuthenticated: boolean;
-  login: (password: string) => boolean;
+  isChecking: boolean;
+  login: (password: string) => Promise<void>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Senha: "missaocaiua2024" (hash bcrypt simplificado para o frontend)
-const ADMIN_PASSWORD_HASH = "mc2024$admin$password";
-
+// A senha fica só no servidor (variável ADMIN_PASSWORD); aqui guardamos apenas o token da sessão
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isChecking, setIsChecking] = useState(Boolean(getToken()));
 
   useEffect(() => {
-    // Verificar se já está autenticado
-    const authStatus = sessionStorage.getItem('adminAuth');
-    if (authStatus === 'true') {
-      setIsAuthenticated(true);
+    if (getToken()) {
+      checkSession()
+        .then(({ valid }) => {
+          if (!valid) setToken(null);
+          setIsAuthenticated(valid);
+        })
+        .catch(() => setIsAuthenticated(false))
+        .finally(() => setIsChecking(false));
     }
+
+    const onExpired = () => setIsAuthenticated(false);
+    window.addEventListener('admin-session-expired', onExpired);
+    return () => window.removeEventListener('admin-session-expired', onExpired);
   }, []);
 
-  const login = (password: string): boolean => {
-    // Validação simples - em produção, use uma hash real
-    const hash = `mc2024$admin$${password}`;
-    if (hash === ADMIN_PASSWORD_HASH) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('adminAuth', 'true');
-      return true;
-    }
-    return false;
+  const login = async (password: string) => {
+    const { token } = await apiLogin(password);
+    setToken(token);
+    setIsAuthenticated(true);
   };
 
   const logout = () => {
+    setToken(null);
     setIsAuthenticated(false);
-    sessionStorage.removeItem('adminAuth');
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, isChecking, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

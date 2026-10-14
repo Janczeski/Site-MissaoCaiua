@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Link } from 'react-router-dom';
+import SmartLink from '@/components/SmartLink';
 
-interface CarouselItem {
-  id: number;
+export interface CarouselItem {
   title: string;
   subtitle: string;
   image: string;
-  ctaText: string;
-  ctaLink: string;
+  buttonText: string;
+  buttonLink: string;
 }
 
 interface CarouselProps {
@@ -21,8 +20,13 @@ interface CarouselProps {
 const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Se slides forem removidos no admin, volta para um índice válido
   useEffect(() => {
-    if (!autoPlay) return;
+    if (currentIndex >= items.length) setCurrentIndex(0);
+  }, [currentIndex, items.length]);
+
+  useEffect(() => {
+    if (!autoPlay || items.length < 2) return;
 
     const timer = setInterval(() => {
       setCurrentIndex((prevIndex) => 
@@ -54,8 +58,8 @@ const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) =>
         className="flex transition-transform duration-500 ease-in-out h-full"
         style={{ transform: `translateX(-${currentIndex * 100}%)` }}
       >
-        {items.map((item) => (
-          <div key={item.id} className="w-full h-full flex-shrink-0 relative">
+        {items.map((item, index) => (
+          <div key={index} className="w-full h-full flex-shrink-0 relative">
             <img
               src={item.image}
               alt={item.title}
@@ -73,56 +77,62 @@ const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) =>
                 <p className="text-lg md:text-xl mb-8 font-nunito opacity-90">
                   {item.subtitle}
                 </p>
-                <Button 
-                  asChild
-                  size="lg" 
-                  className="text-white px-8 py-3 text-lg"
-                  style={{ backgroundColor: '#e8440d' }}
-                  onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
-                  onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
-                >
-                  <Link to={item.ctaLink}>
-                    {item.ctaText}
-                  </Link>
-                </Button>
+                {item.buttonText && (
+                  <Button
+                    asChild
+                    size="lg"
+                    className="text-white px-8 py-3 text-lg"
+                    style={{ backgroundColor: '#e8440d' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
+                  >
+                    <SmartLink to={item.buttonLink || '/'}>
+                      {item.buttonText}
+                    </SmartLink>
+                  </Button>
+                )}
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={goToPrevious}
-        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-200"
-        aria-label="Slide anterior"
-      >
-        <ChevronLeft className="h-6 w-6" />
-      </button>
-      
-      <button
-        onClick={goToNext}
-        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-200"
-        aria-label="Próximo slide"
-      >
-        <ChevronRight className="h-6 w-6" />
-      </button>
-
-      {/* Dots Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-        {items.map((_, index) => (
+      {items.length > 1 && (
+        <>
+          {/* Navigation Arrows */}
           <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
-              index === currentIndex
-                ? 'bg-white'
-                : 'bg-white bg-opacity-50 hover:bg-opacity-75'
-            }`}
-            aria-label={`Ir para slide ${index + 1}`}
-          />
-        ))}
-      </div>
+            onClick={goToPrevious}
+            className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-200"
+            aria-label="Slide anterior"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+
+          <button
+            onClick={goToNext}
+            className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white bg-opacity-20 hover:bg-opacity-30 text-white p-2 rounded-full transition-all duration-200"
+            aria-label="Próximo slide"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+
+          {/* Dots Indicator */}
+          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+            {items.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`w-3 h-3 rounded-full transition-all duration-200 ${
+                  index === currentIndex
+                    ? 'bg-white'
+                    : 'bg-white bg-opacity-50 hover:bg-opacity-75'
+                }`}
+                aria-label={`Ir para slide ${index + 1}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 };

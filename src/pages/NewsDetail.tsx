@@ -1,12 +1,16 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { getCurrentNews } from '@/data/mockData';
+import SmartLink from '@/components/SmartLink';
+import { useContent } from '@/content/SiteContentContext';
+import { newsApi, type NewsItem } from '@/lib/api';
+import { newsCategoryLabel } from '@/lib/categories';
+import { formatDate } from '@/lib/format';
 import { Calendar, User, ArrowLeft, Facebook, Twitter, Linkedin } from 'lucide-react';
-import type { NewsItem } from '@/lib/supabase';
 
 const NewsDetail = () => {
   const { id } = useParams();
+  const t = useContent('news');
   const [article, setArticle] = useState<NewsItem | null>(null);
   const [relatedNews, setRelatedNews] = useState<NewsItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +18,7 @@ const NewsDetail = () => {
   useEffect(() => {
     const loadArticle = async () => {
       try {
-        const allNews = await getCurrentNews();
+        const allNews = await newsApi.list();
         const found = allNews.find(item => item.id === parseInt(id || '0'));
         setArticle(found || null);
         // Carregar notícias relacionadas (exclui a atual)
@@ -44,22 +48,15 @@ const NewsDetail = () => {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Notícia não encontrada</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">{t.detailNotFound}</h1>
           <Button asChild>
-            <Link to="/noticias">Voltar para Notícias</Link>
+            <Link to="/noticias">{t.detailBack}</Link>
           </Button>
         </div>
       </div>
     );
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: '2-digit',
-      month: 'long',
-      year: 'numeric'
-    });
-  };
 
   const shareUrl = window.location.href;
   const shareTitle = article.title;
@@ -94,12 +91,12 @@ const NewsDetail = () => {
             <Button asChild variant="ghost" className="hover:text-blue-700" style={{ color: '#3b660a' }}>
               <Link to="/noticias">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Voltar para Notícias
+                {t.detailBack}
               </Link>
             </Button>
             
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-500">Compartilhar:</span>
+              <span className="text-sm text-gray-500">{t.detailShare}</span>
               <Button
                 variant="ghost"
                 size="sm"
@@ -153,13 +150,15 @@ const NewsDetail = () => {
             </header>
 
             {/* Imagem Principal */}
-            <div className="mb-8">
-              <img
-                src={article.image}
-                alt={article.title}
-                className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
-              />
-            </div>
+            {article.image && (
+              <div className="mb-8">
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+                />
+              </div>
+            )}
 
             {/* Conteúdo */}
             <div className="prose prose-lg max-w-none font-nunito">
@@ -172,31 +171,25 @@ const NewsDetail = () => {
               </div>
             </div>
 
-            {/* Tags */}
-            <div className="mt-8 pt-8 border-t">
-              <div className="flex flex-wrap gap-2">
-                <span className="text-sm text-gray-500 mr-2">Tags:</span>
-                <span className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                  Projetos Sociais
-                </span>
-                <span className="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
-                  Educação
-                </span>
-                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: '#e8440d20', color: '#e8440d' }}>
-                  Comunidade
+            {/* Categoria */}
+            {article.category && (
+              <div className="mt-8 pt-8 border-t">
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: '#a0c93a20', color: '#3b660a' }}>
+                  {newsCategoryLabel(article.category)}
                 </span>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </article>
 
       {/* Notícias Relacionadas */}
+      {relatedNews.length > 0 && (
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-8 font-montserrat">
-              Outras Notícias
+              {t.detailRelated}
             </h2>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -230,23 +223,24 @@ const NewsDetail = () => {
           </div>
         </div>
       </section>
+      )}
 
       {/* Call to Action */}
       <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">
-              Faça Parte da Nossa Missão
+              {t.detailCtaTitle}
             </h2>
             <p className="text-xl mb-8 font-nunito opacity-90">
-              Sua contribuição pode fazer a diferença na vida de uma criança
+              {t.detailCtaText}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
-                <Link to="/doacao">Fazer Doação</Link>
+                <SmartLink to={t.detailCtaPrimaryLink || '/doacao'}>{t.detailCtaPrimaryText}</SmartLink>
               </Button>
               <Button asChild size="lg" variant="outline" className="border-white text-white" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
-                <Link to="/como-ajudar">Como Ajudar</Link>
+                <SmartLink to={t.detailCtaSecondaryLink || '/como-ajudar'}>{t.detailCtaSecondaryText}</SmartLink>
               </Button>
             </div>
           </div>
