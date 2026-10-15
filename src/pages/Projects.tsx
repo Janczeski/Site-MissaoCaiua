@@ -24,7 +24,7 @@ const Projects = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
+      <section className="relative py-20 site-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">{t.heroTitle}</h1>
@@ -127,7 +127,7 @@ const Projects = () => {
                             {project.category && (
                               <span
                                 className="text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap"
-                                style={{ backgroundColor: '#a0c93a20', color: '#3b660a' }}
+                                style={{ backgroundColor: 'color-mix(in srgb, var(--c-hero-bg) 13%, transparent)', color: 'var(--c-primary)' }}
                               >
                                 {project.category}
                               </span>
@@ -140,7 +140,7 @@ const Projects = () => {
 
                           {project.location && (
                             <div className="flex items-center text-gray-500 text-sm mb-6">
-                              <MapPin className="h-4 w-4 mr-2 text-blue-500" />
+                              <MapPin className="h-4 w-4 mr-2 text-[var(--c-secondary)]" />
                               <span>{project.location}</span>
                             </div>
                           )}
@@ -155,7 +155,7 @@ const Projects = () => {
                               <div className="w-full bg-gray-200 rounded-full h-3 mb-2">
                                 <div
                                   className="h-3 rounded-full transition-all duration-300"
-                                  style={{ width: `${Math.min(percent, 100)}%`, backgroundColor: '#3b660a' }}
+                                  style={{ width: `${Math.min(percent, 100)}%`, backgroundColor: 'var(--c-primary)' }}
                                 />
                               </div>
                               <div className="flex justify-between text-sm">
@@ -174,9 +174,9 @@ const Projects = () => {
                             <Button
                               asChild
                               className="w-full"
-                              style={{ backgroundColor: '#e8440d' }}
-                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
-                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
+                              style={{ backgroundColor: 'var(--c-accent)' }}
+                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'}
+                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}
                             >
                               <SmartLink to={project.donation_link || t.supportLink || '/como-ajudar'}>
                                 {t.supportButton}
@@ -206,7 +206,7 @@ const Projects = () => {
                   <div key={index} className="text-center">
                     <div
                       className="text-3xl md:text-4xl font-bold mb-2 font-montserrat"
-                      style={{ color: ['#3b660a', '#81a425', '#e8440d', '#47623d'][index % 4] }}
+                      style={{ color: ['var(--c-primary)', 'var(--c-secondary)', 'var(--c-accent)', 'var(--c-tertiary)'][index % 4] }}
                     >
                       {stat.number}
                     </div>
@@ -220,19 +220,19 @@ const Projects = () => {
       )}
 
       {/* Call to Action */}
-      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
+      <section className="py-16 site-cta">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">{t.ctaTitle}</h2>
             <p className="text-xl mb-8 font-nunito opacity-90">{t.ctaText}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {t.ctaPrimaryText && (
-                <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                <Button asChild size="lg" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                   <SmartLink to={t.ctaPrimaryLink || '/doacao'}>{t.ctaPrimaryText}</SmartLink>
                 </Button>
               )}
               {t.ctaSecondaryText && (
-                <Button asChild size="lg" variant="outline" className="border-white" style={{ backgroundColor: 'transparent', color: 'white', borderColor: 'white' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
+                <Button asChild size="lg" variant="outline" className="border-white" style={{ backgroundColor: 'transparent', color: 'var(--c-cta-text)', borderColor: 'var(--c-cta-text)' }} onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--c-cta-text)'; e.currentTarget.style.color = 'var(--c-cta-bg)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--c-cta-text)'; }}>
                   <SmartLink to={t.ctaSecondaryLink || '/como-ajudar'}>{t.ctaSecondaryText}</SmartLink>
                 </Button>
               )}

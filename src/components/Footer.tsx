@@ -27,13 +27,13 @@ const Footer = () => {
   ];
 
   return (
-    <footer className="text-white" style={{ backgroundColor: '#2f4240' }}>
+    <footer className="text-white">
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo e Descrição */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <Heart className="h-8 w-8" style={{ color: '#e8440d' }} />
+              <Heart className="h-8 w-8" style={{ color: 'var(--c-accent)' }} />
               <span className="text-xl font-bold font-montserrat">{siteName}</span>
             </div>
             <p className="text-gray-300 font-nunito">{footer.description}</p>
@@ -47,7 +47,7 @@ const Footer = () => {
                     rel="noopener noreferrer"
                     aria-label={label}
                     className="text-gray-300 transition-colors"
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#81a425'}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--c-secondary)'}
                     onMouseLeave={(e) => e.currentTarget.style.color = ''}
                   >
                     <Icon className="h-5 w-5" />
@@ -91,7 +91,7 @@ const Footer = () => {
             <div className="space-y-3 font-nunito">
               {footer.address.trim() && (
                 <div className="flex items-center space-x-3">
-                  <MapPin className="h-4 w-4 flex-shrink-0" style={{ color: '#81a425' }} />
+                  <MapPin className="h-4 w-4 flex-shrink-0" style={{ color: 'var(--c-secondary)' }} />
                   <span className="text-gray-300 text-sm">
                     {lines(footer.address).map((line, i) => (
                       <span key={i} className="block">{line}</span>
@@ -101,13 +101,13 @@ const Footer = () => {
               )}
               {footer.phone.trim() && (
                 <div className="flex items-center space-x-3">
-                  <Phone className="h-4 w-4 flex-shrink-0" style={{ color: '#81a425' }} />
+                  <Phone className="h-4 w-4 flex-shrink-0" style={{ color: 'var(--c-secondary)' }} />
                   <span className="text-gray-300 text-sm">{footer.phone}</span>
                 </div>
               )}
               {footer.email.trim() && (
                 <div className="flex items-center space-x-3">
-                  <Mail className="h-4 w-4 flex-shrink-0" style={{ color: '#81a425' }} />
+                  <Mail className="h-4 w-4 flex-shrink-0" style={{ color: 'var(--c-secondary)' }} />
                   <a href={`mailto:${footer.email}`} className="text-gray-300 text-sm hover:text-white">
                     {footer.email}
                   </a>
@@ -118,7 +118,7 @@ const Footer = () => {
         </div>
 
         {/* Linha divisória e copyright */}
-        <div className="mt-8 pt-8" style={{ borderTop: '1px solid #47623d' }}>
+        <div className="mt-8 pt-8" style={{ borderTop: '1px solid var(--c-tertiary)' }}>
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm font-nunito">{footer.copyright}</p>
             <div className="flex space-x-6 mt-4 md:mt-0">

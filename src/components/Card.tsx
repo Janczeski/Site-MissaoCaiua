@@ -44,10 +44,10 @@ const Card = ({
             className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
           />
         ) : (
-          <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, #a0c93a40, #3b660a40)' }} />
+          <div className="w-full h-full" style={{ background: 'linear-gradient(135deg, color-mix(in srgb, var(--c-hero-bg) 25%, transparent), color-mix(in srgb, var(--c-primary) 25%, transparent))' }} />
         )}
         {variant === 'news' && date && (
-          <div className="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: '#3b660a' }}>
+          <div className="absolute top-4 left-4 text-white px-3 py-1 rounded-full text-sm font-medium" style={{ backgroundColor: 'var(--c-primary)' }}>
             {formatDate(date)}
           </div>
         )}
@@ -67,21 +67,21 @@ const Card = ({
         <div className="space-y-2 mb-4">
           {location && (
             <div className="flex items-center text-sm text-gray-500">
-              <MapPin className="h-4 w-4 mr-2 text-blue-500" />
+              <MapPin className="h-4 w-4 mr-2 text-[var(--c-secondary)]" />
               <span>{location}</span>
             </div>
           )}
           
           {beneficiaries && (
             <div className="flex items-center text-sm text-gray-500">
-              <Users className="h-4 w-4 mr-2 text-green-500" />
+              <Users className="h-4 w-4 mr-2 text-[var(--c-primary)]" />
               <span>{beneficiaries} beneficiários</span>
             </div>
           )}
 
           {author && (
             <div className="flex items-center text-sm text-gray-500">
-              <Calendar className="h-4 w-4 mr-2" style={{ color: '#e8440d' }} />
+              <Calendar className="h-4 w-4 mr-2" style={{ color: 'var(--c-accent)' }} />
               <span>Por {author}</span>
             </div>
           )}

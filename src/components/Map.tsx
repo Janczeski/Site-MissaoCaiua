@@ -55,9 +55,9 @@ const Map = ({ locations }: MapProps) => {
             onClick={() => setSelectedLocation(location)}
           >
             <div className="relative">
-              <MapPin className="h-8 w-8 text-red-500 drop-shadow-lg group-hover:text-red-600 transition-colors" />
+              <MapPin className="h-8 w-8 text-[var(--c-accent)] drop-shadow-lg group-hover:text-[var(--c-accent-hover)] transition-colors" />
               {!!location.beneficiaries && (
-                <div className="absolute -top-2 -right-2 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold" style={{ backgroundColor: '#81a425' }}>
+                <div className="absolute -top-2 -right-2 text-white text-xs rounded-full w-6 h-6 flex items-center justify-center font-bold" style={{ backgroundColor: 'var(--c-secondary)' }}>
                   {location.beneficiaries > 999 ? '999+' : location.beneficiaries}
                 </div>
               )}
@@ -75,7 +75,7 @@ const Map = ({ locations }: MapProps) => {
       {/* Legenda */}
       <div className="absolute bottom-4 left-4 bg-white bg-opacity-90 rounded-lg p-3 shadow-lg">
         <div className="flex items-center space-x-2 text-sm">
-          <MapPin className="h-4 w-4 text-red-500" />
+          <MapPin className="h-4 w-4 text-[var(--c-accent)]" />
           <span className="font-medium text-gray-700">{t.mapLegend}</span>
         </div>
         <div className="text-xs text-gray-600 mt-1">
@@ -106,13 +106,13 @@ const Map = ({ locations }: MapProps) => {
             
             <div className="space-y-2 text-sm">
               <div className="flex items-center text-gray-500">
-                <MapPin className="h-4 w-4 mr-2 text-blue-500" />
+                <MapPin className="h-4 w-4 mr-2 text-[var(--c-secondary)]" />
                 <span>{selectedLocation.location}</span>
               </div>
               {!!selectedLocation.beneficiaries && (
                 <div className="flex items-center text-gray-500">
                   <span className="font-medium">Beneficiários:</span>
-                  <span className="ml-2 text-green-600 font-semibold">
+                  <span className="ml-2 text-[var(--c-primary)] font-semibold">
                     {selectedLocation.beneficiaries}
                   </span>
                 </div>

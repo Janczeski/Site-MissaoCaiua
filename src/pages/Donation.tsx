@@ -16,7 +16,7 @@ const predefinedAmounts = {
   single: [25, 50, 100, 250, 500, 1000],
 };
 
-const usageColors = ['#3b660a', '#81a425', '#e8440d', '#47623d'];
+const usageColors = ['var(--c-primary)', 'var(--c-secondary)', 'var(--c-accent)', 'var(--c-tertiary)'];
 
 const formatCurrency = (value: number) =>
   new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -58,7 +58,7 @@ const Donation = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
+      <section className="relative py-20 site-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">{t.heroTitle}</h1>
@@ -161,9 +161,9 @@ const Donation = () => {
 
                       {/* Impacto da Doação */}
                       {!!selectedAmount && (
-                        <div className="p-4 rounded-lg" style={{ backgroundColor: '#a0c93a20' }}>
-                          <h4 className="font-semibold mb-2" style={{ color: '#3b660a' }}>{t.impactTitle}</h4>
-                          <p style={{ color: '#2b4744' }}>{impactText}</p>
+                        <div className="p-4 rounded-lg" style={{ backgroundColor: 'color-mix(in srgb, var(--c-hero-bg) 13%, transparent)' }}>
+                          <h4 className="font-semibold mb-2" style={{ color: 'var(--c-primary)' }}>{t.impactTitle}</h4>
+                          <p style={{ color: 'var(--c-cta-bg)' }}>{impactText}</p>
                         </div>
                       )}
 
@@ -256,7 +256,7 @@ const Donation = () => {
                         </RadioGroup>
                       </div>
 
-                      <Button type="submit" className="w-full h-12 text-lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                      <Button type="submit" className="w-full h-12 text-lg" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                         {donationType === 'monthly' ? t.monthlyButton : t.singleButton} {selectedAmount ? formatCurrency(selectedAmount) : ''}
                       </Button>
                     </form>
@@ -269,14 +269,14 @@ const Donation = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center font-montserrat">
-                        <Shield className="h-5 w-5 mr-2" style={{ color: '#3b660a' }} />
+                        <Shield className="h-5 w-5 mr-2" style={{ color: 'var(--c-primary)' }} />
                         {t.securityTitle}
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-3 font-nunito">
                       {lines(t.securityItems).map((item, index) => (
                         <p key={index} className="flex items-center text-sm">
-                          <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: '#3b660a' }} />
+                          <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: 'var(--c-primary)' }} />
                           {item}
                         </p>
                       ))}
@@ -287,7 +287,7 @@ const Donation = () => {
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center font-montserrat">
-                        <Gift className="h-5 w-5 mr-2" style={{ color: '#81a425' }} />
+                        <Gift className="h-5 w-5 mr-2" style={{ color: 'var(--c-secondary)' }} />
                         {t.fiscalTitle}
                       </CardTitle>
                     </CardHeader>
@@ -340,7 +340,7 @@ const Donation = () => {
                       <Card key={project.id} className="hover:shadow-lg transition-shadow">
                         <CardHeader>
                           <CardTitle className="flex items-center font-montserrat">
-                            <Heart className="h-8 w-8 flex-shrink-0" style={{ color: '#3b660a' }} />
+                            <Heart className="h-8 w-8 flex-shrink-0" style={{ color: 'var(--c-primary)' }} />
                             <span className="ml-3">{project.title}</span>
                           </CardTitle>
                           <CardDescription className="font-nunito line-clamp-3">{project.description}</CardDescription>
@@ -356,7 +356,7 @@ const Donation = () => {
                                 <div className="w-full bg-gray-200 rounded-full h-3">
                                   <div
                                     className="h-3 rounded-full transition-all duration-300"
-                                    style={{ width: `${Math.min(percent, 100)}%`, backgroundColor: '#3b660a' }}
+                                    style={{ width: `${Math.min(percent, 100)}%`, backgroundColor: 'var(--c-primary)' }}
                                   />
                                 </div>
                                 <p className="text-xs text-gray-600 mt-1">

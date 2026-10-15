@@ -32,7 +32,7 @@ const Header = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}>
-            <Heart className="h-8 w-8" style={{ color: '#3b660a' }} />
+            <Heart className="h-8 w-8" style={{ color: 'var(--c-primary)' }} />
             <span className="text-xl font-bold text-gray-900 font-montserrat">
               {siteName}
             </span>
@@ -50,8 +50,8 @@ const Header = () => {
                     ? 'border-b-2 pb-1'
                     : 'text-gray-700'
                 }`}
-                style={isActive(item.href) ? { color: '#3b660a', borderColor: '#3b660a' } : {}}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#3b660a'}
+                style={isActive(item.href) ? { color: 'var(--c-primary)', borderColor: 'var(--c-primary)' } : {}}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--c-primary)'}
                 onMouseLeave={(e) => { if (!isActive(item.href)) e.currentTarget.style.color = ''; }}
               >
                 {item.name}
@@ -61,7 +61,7 @@ const Header = () => {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button asChild style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+            <Button asChild style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
               <Link to="/doacao">{nav.donate}</Link>
             </Button>
           </div>
@@ -76,7 +76,7 @@ const Header = () => {
             <SheetContent side="right" className="w-80">
               <div className="flex items-center justify-between mb-8">
                 <div className="flex items-center space-x-2">
-                  <Heart className="h-6 w-6" style={{ color: '#3b660a' }} />
+                  <Heart className="h-6 w-6" style={{ color: 'var(--c-primary)' }} />
                   <span className="text-lg font-bold text-gray-900 font-montserrat">
                     {siteName}
                   </span>
@@ -95,15 +95,15 @@ const Header = () => {
                     className={`text-base font-medium transition-colors font-nunito py-2 ${
                       isActive(item.href) ? '' : 'text-gray-700'
                     }`}
-                    style={isActive(item.href) ? { color: '#3b660a' } : {}}
-                    onMouseEnter={(e) => e.currentTarget.style.color = '#3b660a'}
+                    style={isActive(item.href) ? { color: 'var(--c-primary)' } : {}}
+                    onMouseEnter={(e) => e.currentTarget.style.color = 'var(--c-primary)'}
                     onMouseLeave={(e) => { if (!isActive(item.href)) e.currentTarget.style.color = ''; }}
                   >
                     {item.name}
                   </Link>
                 ))}
                 <div className="pt-4 border-t">
-                  <Button asChild className="w-full" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                  <Button asChild className="w-full" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                     <Link to="/doacao" onClick={() => { setIsOpen(false); window.scrollTo(0, 0); }}>
                       {nav.donate}
                     </Link>

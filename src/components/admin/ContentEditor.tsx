@@ -8,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, ExternalLink, Loader2, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageField from './ImageField';
+import ThemePreview from './ThemePreview';
 import { saveContent } from '@/lib/api';
 import { useSiteContent } from '@/content/SiteContentContext';
 import { DEFAULT_CONTENT, type PageKey } from '@/content/defaults';
@@ -41,6 +42,22 @@ const SimpleInput = ({ field, value, onChange, id }: {
   onChange: (v: string) => void;
   id: string;
 }) => {
+  if (field.type === 'color') {
+    const valid = /^#[0-9a-f]{6}$/i.test(value);
+    return (
+      <div className="flex items-center gap-2">
+        <input
+          type="color"
+          aria-label={field.label}
+          value={valid ? value : '#000000'}
+          onChange={(e) => onChange(e.target.value)}
+          className="h-10 w-14 cursor-pointer rounded border bg-white p-1"
+        />
+        <Input id={id} value={value} onChange={(e) => onChange(e.target.value)} className="w-32 font-mono" maxLength={7} />
+        {!valid && value && <span className="text-xs text-red-600">Use o formato #RRGGBB</span>}
+      </div>
+    );
+  }
   if (field.type === 'image') return <ImageField id={id} value={value} onChange={onChange} crop={field.crop} />;
   if (field.type === 'textarea') {
     return <Textarea id={id} rows={field.rows ?? 3} value={value} onChange={(e) => onChange(e.target.value)} />;
@@ -198,7 +215,7 @@ const FieldEditor = ({ field, page, onChange, pageKey }: {
 
 const ContentEditor = () => {
   const { raw, reload, age } = useSiteContent();
-  const [pageKey, setPageKey] = useState<PageKey>(PAGE_SCHEMAS[0].key);
+  const [pageKey, setPageKey] = useState<PageKey>('home');
   const [drafts, setDrafts] = useState<Partial<Record<PageKey, Obj>>>({});
   const [isSaving, setIsSaving] = useState(false);
 
@@ -340,19 +357,37 @@ const ContentEditor = () => {
           <code className="bg-gray-200 px-1 rounded">{'{ano}'}</code> para o ano atual.
         </p>
 
-        {schema.sections.map((section) => (
-          <Card key={`${pageKey}-${section.title}`}>
-            <CardHeader>
-              <CardTitle className="text-lg font-montserrat">{section.title}</CardTitle>
-              {section.description && <CardDescription>{section.description}</CardDescription>}
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {section.fields.map((field) => (
-                <FieldEditor key={field.key} field={field} page={page} onChange={update} pageKey={pageKey} />
-              ))}
-            </CardContent>
-          </Card>
-        ))}
+        <div className={pageKey === 'theme' ? 'grid gap-4 xl:grid-cols-[minmax(0,1fr)_380px] items-start' : ''}>
+          <div className="space-y-4 min-w-0">
+            {schema.sections.map((section) => (
+              <Card key={`${pageKey}-${section.title}`}>
+                <CardHeader>
+                  <CardTitle className="text-lg font-montserrat">{section.title}</CardTitle>
+                  {section.description && <CardDescription>{section.description}</CardDescription>}
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {section.fields.map((field) => (
+                    <FieldEditor key={field.key} field={field} page={page} onChange={update} pageKey={pageKey} />
+                  ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {pageKey === 'theme' && (
+            <aside className="order-first xl:order-none xl:sticky xl:top-28">
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-montserrat">Prévia</CardTitle>
+                  <CardDescription>Mostra as cores enquanto você edita. Elas só vão para o site ao salvar.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <ThemePreview theme={page as Record<string, string>} />
+                </CardContent>
+              </Card>
+            </aside>
+          )}
+        </div>
 
         {isDirty && (
           <div className="flex justify-end">

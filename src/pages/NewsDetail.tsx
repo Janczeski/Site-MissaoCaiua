@@ -88,7 +88,7 @@ const NewsDetail = () => {
       <section className="py-6 bg-gray-50 border-b">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            <Button asChild variant="ghost" className="hover:text-blue-700" style={{ color: '#3b660a' }}>
+            <Button asChild variant="ghost" className="hover:text-blue-700" style={{ color: 'var(--c-primary)' }}>
               <Link to="/noticias">
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 {t.detailBack}
@@ -102,7 +102,7 @@ const NewsDetail = () => {
                 size="sm"
                 onClick={() => handleShare('facebook')}
                 className="hover:text-blue-700"
-                style={{ color: '#3b660a' }}
+                style={{ color: 'var(--c-primary)' }}
               >
                 <Facebook className="h-4 w-4" />
               </Button>
@@ -110,7 +110,7 @@ const NewsDetail = () => {
                 variant="ghost"
                 size="sm"
                 onClick={() => handleShare('twitter')}
-                className="text-blue-400 hover:text-blue-500"
+                className="text-blue-400 hover:text-[var(--c-secondary)]"
               >
                 <Twitter className="h-4 w-4" />
               </Button>
@@ -174,7 +174,7 @@ const NewsDetail = () => {
             {/* Categoria */}
             {article.category && (
               <div className="mt-8 pt-8 border-t">
-                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: '#a0c93a20', color: '#3b660a' }}>
+                <span className="text-xs font-medium px-2.5 py-0.5 rounded-full" style={{ backgroundColor: 'color-mix(in srgb, var(--c-hero-bg) 13%, transparent)', color: 'var(--c-primary)' }}>
                   {newsCategoryLabel(article.category)}
                 </span>
               </div>
@@ -226,7 +226,7 @@ const NewsDetail = () => {
       )}
 
       {/* Call to Action */}
-      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
+      <section className="py-16 site-cta">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">
@@ -236,10 +236,10 @@ const NewsDetail = () => {
               {t.detailCtaText}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+              <Button asChild size="lg" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                 <SmartLink to={t.detailCtaPrimaryLink || '/doacao'}>{t.detailCtaPrimaryText}</SmartLink>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
+              <Button asChild size="lg" variant="outline" className="border-white text-white" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--c-cta-text)'; e.currentTarget.style.color = 'var(--c-cta-bg)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--c-cta-text)'; }}>
                 <SmartLink to={t.detailCtaSecondaryLink || '/como-ajudar'}>{t.detailCtaSecondaryText}</SmartLink>
               </Button>
             </div>

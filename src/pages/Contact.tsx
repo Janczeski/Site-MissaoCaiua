@@ -40,10 +40,10 @@ const Contact = () => {
   };
 
   const contactIcons = [
-    <MapPin className="h-6 w-6 flex-shrink-0" style={{ color: '#3b660a' }} />,
-    <Phone className="h-6 w-6 flex-shrink-0" style={{ color: '#81a425' }} />,
-    <Mail className="h-6 w-6 flex-shrink-0" style={{ color: '#e8440d' }} />,
-    <Clock className="h-6 w-6 flex-shrink-0" style={{ color: '#47623d' }} />,
+    <MapPin className="h-6 w-6 flex-shrink-0" style={{ color: 'var(--c-primary)' }} />,
+    <Phone className="h-6 w-6 flex-shrink-0" style={{ color: 'var(--c-secondary)' }} />,
+    <Mail className="h-6 w-6 flex-shrink-0" style={{ color: 'var(--c-accent)' }} />,
+    <Clock className="h-6 w-6 flex-shrink-0" style={{ color: 'var(--c-tertiary)' }} />,
   ];
 
   // Aceita o link do "Incorporar mapa" do Google Maps ou o código <iframe> inteiro
@@ -53,7 +53,7 @@ const Contact = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
+      <section className="relative py-20 site-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">
@@ -74,7 +74,7 @@ const Contact = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center font-montserrat">
-                    <MessageCircle className="h-5 w-5 mr-2" style={{ color: '#3b660a' }} />
+                    <MessageCircle className="h-5 w-5 mr-2" style={{ color: 'var(--c-primary)' }} />
                     {t.formTitle}
                   </CardTitle>
                   <CardDescription>
@@ -156,9 +156,9 @@ const Contact = () => {
                     <Button 
                       type="submit" 
                       className="w-full"
-                      style={{ backgroundColor: '#3b660a' }}
-                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'}
-                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}
+                      style={{ backgroundColor: 'var(--c-primary)' }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary-hover)'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? (
@@ -247,11 +247,11 @@ const Contact = () => {
                     </p>
                     <div className="space-y-2 text-sm text-gray-600 font-nunito">
                       <p className="flex items-start">
-                        <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" style={{ color: '#81a425' }} />
+                        <MapPin className="h-4 w-4 mr-2 mt-0.5 flex-shrink-0" style={{ color: 'var(--c-secondary)' }} />
                         {location.address}
                       </p>
                       <p className="flex items-center">
-                        <Phone className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: '#81a425' }} />
+                        <Phone className="h-4 w-4 mr-2 flex-shrink-0" style={{ color: 'var(--c-secondary)' }} />
                         {location.phone}
                       </p>
                     </div>
@@ -284,7 +284,7 @@ const Contact = () => {
           </section>
 
           {/* Call to Action */}
-          <section className="mt-16 rounded-lg p-8 text-white text-center" style={{ backgroundColor: '#2b4744' }}>
+          <section className="mt-16 rounded-lg p-8 text-white text-center site-cta">
             <h2 className="text-3xl font-bold mb-4 font-montserrat">
               {t.ctaTitle}
             </h2>
@@ -293,7 +293,7 @@ const Contact = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {t.ctaPrimaryText && (
-                <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                <Button asChild size="lg" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                   <SmartLink to={t.ctaPrimaryLink || '/doacao'}>
                     <Heart className="h-4 w-4 mr-2" />
                     {t.ctaPrimaryText}
@@ -301,7 +301,7 @@ const Contact = () => {
                 </Button>
               )}
               {t.ctaSecondaryText && (
-                <Button asChild size="lg" variant="outline" className="border-white text-white bg-transparent" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
+                <Button asChild size="lg" variant="outline" className="border-white text-white bg-transparent" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--c-cta-text)'; e.currentTarget.style.color = 'var(--c-cta-bg)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--c-cta-text)'; }}>
                   <SmartLink to={t.ctaSecondaryLink || '/como-ajudar'}>
                     <Users className="h-4 w-4 mr-2" />
                     {t.ctaSecondaryText}

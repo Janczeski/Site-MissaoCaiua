@@ -81,10 +81,10 @@ const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) =>
                   <Button
                     asChild
                     size="lg"
-                    className="text-white px-8 py-3 text-lg"
-                    style={{ backgroundColor: '#e8440d' }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
+                    className="px-8 py-3 text-lg"
+                    style={{ backgroundColor: 'var(--c-accent)' }}
+                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'}
+                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}
                   >
                     <SmartLink to={item.buttonLink || '/'}>
                       {item.buttonText}

@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { SiteContentProvider, useSiteContent } from '@/content/SiteContentContext';
+import { buildThemeCss } from '@/content/theme';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
@@ -27,11 +28,13 @@ const queryClient = new QueryClient();
 
 // Evita mostrar os textos padrão por um instante antes de carregar os textos editados
 const PublicLayout = () => {
-  const { loaded } = useSiteContent();
+  const { loaded, content } = useSiteContent();
   if (!loaded) return <div className="min-h-screen bg-white" />;
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="site-theme min-h-screen flex flex-col">
+      {/* Cores editáveis no admin (Páginas → Cores) */}
+      <style>{buildThemeCss(content.theme, '.site-theme')}</style>
       <Header />
       <main className="flex-1">
         <Routes>

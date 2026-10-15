@@ -43,23 +43,23 @@ const Index = () => {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div className="text-center">
-                <Heart className="h-12 w-12 mx-auto mb-4" style={{ color: '#e8440d' }} />
+                <Heart className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--c-accent)' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 font-montserrat">{home.about.missionTitle}</h3>
                 <p className="text-gray-600 font-nunito">{home.about.missionText}</p>
               </div>
               <div className="text-center">
-                <Target className="h-12 w-12 mx-auto mb-4" style={{ color: '#3b660a' }} />
+                <Target className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--c-primary)' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 font-montserrat">{home.about.visionTitle}</h3>
                 <p className="text-gray-600 font-nunito">{home.about.visionText}</p>
               </div>
               <div className="text-center">
-                <Award className="h-12 w-12 mx-auto mb-4" style={{ color: '#81a425' }} />
+                <Award className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--c-secondary)' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2 font-montserrat">{home.about.valuesTitle}</h3>
                 <p className="text-gray-600 font-nunito">{home.about.valuesText}</p>
               </div>
             </div>
             {home.about.buttonText && (
-              <Button asChild size="lg" style={{ backgroundColor: '#3b660a' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}>
+              <Button asChild size="lg" style={{ backgroundColor: 'var(--c-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}>
                 <SmartLink to={home.about.buttonLink || '/quem-somos'}>
                   {home.about.buttonText}
                   <ArrowRight className="ml-2 h-4 w-4" />
@@ -85,7 +85,7 @@ const Index = () => {
               {home.impact.items.map((item, index) => (
                 <div key={index} className="text-center">
                   <div className="text-4xl mb-2">{item.icon}</div>
-                  <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: '#3b660a' }}>
+                  <div className="text-3xl md:text-4xl font-bold mb-2 font-montserrat" style={{ color: 'var(--c-primary)' }}>
                     {item.number}
                   </div>
                   <div className="text-gray-600 font-nunito">{item.label}</div>
@@ -149,20 +149,20 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="rounded-lg p-8 text-center" style={{ background: 'linear-gradient(to bottom right, #a0c93a20, #81a42530)' }}>
-              <Heart className="h-16 w-16 mx-auto mb-4" style={{ color: '#e8440d' }} />
+            <div className="rounded-lg p-8 text-center" style={{ background: 'linear-gradient(to bottom right, color-mix(in srgb, var(--c-hero-bg) 13%, transparent), color-mix(in srgb, var(--c-secondary) 19%, transparent))' }}>
+              <Heart className="h-16 w-16 mx-auto mb-4" style={{ color: 'var(--c-accent)' }} />
               <h3 className="text-2xl font-bold text-gray-900 mb-4 font-montserrat">{home.help.donationTitle}</h3>
               <p className="text-gray-600 mb-6 font-nunito">{home.help.donationText}</p>
-              <Button asChild style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+              <Button asChild style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                 <SmartLink to={home.help.donationLink || '/doacao'}>{home.help.donationButton}</SmartLink>
               </Button>
             </div>
 
-            <div className="rounded-lg p-8 text-center" style={{ background: 'linear-gradient(to bottom right, #47623d20, #2b474430)' }}>
-              <Users className="h-16 w-16 mx-auto mb-4" style={{ color: '#3b660a' }} />
+            <div className="rounded-lg p-8 text-center" style={{ background: 'linear-gradient(to bottom right, color-mix(in srgb, var(--c-tertiary) 13%, transparent), color-mix(in srgb, var(--c-cta-bg) 19%, transparent))' }}>
+              <Users className="h-16 w-16 mx-auto mb-4" style={{ color: 'var(--c-primary)' }} />
               <h3 className="text-2xl font-bold text-gray-900 mb-4 font-montserrat">{home.help.missionaryTitle}</h3>
               <p className="text-gray-600 mb-6 font-nunito">{home.help.missionaryText}</p>
-              <Button asChild style={{ backgroundColor: '#3b660a' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}>
+              <Button asChild style={{ backgroundColor: 'var(--c-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}>
                 <SmartLink to={home.help.missionaryLink || '/como-ajudar'}>{home.help.missionaryButton}</SmartLink>
               </Button>
             </div>
@@ -219,9 +219,9 @@ const Index = () => {
             asChild
             size="lg"
             className="rounded-full shadow-lg h-14 w-14 p-0"
-            style={{ backgroundColor: '#81a425' }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#81a425'}
+            style={{ backgroundColor: 'var(--c-secondary)' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-secondary)'}
           >
             <a href={chatUrl} target="_blank" rel="noopener noreferrer" title="Fale conosco" aria-label="Fale conosco">
               <MessageCircle className="h-6 w-6" />

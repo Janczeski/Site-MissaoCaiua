@@ -27,11 +27,11 @@ const Newsletter = () => {
 
   if (isSubscribed) {
     return (
-      <div id="newsletter" className="py-12" style={{ backgroundColor: '#2b4744' }}>
+      <div id="newsletter" className="py-12 site-cta">
         <div className="container mx-auto px-4">
           <div className="max-w-2xl mx-auto text-center">
             <div className="bg-white rounded-lg p-8 shadow-lg">
-              <CheckCircle className="h-16 w-16 mx-auto mb-4" style={{ color: '#3b660a' }} />
+              <CheckCircle className="h-16 w-16 mx-auto mb-4" style={{ color: 'var(--c-primary)' }} />
               <h3 className="text-2xl font-bold text-gray-900 mb-2 font-montserrat">
                 {t.successTitle}
               </h3>
@@ -46,7 +46,7 @@ const Newsletter = () => {
   }
 
   return (
-    <div id="newsletter" className="py-12" style={{ backgroundColor: '#2b4744' }}>
+    <div id="newsletter" className="py-12 site-cta">
       <div className="container mx-auto px-4">
         <div className="max-w-2xl mx-auto text-center">
           <div className="mb-6">
@@ -71,10 +71,10 @@ const Newsletter = () => {
             <Button 
               type="submit" 
               disabled={isLoading}
-              className="text-white h-12 px-8 whitespace-nowrap"
-              style={{ backgroundColor: '#e8440d' }}
-              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'}
-              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}
+              className="h-12 px-8 whitespace-nowrap"
+              style={{ backgroundColor: 'var(--c-accent)' }}
+              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'}
+              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}
             >
               {isLoading ? '...' : t.button}
             </Button>

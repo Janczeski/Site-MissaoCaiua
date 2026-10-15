@@ -3,6 +3,31 @@
 // Marcadores aceitos em qualquer texto: {anos} = idade da Missão, {ano} = ano atual.
 
 export const DEFAULT_CONTENT = {
+  theme: {
+    primary: '#3b660a',
+    primaryHover: '#2b4744',
+    accent: '#e8440d',
+    accentHover: '#d63c0b',
+    secondary: '#81a425',
+    tertiary: '#47623d',
+    buttonText: '#ffffff',
+    headerBg: '#ffffff',
+    headerText: '#374151',
+    heroBg: '#a0c93a',
+    heroText: '#ffffff',
+    pageBg: '#ffffff',
+    sectionAltBg: '#f9fafb',
+    cardBg: '#ffffff',
+    headingText: '#111827',
+    bodyText: '#4b5563',
+    mutedText: '#6b7280',
+    ctaBg: '#2b4744',
+    ctaText: '#ffffff',
+    footerBg: '#2f4240',
+    footerHeading: '#ffffff',
+    footerText: '#d1d5db',
+  },
+
   global: {
     siteName: 'Missão Caiuá',
     nav: {

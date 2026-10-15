@@ -4,7 +4,7 @@ import type { PageKey } from './defaults';
 import type { CropOptions } from '@/components/admin/ImageCropDialog';
 import { IMAGE_FORMATS } from '@/lib/imageFormats';
 
-export type SimpleFieldType = 'text' | 'textarea' | 'image' | 'link';
+export type SimpleFieldType = 'text' | 'textarea' | 'image' | 'link' | 'color';
 
 export interface SimpleField {
   type: SimpleFieldType;
@@ -45,6 +45,7 @@ const text = (key: string, label: string, help?: string): SimpleField => ({ type
 const area = (key: string, label: string, help?: string, rows = 3): SimpleField => ({ type: 'textarea', key, label, help, rows });
 const image = (key: string, label: string, crop?: CropOptions, help?: string): SimpleField => ({ type: 'image', key, label, crop, help });
 const link = (key: string, label: string, help?: string): SimpleField => ({ type: 'link', key, label, help });
+const color = (key: string, label: string, help?: string): SimpleField => ({ type: 'color', key, label, help });
 
 const LINES = 'Uma informação por linha.';
 const PARAGRAPHS = 'Deixe uma linha em branco para separar parágrafos.';
@@ -65,6 +66,56 @@ const hero = (): Section => ({
 });
 
 export const PAGE_SCHEMAS: PageSchema[] = [
+  {
+    key: 'theme',
+    label: 'Cores',
+    description: 'Cores do site inteiro: botões, fundos, textos, topo das páginas, chamadas e rodapé.',
+    sections: [
+      {
+        title: 'Cores principais',
+        description: 'Usadas em botões, ícones, números e destaques em todas as páginas.',
+        fields: [
+          color('primary', 'Cor principal', 'Botões principais, títulos destacados, ícones, números de impacto e filtros.'),
+          color('primaryHover', 'Cor principal — ao passar o mouse'),
+          color('accent', 'Cor de destaque', 'Botões de doação e chamadas para ação ("Doar Agora", "Apoiar").'),
+          color('accentHover', 'Cor de destaque — ao passar o mouse'),
+          color('secondary', 'Cor secundária', 'Ícones e detalhes (contato, rodapé, mapa, linha do tempo).'),
+          color('tertiary', 'Cor de apoio', 'Detalhes menores (números de impacto, ícones).'),
+          color('buttonText', 'Texto dos botões'),
+        ],
+      },
+      {
+        title: 'Topo e faixas',
+        fields: [
+          color('headerBg', 'Fundo do menu (topo)'),
+          color('headerText', 'Texto do menu'),
+          color('heroBg', 'Faixa de título das páginas', 'Faixa colorida no topo de Quem Somos, Projetos, Notícias etc.'),
+          color('heroText', 'Texto da faixa de título'),
+          color('ctaBg', 'Fundo das chamadas e newsletter', 'Faixas escuras no fim das páginas e da newsletter.'),
+          color('ctaText', 'Texto das chamadas e newsletter'),
+        ],
+      },
+      {
+        title: 'Fundos e textos',
+        fields: [
+          color('pageBg', 'Fundo das páginas'),
+          color('sectionAltBg', 'Fundo das seções alternadas', 'As seções se alternam entre o fundo da página e este.'),
+          color('cardBg', 'Fundo dos cards'),
+          color('headingText', 'Títulos'),
+          color('bodyText', 'Textos'),
+          color('mutedText', 'Textos secundários', 'Datas, legendas e informações menores.'),
+        ],
+      },
+      {
+        title: 'Rodapé',
+        fields: [
+          color('footerBg', 'Fundo do rodapé'),
+          color('footerHeading', 'Títulos do rodapé'),
+          color('footerText', 'Textos e links do rodapé'),
+        ],
+      },
+    ],
+  },
   {
     key: 'home',
     label: 'Início',

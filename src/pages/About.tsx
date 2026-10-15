@@ -5,9 +5,9 @@ import { paragraphs, useContent } from '@/content/SiteContentContext';
 import { Heart, Users, Target, Award, Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight, FileText, User } from 'lucide-react';
 
 const transparencyIcons = [
-  <Calendar className="h-8 w-8 mx-auto mb-4" style={{ color: '#81a425' }} />,
-  <Users className="h-8 w-8 text-green-600 mx-auto mb-4" />,
-  <MapPin className="h-8 w-8 mx-auto mb-4" style={{ color: '#e8440d' }} />,
+  <Calendar className="h-8 w-8 mx-auto mb-4" style={{ color: 'var(--c-secondary)' }} />,
+  <Users className="h-8 w-8 text-[var(--c-primary)] mx-auto mb-4" />,
+  <MapPin className="h-8 w-8 mx-auto mb-4" style={{ color: 'var(--c-accent)' }} />,
 ];
 
 const About = () => {
@@ -21,7 +21,7 @@ const About = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
+      <section className="relative py-20 site-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">{about.heroTitle}</h1>
@@ -46,20 +46,20 @@ const About = () => {
 
             {/* Missão, Visão e Valores */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-              <div className="text-center p-6 rounded-lg" style={{ backgroundColor: '#a0c93a20' }}>
-                <Heart className="h-12 w-12 mx-auto mb-4" style={{ color: '#e8440d' }} />
+              <div className="text-center p-6 rounded-lg" style={{ backgroundColor: 'color-mix(in srgb, var(--c-hero-bg) 13%, transparent)' }}>
+                <Heart className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--c-accent)' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 font-montserrat">{about.missionTitle}</h3>
                 <p className="text-gray-600 font-nunito">{about.missionText}</p>
               </div>
 
-              <div className="text-center p-6 bg-green-50 rounded-lg">
-                <Target className="h-12 w-12 text-green-600 mx-auto mb-4" />
+              <div className="text-center p-6 bg-[color-mix(in_srgb,var(--c-primary)_8%,transparent)] rounded-lg">
+                <Target className="h-12 w-12 text-[var(--c-primary)] mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 font-montserrat">{about.visionTitle}</h3>
                 <p className="text-gray-600 font-nunito">{about.visionText}</p>
               </div>
 
-              <div className="text-center p-6 rounded-lg" style={{ backgroundColor: '#81a42520' }}>
-                <Award className="h-12 w-12 mx-auto mb-4" style={{ color: '#81a425' }} />
+              <div className="text-center p-6 rounded-lg" style={{ backgroundColor: 'color-mix(in srgb, var(--c-secondary) 13%, transparent)' }}>
+                <Award className="h-12 w-12 mx-auto mb-4" style={{ color: 'var(--c-secondary)' }} />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 font-montserrat">{about.valuesTitle}</h3>
                 <p className="text-gray-600 font-nunito">{about.valuesText}</p>
               </div>
@@ -107,18 +107,18 @@ const About = () => {
                         <div className="relative">
                           {/* Linha conectora */}
                           {index < about.timeline.length - 1 && (
-                            <div className="absolute top-8 left-full w-8 h-0.5 bg-green-300" />
+                            <div className="absolute top-8 left-full w-8 h-0.5 bg-[var(--c-secondary)]" />
                           )}
 
                           {/* Círculo do ano */}
                           <div className="flex justify-center mb-4">
-                            <div className="bg-green-600 text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-sm shadow-lg">
+                            <div className="bg-[var(--c-primary)] text-white rounded-full w-16 h-16 flex items-center justify-center font-bold text-sm shadow-lg">
                               {milestone.year}
                             </div>
                           </div>
 
                           {/* Card de conteúdo */}
-                          <div className="bg-white p-6 rounded-lg shadow-md border-2 border-gray-100 hover:border-green-500 transition-all">
+                          <div className="bg-white p-6 rounded-lg shadow-md border-2 border-gray-100 hover:border-[var(--c-primary)] transition-all">
                             <h3 className="text-lg font-semibold text-gray-900 mb-2 font-montserrat">
                               {milestone.title}
                             </h3>
@@ -164,7 +164,7 @@ const About = () => {
                       )}
                     </div>
                     <h3 className="text-lg font-semibold text-gray-900 mb-1 font-montserrat">{member.name}</h3>
-                    <p className="font-medium mb-2 font-nunito" style={{ color: '#3b660a' }}>{member.role}</p>
+                    <p className="font-medium mb-2 font-nunito" style={{ color: 'var(--c-primary)' }}>{member.role}</p>
                     <p className="text-gray-600 text-sm font-nunito">{member.description}</p>
                   </div>
                 ))}
@@ -206,14 +206,14 @@ const About = () => {
       </section>
 
       {/* Call to Action */}
-      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
+      <section className="py-16 site-cta">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">{about.ctaTitle}</h2>
             <p className="text-xl mb-8 font-nunito opacity-90">{about.ctaText}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {about.ctaPrimaryText && (
-                <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+                <Button asChild size="lg" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
                   <SmartLink to={about.ctaPrimaryLink || '/como-ajudar'}>
                     {about.ctaPrimaryText}
                     <ArrowRight className="ml-2 h-4 w-4" />
@@ -221,7 +221,7 @@ const About = () => {
                 </Button>
               )}
               {about.ctaSecondaryText && (
-                <Button asChild size="lg" variant="outline" className="border-white text-white bg-transparent" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'white'; e.currentTarget.style.color = '#2b4744'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'white'; }}>
+                <Button asChild size="lg" variant="outline" className="border-white text-white bg-transparent" onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = 'var(--c-cta-text)'; e.currentTarget.style.color = 'var(--c-cta-bg)'; }} onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = 'transparent'; e.currentTarget.style.color = 'var(--c-cta-text)'; }}>
                   <SmartLink to={about.ctaSecondaryLink || '/doacao'}>
                     {about.ctaSecondaryText}
                     <ArrowRight className="ml-2 h-4 w-4" />

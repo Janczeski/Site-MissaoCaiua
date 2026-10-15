@@ -45,7 +45,7 @@ const News = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
+      <section className="relative py-20 site-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">
@@ -139,7 +139,7 @@ const News = () => {
                           {filteredNews[0].subtitle}
                         </p>
                     
-                        <Button asChild style={{ backgroundColor: '#3b660a' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#2b4744'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#3b660a'}>
+                        <Button asChild style={{ backgroundColor: 'var(--c-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}>
                           <Link to={`/noticias/${filteredNews[0].id}`}>
                             {t.featuredButton}
                             <ArrowRight className="ml-2 h-4 w-4" />
@@ -236,7 +236,7 @@ const News = () => {
       )}
 
       {/* Newsletter CTA */}
-      <section className="py-16" style={{ backgroundColor: '#2b4744' }}>
+      <section className="py-16 site-cta">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h2 className="text-3xl md:text-4xl font-bold mb-6 font-montserrat">
@@ -245,7 +245,7 @@ const News = () => {
             <p className="text-xl mb-8 font-nunito opacity-90">
               {t.ctaText}
             </p>
-            <Button asChild size="lg" style={{ backgroundColor: '#e8440d' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#d63c0b'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#e8440d'}>
+            <Button asChild size="lg" style={{ backgroundColor: 'var(--c-accent)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}>
               <SmartLink to={t.ctaLink || '/#newsletter'}>
                 {t.ctaButton}
                 <ArrowRight className="ml-2 h-4 w-4" />

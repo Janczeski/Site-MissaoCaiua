@@ -18,7 +18,7 @@ const Transparency = () => {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative py-20" style={{ backgroundColor: '#a0c93a' }}>
+      <section className="relative py-20 site-hero">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto text-center text-white">
             <h1 className="text-4xl md:text-5xl font-bold mb-6 font-montserrat">{t.heroTitle}</h1>
@@ -64,8 +64,8 @@ const Transparency = () => {
                       rel="noopener noreferrer"
                       className="flex flex-col sm:flex-row sm:items-center gap-4 p-5"
                     >
-                      <div className="flex-shrink-0 rounded-lg p-3 self-start" style={{ backgroundColor: '#e8440d15' }}>
-                        <FileText className="h-7 w-7" style={{ color: '#e8440d' }} />
+                      <div className="flex-shrink-0 rounded-lg p-3 self-start" style={{ backgroundColor: 'color-mix(in srgb, var(--c-accent) 8%, transparent)' }}>
+                        <FileText className="h-7 w-7" style={{ color: 'var(--c-accent)' }} />
                       </div>
                       <div className="flex-1 min-w-0">
                         <h2 className="text-lg font-semibold text-gray-900 font-montserrat break-words">{doc.title}</h2>
@@ -83,7 +83,7 @@ const Transparency = () => {
                       </div>
                       <span
                         className="inline-flex items-center justify-center text-sm font-medium rounded-md px-4 py-2 text-white flex-shrink-0"
-                        style={{ backgroundColor: '#3b660a' }}
+                        style={{ backgroundColor: 'var(--c-primary)' }}
                       >
                         {t.openButton}
                         <ExternalLink className="ml-2 h-4 w-4" />
