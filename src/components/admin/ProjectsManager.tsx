@@ -255,7 +255,7 @@ const ProjectsManager = () => {
                   value={formData.donation_link}
                   onChange={(e) => setFormData({ ...formData, donation_link: e.target.value })}
                 />
-                <p className="text-xs text-gray-500">Para onde vai o botão "Apoiar Projeto". Em branco, usa o link padrão da página.</p>
+                <p className="text-xs text-gray-500">Ex.: link da campanha do projeto na Transforme.tech. Usado no botão "Apoiar Projeto" e lista o projeto na página de Doação. Em branco, o botão usa o link padrão.</p>
               </div>
 
               <div className="flex items-center justify-between rounded-md border p-3">

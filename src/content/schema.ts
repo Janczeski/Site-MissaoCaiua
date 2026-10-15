@@ -15,6 +15,8 @@ export interface SimpleField {
   crop?: CropOptions;
   /** Só para 'toggle' em listas: botão rápido no item, com o texto [desligado, ligado] */
   quickLabels?: [string, string];
+  /** Textarea em fonte monoespaçada (códigos) */
+  mono?: boolean;
 }
 
 export interface ListField {
@@ -471,7 +473,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     key: 'donation',
     label: 'Doação',
     path: '/doacao',
-    description: 'Formulário de doação, informações de segurança e uso dos recursos.',
+    description: 'Página de doação com o widget da Transforme.tech.',
     sections: [
       {
         title: 'Topo da página',
@@ -481,73 +483,54 @@ export const PAGE_SCHEMAS: PageSchema[] = [
           text('badge1', 'Selo 1', HIDE_IF_EMPTY),
           text('badge2', 'Selo 2', HIDE_IF_EMPTY),
           text('badge3', 'Selo 3', `${HIDE_IF_EMPTY} Use {anos} para a idade da Missão.`),
-          text('tabDonate', 'Aba "fazer doação"'),
-          text('tabProjects', 'Aba "projetos específicos"', 'A aba só aparece quando há projetos ativos.'),
         ],
       },
       {
-        title: 'Formulário',
+        title: 'Transforme.tech',
+        description:
+          'Cole o código de widget do hotsite (menu do hotsite na Transforme.tech). Sem widget, a página mostra um botão para o link do hotsite; sem nenhum dos dois, mostra o aviso "em breve".',
         fields: [
-          text('formTitle', 'Título'),
-          text('formDescription', 'Descrição'),
-          text('typeLabel', 'Rótulo "tipo de doação"'),
-          text('monthlyLabel', 'Opção mensal'),
-          text('singleLabel', 'Opção única'),
-          text('amountLabel', 'Rótulo "valor"'),
-          text('otherAmountLabel', 'Rótulo "outro valor"'),
-          text('otherAmountPlaceholder', 'Dica do campo "outro valor"'),
-          text('impactTitle', 'Título do impacto'),
-          text('impactDefault', 'Impacto padrão', 'Use {valor} para o valor escolhido.'),
-          {
-            type: 'list',
-            key: 'impactExamples',
-            label: 'Impacto por valor',
-            help: 'Texto mostrado quando a pessoa escolhe exatamente esse valor.',
-            itemLabel: 'Valor',
-            titleKey: 'amount',
-            fields: [text('amount', 'Valor (somente números)'), text('text', 'Texto')],
-          },
-          text('yourDataTitle', 'Título "seus dados"'),
-          text('nameLabel', 'Campo nome'),
-          text('emailLabel', 'Campo e-mail'),
-          text('phoneLabel', 'Campo telefone'),
-          text('cpfLabel', 'Campo CPF'),
-          text('anonymousLabel', 'Opção doação anônima'),
-          text('newsletterLabel', 'Opção receber atualizações'),
-          text('paymentLabel', 'Rótulo "método de pagamento"'),
-          text('cardLabel', 'Opção cartão'),
-          text('pixLabel', 'Opção PIX'),
-          text('transferLabel', 'Opção transferência'),
-          text('monthlyButton', 'Botão (mensal)'),
-          text('singleButton', 'Botão (única)'),
-          text('successMessage', 'Mensagem após enviar'),
+          { type: 'textarea', key: 'widgetCode', label: 'Código do widget', rows: 6, mono: true, help: 'Cole exatamente como a Transforme.tech fornecer (iframe ou script).' },
+          link('hotsiteUrl', 'Link do hotsite', 'Ex.: https://... Usado como botão quando não há widget, e como link alternativo abaixo do widget.'),
+          text('hotsiteButton', 'Texto do botão do hotsite'),
+          text('widgetTitle', 'Título acima da doação'),
+          area('widgetText', 'Texto acima da doação', undefined, 2),
         ],
       },
       {
-        title: 'Informações laterais',
+        title: 'Aviso enquanto não há doação online',
+        description: 'Aparece só quando os campos do widget e do hotsite estão vazios.',
         fields: [
-          text('securityTitle', 'Segurança — título'),
-          area('securityItems', 'Segurança — itens', LINES),
-          text('fiscalTitle', 'Benefícios fiscais — título'),
-          area('fiscalText', 'Benefícios fiscais — texto', PARAGRAPHS, 4),
-          text('usageTitle', 'Uso da doação — título'),
-          {
-            type: 'list',
-            key: 'usage',
-            label: 'Uso da doação',
-            itemLabel: 'Item',
-            titleKey: 'label',
-            fields: [text('label', 'Descrição'), text('percent', 'Porcentagem (somente números)')],
-          },
+          text('pendingTitle', 'Título'),
+          area('pendingText', 'Texto', undefined, 2),
+          text('pendingButton', 'Botão', HIDE_IF_EMPTY),
+          link('pendingLink', 'Link do botão'),
         ],
       },
       {
-        title: 'Aba de projetos',
+        title: 'Projetos específicos',
+        description: 'Lista os projetos que têm "link de doação" preenchido (aba Projetos).',
         fields: [
+          text('projectsTitle', 'Título'),
+          text('projectsText', 'Texto'),
           text('projectRaised', 'Rótulo "arrecadado"'),
           text('projectGoal', 'Rótulo "meta"'),
           text('projectReached', 'Texto após a porcentagem'),
           text('projectButton', 'Botão'),
+        ],
+      },
+      {
+        title: 'Como usamos sua doação',
+        fields: [
+          text('usageTitle', 'Título'),
+          {
+            type: 'list',
+            key: 'usage',
+            label: 'Itens',
+            itemLabel: 'Item',
+            titleKey: 'label',
+            fields: [text('label', 'Descrição'), text('percent', 'Porcentagem (somente números)')],
+          },
         ],
       },
     ],

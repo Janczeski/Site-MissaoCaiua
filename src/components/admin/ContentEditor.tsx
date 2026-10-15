@@ -61,7 +61,16 @@ const SimpleInput = ({ field, value, onChange, id }: {
   }
   if (field.type === 'image') return <ImageField id={id} value={value} onChange={onChange} crop={field.crop} />;
   if (field.type === 'textarea') {
-    return <Textarea id={id} rows={field.rows ?? 3} value={value} onChange={(e) => onChange(e.target.value)} />;
+    return (
+      <Textarea
+        id={id}
+        rows={field.rows ?? 3}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className={field.mono ? 'font-mono text-xs' : undefined}
+        spellCheck={field.mono ? false : undefined}
+      />
+    );
   }
   return (
     <Input
