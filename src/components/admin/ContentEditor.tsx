@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Switch } from '@/components/ui/switch';
 import { ArrowDown, ArrowUp, ChevronDown, ChevronRight, ExternalLink, Loader2, Plus, RotateCcw, Save, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import ImageField from './ImageField';
@@ -32,7 +33,7 @@ function setPath<T>(obj: T, path: string, value: unknown): T {
   } as T;
 }
 
-const emptyItem = (fields: SimpleField[]) => Object.fromEntries(fields.map((f) => [f.key, '']));
+const emptyItem = (fields: SimpleField[]) => Object.fromEntries(fields.map((f) => [f.key, f.type === 'toggle' ? false : '']));
 
 // ==================== CAMPOS ====================
 
@@ -76,9 +77,17 @@ const SimpleInput = ({ field, value, onChange, id }: {
 const FieldRow = ({ field, value, onChange, id }: {
   field: SimpleField;
   value: unknown;
-  onChange: (v: string) => void;
+  onChange: (v: unknown) => void;
   id: string;
-}) => (
+}) => field.type === 'toggle' ? (
+  <div className="flex items-start justify-between gap-4 rounded-md border p-3">
+    <div>
+      <Label htmlFor={id} className="cursor-pointer">{field.label}</Label>
+      {field.help && <p className="text-xs text-gray-500 mt-1">{field.help}</p>}
+    </div>
+    <Switch id={id} checked={value === true} onCheckedChange={onChange} />
+  </div>
+) : (
   <div className="space-y-1.5">
     <Label htmlFor={id}>{field.label}</Label>
     <SimpleInput field={field} value={typeof value === 'string' ? value : ''} onChange={onChange} id={id} />
@@ -162,6 +171,23 @@ const ListEditor = ({ field, value, onChange, idPrefix }: {
                 {thumb && <img src={thumb} alt="" className="h-8 w-8 rounded object-cover flex-shrink-0" />}
                 <span className="truncate text-sm font-medium">{title}</span>
               </button>
+              {field.fields.filter((f) => f.type === 'toggle' && f.quickLabels).map((f) => {
+                const on = item[f.key] === true;
+                return (
+                  <Button
+                    key={f.key}
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    className={`h-8 text-xs ${on ? 'border-orange-300 bg-orange-50 text-orange-800' : ''}`}
+                    onClick={() => onChange(items.map((it, i) => (i === index ? { ...it, [f.key]: !on } : it)))}
+                    title="Clique para trocar"
+                  >
+                    {on ? <ArrowDown className="h-3.5 w-3.5 mr-1" /> : <ArrowUp className="h-3.5 w-3.5 mr-1" />}
+                    {f.quickLabels![on ? 1 : 0]}
+                  </Button>
+                );
+              })}
               <Button type="button" size="icon" variant="ghost" className="h-8 w-8" onClick={() => move(index, -1)} disabled={index === 0} title="Mover para cima" aria-label="Mover para cima">
                 <ArrowUp className="h-4 w-4" />
               </Button>

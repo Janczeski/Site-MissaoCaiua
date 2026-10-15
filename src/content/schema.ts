@@ -4,7 +4,7 @@ import type { PageKey } from './defaults';
 import type { CropOptions } from '@/components/admin/ImageCropDialog';
 import { IMAGE_FORMATS } from '@/lib/imageFormats';
 
-export type SimpleFieldType = 'text' | 'textarea' | 'image' | 'link' | 'color';
+export type SimpleFieldType = 'text' | 'textarea' | 'image' | 'link' | 'color' | 'toggle';
 
 export interface SimpleField {
   type: SimpleFieldType;
@@ -13,6 +13,8 @@ export interface SimpleField {
   help?: string;
   rows?: number;
   crop?: CropOptions;
+  /** Só para 'toggle' em listas: botão rápido no item, com o texto [desligado, ligado] */
+  quickLabels?: [string, string];
 }
 
 export interface ListField {
@@ -251,7 +253,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
       },
       {
         title: 'Nossa equipe',
-        description: 'Fotos quadradas ficam melhores (são exibidas em círculo).',
+        description: 'Os membros aparecem em duas fileiras: em cima os principais e embaixo os marcados como "fileira de baixo". Use as setas para definir a ordem dentro de cada fileira.',
         fields: [
           text('teamTitle', 'Título'),
           {
@@ -265,6 +267,13 @@ export const PAGE_SCHEMAS: PageSchema[] = [
               text('name', 'Nome'),
               text('role', 'Cargo'),
               area('description', 'Descrição', undefined, 2),
+              {
+                type: 'toggle',
+                key: 'secondRow',
+                label: 'Mostrar na fileira de baixo',
+                help: 'Desligado: fica na fileira de cima (principais). Ligado: vai para a fileira de baixo.',
+                quickLabels: ['Fileira de cima', 'Fileira de baixo'],
+              },
             ],
           },
         ],

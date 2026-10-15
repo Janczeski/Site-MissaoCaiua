@@ -1,7 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import SmartLink from '@/components/SmartLink';
 import { paragraphs, useContent } from '@/content/SiteContentContext';
+import type { SiteContent } from '@/content/defaults';
 import { Heart, Users, Target, Award, Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight, FileText, User } from 'lucide-react';
 
 const transparencyIcons = [
@@ -10,8 +11,38 @@ const transparencyIcons = [
   <MapPin className="h-8 w-8 mx-auto mb-4" style={{ color: 'var(--c-accent)' }} />,
 ];
 
+type Member = SiteContent['about']['team'][number];
+
+const TeamMember = ({ member, main }: { member: Member; main: boolean }) => {
+  const [broken, setBroken] = useState(false);
+  const size = main ? 'w-36 h-36' : 'w-28 h-28';
+  return (
+    <div className={`text-center ${main ? 'w-full sm:w-64' : 'w-full sm:w-56'}`}>
+      <div className="mb-4">
+        {member.image && !broken ? (
+          <img
+            src={member.image}
+            alt={member.name}
+            onError={() => setBroken(true)}
+            className={`rounded-full mx-auto object-cover ${size}`}
+          />
+        ) : (
+          <div className={`rounded-full mx-auto bg-gray-100 flex items-center justify-center ${size}`}>
+            <User className="h-12 w-12 text-gray-400" />
+          </div>
+        )}
+      </div>
+      <h3 className={`font-semibold text-gray-900 mb-1 font-montserrat ${main ? 'text-lg' : 'text-base'}`}>{member.name}</h3>
+      <p className={`font-medium mb-2 font-nunito ${main ? '' : 'text-sm'}`} style={{ color: 'var(--c-primary)' }}>{member.role}</p>
+      <p className="text-gray-600 text-sm font-nunito">{member.description}</p>
+    </div>
+  );
+};
+
 const About = () => {
   const about = useContent('about');
+  const topRow = about.team.filter((m) => m.secondRow !== true);
+  const bottomRow = about.team.filter((m) => m.secondRow === true);
   const timelineRef = useRef<HTMLDivElement>(null);
 
   const scrollTimeline = (direction: 'left' | 'right') => {
@@ -147,28 +178,17 @@ const About = () => {
                 {about.teamTitle}
               </h2>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                {about.team.map((member, index) => (
-                  <div key={index} className="text-center">
-                    <div className="mb-4">
-                      {member.image ? (
-                        <img
-                          src={member.image}
-                          alt={member.name}
-                          className="w-32 h-32 rounded-full mx-auto object-cover"
-                        />
-                      ) : (
-                        <div className="w-32 h-32 rounded-full mx-auto bg-gray-100 flex items-center justify-center">
-                          <User className="h-12 w-12 text-gray-400" />
-                        </div>
-                      )}
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-1 font-montserrat">{member.name}</h3>
-                    <p className="font-medium mb-2 font-nunito" style={{ color: 'var(--c-primary)' }}>{member.role}</p>
-                    <p className="text-gray-600 text-sm font-nunito">{member.description}</p>
-                  </div>
-                ))}
-              </div>
+              {/* Fileira de cima: principais; fileira de baixo: membros marcados no admin */}
+              {[topRow, bottomRow].map((row, rowIndex) => row.length > 0 && (
+                <div
+                  key={rowIndex}
+                  className={`flex flex-wrap justify-center gap-x-8 gap-y-10 ${rowIndex === 1 && topRow.length ? 'mt-12' : ''}`}
+                >
+                  {row.map((member, index) => (
+                    <TeamMember key={index} member={member} main={rowIndex === 0} />
+                  ))}
+                </div>
+              ))}
             </div>
           </div>
         </section>
