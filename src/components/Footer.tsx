@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
-import { Heart, Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
+import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import SmartLink from '@/components/SmartLink';
+import SiteLogo from '@/components/SiteLogo';
 import { lines, useContent } from '@/content/SiteContentContext';
 import { usePublicNews, usePublicProjects } from '@/hooks/use-public-data';
 
 const Footer = () => {
   const footer = useContent('footer');
-  const { siteName, nav } = useContent('global');
+  const { nav } = useContent('global');
   const { data: news = [] } = usePublicNews();
   const { data: projects = [] } = usePublicProjects();
 
@@ -32,10 +33,7 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Logo e Descrição */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Heart className="h-8 w-8" style={{ color: 'var(--c-accent)' }} />
-              <span className="text-xl font-bold font-montserrat">{siteName}</span>
-            </div>
+            <SiteLogo variant="footer" />
             <p className="text-gray-300 font-nunito">{footer.description}</p>
             {socials.length > 0 && (
               <div className="flex space-x-4">

@@ -355,7 +355,14 @@ if (fs.existsSync(indexFile)) {
     }
     const payload = JSON.stringify(content).replace(/</g, '\\u003c');
     res.set('Cache-Control', 'no-cache');
-    res.type('html').send(indexHtml.replace('</head>', `<script>window.__SITE_CONTENT__=${payload}</script></head>`));
+    let html = indexHtml.replace('</head>', `<script>window.__SITE_CONTENT__=${payload}</script></head>`);
+    // Ícone da aba enviado no admin (Geral → Logo e ícones)
+    const favicon = String(content.global?.favicon || '').trim();
+    if (favicon) {
+      const attr = favicon.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+      html = html.replace('<link rel="icon" href="/favicon.svg" />', `<link rel="icon" href="${attr}" />`);
+    }
+    res.type('html').send(html);
   }));
 }
 

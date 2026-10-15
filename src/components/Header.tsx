@@ -2,7 +2,8 @@ import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { Menu, Heart } from 'lucide-react';
+import { Menu } from 'lucide-react';
+import SiteLogo from '@/components/SiteLogo';
 import { useContent } from '@/content/SiteContentContext';
 import { usePublicNews, usePublicProjects } from '@/hooks/use-public-data';
 
@@ -31,11 +32,8 @@ const Header = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2" onClick={() => window.scrollTo(0, 0)}>
-            <Heart className="h-8 w-8" style={{ color: 'var(--c-primary)' }} />
-            <span className="text-xl font-bold text-gray-900 font-montserrat">
-              {siteName}
-            </span>
+          <Link to="/" className="flex items-center min-w-0 mr-4" onClick={() => window.scrollTo(0, 0)} aria-label={siteName}>
+            <SiteLogo variant="header" />
           </Link>
 
           {/* Desktop Navigation */}
@@ -75,12 +73,7 @@ const Header = () => {
             </SheetTrigger>
             <SheetContent side="right" className="w-80">
               <div className="flex items-center justify-between mb-8">
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-6 w-6" style={{ color: 'var(--c-primary)' }} />
-                  <span className="text-lg font-bold text-gray-900 font-montserrat">
-                    {siteName}
-                  </span>
-                </div>
+                <SiteLogo variant="mobile" />
               </div>
               
               <nav className="flex flex-col space-y-4">

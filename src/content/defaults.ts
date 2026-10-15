@@ -30,6 +30,10 @@ export const DEFAULT_CONTENT = {
 
   global: {
     siteName: 'Missão Caiuá',
+    showSiteName: true,
+    logo: '',
+    logoFooter: '',
+    favicon: '',
     nav: {
       home: 'Início',
       about: 'Quem Somos',

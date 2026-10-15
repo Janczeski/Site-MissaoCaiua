@@ -695,8 +695,23 @@ export const PAGE_SCHEMAS: PageSchema[] = [
   {
     key: 'global',
     label: 'Geral',
-    description: 'Nome do site, menu, WhatsApp, newsletter e página de erro.',
+    description: 'Logo, ícones, nome do site, menu, WhatsApp, newsletter e página de erro.',
     sections: [
+      {
+        title: 'Logo e ícones',
+        description: 'Sem logo enviada, o site usa o coração padrão. Prefira PNG com fundo transparente ou SVG.',
+        fields: [
+          image('logo', 'Logo do topo (menu)', undefined, 'Aparece com até 40px de altura; a largura se ajusta sozinha.'),
+          image('logoFooter', 'Logo do rodapé (opcional)', undefined, 'Use uma versão clara para o fundo escuro do rodapé. Em branco, usa a logo do topo.'),
+          {
+            type: 'toggle',
+            key: 'showSiteName',
+            label: 'Mostrar o nome ao lado da logo',
+            help: 'Desligue se a sua logo já tiver o nome escrito.',
+          },
+          image('favicon', 'Ícone da aba do navegador (favicon)', undefined, 'Imagem quadrada e simples, de preferência PNG 512×512 ou SVG.'),
+        ],
+      },
       {
         title: 'Identidade e menu',
         fields: [

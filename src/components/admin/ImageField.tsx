@@ -126,7 +126,8 @@ const ImageField = ({ id, value, onChange, crop }: ImageFieldProps) => {
             className={`relative overflow-hidden border bg-gray-50 ${crop?.round ? 'rounded-full w-32' : 'rounded w-full max-w-xs'}`}
             style={{ aspectRatio: crop ? String(crop.aspect) : undefined }}
           >
-            <img src={value} alt="Prévia" className={`w-full ${crop ? 'h-full object-cover' : 'h-36 object-cover'}`} />
+            {/* Sem formato definido (logos, ícones): mostra a imagem inteira */}
+            <img src={value} alt="Prévia" className={crop ? 'w-full h-full object-cover' : 'w-full h-24 object-contain p-3'} />
             <button
               type="button"
               onClick={() => onChange('')}

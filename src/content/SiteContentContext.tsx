@@ -103,6 +103,19 @@ export function SiteContentProvider({ children }: { children: ReactNode }) {
   }, [injected, reload]);
 
   const raw = useMemo(() => mergeContent(DEFAULT_CONTENT, stored), [stored]);
+
+  // Ícone da aba do navegador (Geral → Logo e ícones); sem ele, usa o padrão
+  const favicon = raw.global.favicon.trim() || '/favicon.svg';
+  useEffect(() => {
+    let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
+    if (!link) {
+      link = document.createElement('link');
+      link.rel = 'icon';
+      document.head.appendChild(link);
+    }
+    link.removeAttribute('type');
+    link.href = favicon;
+  }, [favicon]);
   const content = useMemo(
     () => replaceTokens(raw, { anos: String(age), ano: String(year) }),
     [raw, age, year],
