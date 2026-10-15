@@ -52,7 +52,7 @@ const Carousel = ({ items, autoPlay = true, interval = 5000 }: CarouselProps) =>
   if (!items.length) return null;
 
   return (
-    <div className="relative w-full h-[500px] md:h-[600px] overflow-hidden rounded-lg">
+    <div className="relative w-full h-[500px] md:h-auto md:aspect-[5/2] overflow-hidden rounded-lg">
       {/* Slides */}
       <div 
         className="flex transition-transform duration-500 ease-in-out h-full"

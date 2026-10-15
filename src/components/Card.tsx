@@ -36,7 +36,7 @@ const Card = ({
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
       {/* Image */}
-      <div className="relative h-48 overflow-hidden">
+      <div className="relative aspect-[2/1] overflow-hidden">
         {image ? (
           <img
             src={image}

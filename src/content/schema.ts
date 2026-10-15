@@ -1,6 +1,8 @@
 // Descreve os campos editáveis de cada página no admin (aba "Páginas").
 // "key" é o caminho dentro do conteúdo da página (ex.: "about.title" em home).
 import type { PageKey } from './defaults';
+import type { CropOptions } from '@/components/admin/ImageCropDialog';
+import { IMAGE_FORMATS } from '@/lib/imageFormats';
 
 export type SimpleFieldType = 'text' | 'textarea' | 'image' | 'link';
 
@@ -10,6 +12,7 @@ export interface SimpleField {
   label: string;
   help?: string;
   rows?: number;
+  crop?: CropOptions;
 }
 
 export interface ListField {
@@ -40,7 +43,7 @@ export interface PageSchema {
 
 const text = (key: string, label: string, help?: string): SimpleField => ({ type: 'text', key, label, help });
 const area = (key: string, label: string, help?: string, rows = 3): SimpleField => ({ type: 'textarea', key, label, help, rows });
-const image = (key: string, label: string, help?: string): SimpleField => ({ type: 'image', key, label, help });
+const image = (key: string, label: string, crop?: CropOptions, help?: string): SimpleField => ({ type: 'image', key, label, crop, help });
 const link = (key: string, label: string, help?: string): SimpleField => ({ type: 'link', key, label, help });
 
 const LINES = 'Uma informação por linha.';
@@ -70,7 +73,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
     sections: [
       {
         title: 'Carrossel',
-        description: 'Imagens grandes do topo da página. Recomendado: imagens na horizontal, com pelo menos 1600px de largura.',
+        description: 'Imagens grandes do topo da página. Ao enviar, você recorta e posiciona no formato exato do site. Use fotos com pelo menos 2000px de largura para ficarem nítidas.',
         fields: [
           {
             type: 'list',
@@ -79,7 +82,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
             itemLabel: 'Slide',
             titleKey: 'title',
             fields: [
-              image('image', 'Imagem'),
+              image('image', 'Imagem', IMAGE_FORMATS.slide),
               text('title', 'Título'),
               area('subtitle', 'Subtítulo', undefined, 2),
               text('buttonText', 'Texto do botão', 'Deixe em branco para não mostrar botão.'),
@@ -207,7 +210,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
             itemLabel: 'Membro',
             titleKey: 'name',
             fields: [
-              image('image', 'Foto'),
+              image('image', 'Foto', IMAGE_FORMATS.team),
               text('name', 'Nome'),
               text('role', 'Cargo'),
               area('description', 'Descrição', undefined, 2),

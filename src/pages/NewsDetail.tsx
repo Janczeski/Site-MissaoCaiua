@@ -155,7 +155,7 @@ const NewsDetail = () => {
                 <img
                   src={article.image}
                   alt={article.title}
-                  className="w-full h-64 md:h-96 object-cover rounded-lg shadow-lg"
+                  className="w-full aspect-[2/1] object-cover rounded-lg shadow-lg"
                 />
               </div>
             )}
@@ -199,7 +199,7 @@ const NewsDetail = () => {
                   to={`/noticias/${relatedArticle.id}`}
                   className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
-                  <div className="h-48 overflow-hidden">
+                  <div className="aspect-[2/1] overflow-hidden">
                     <img
                       src={relatedArticle.image}
                       alt={relatedArticle.title}

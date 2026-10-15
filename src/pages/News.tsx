@@ -115,12 +115,12 @@ const News = () => {
                   </h2>
               
                   <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <div className="md:flex">
+                    <div className="md:flex md:items-center">
                       <div className="md:w-1/2">
                         <img
                           src={filteredNews[0].image}
                           alt={filteredNews[0].title}
-                          className="w-full h-64 md:h-full object-cover"
+                          className="w-full aspect-[2/1] object-cover"
                         />
                       </div>
                       <div className="md:w-1/2 p-8">

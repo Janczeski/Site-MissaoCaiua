@@ -111,7 +111,7 @@ const Projects = () => {
                       <div key={project.id} className="bg-white rounded-lg shadow-md overflow-hidden flex flex-col">
                         {/* Imagem */}
                         {project.image && (
-                          <div className="h-64 overflow-hidden">
+                          <div className="aspect-[2/1] overflow-hidden">
                             <img
                               src={project.image}
                               alt={project.title}

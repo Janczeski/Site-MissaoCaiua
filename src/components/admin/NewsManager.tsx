@@ -13,6 +13,7 @@ import ImageField from './ImageField';
 import { newsApi, type NewsItem } from '@/lib/api';
 import { NEWS_CATEGORIES, newsCategoryLabel } from '@/lib/categories';
 import { formatDate } from '@/lib/format';
+import { IMAGE_FORMATS } from '@/lib/imageFormats';
 import { toast } from 'sonner';
 
 const today = () => new Date().toISOString().slice(0, 10);
@@ -200,6 +201,7 @@ const NewsManager = () => {
                   id="news-image"
                   value={formData.image}
                   onChange={(image) => setFormData((prev) => ({ ...prev, image }))}
+                  crop={IMAGE_FORMATS.card}
                 />
               </div>
 
@@ -283,7 +285,7 @@ const NewsManager = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                {item.image && <img src={item.image} alt={item.title} className="w-full h-32 object-cover rounded mb-3" />}
+                {item.image && <img src={item.image} alt={item.title} className="w-full aspect-[2/1] object-cover rounded mb-3" />}
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                   <span className="px-2 py-1 rounded text-xs" style={{ backgroundColor: '#a0c93a30', color: '#3b660a' }}>
                     {newsCategoryLabel(item.category)}

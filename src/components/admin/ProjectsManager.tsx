@@ -10,6 +10,7 @@ import { Plus, Edit, Trash2, MapPin, DollarSign, Loader2, EyeOff } from 'lucide-
 import { useQueryClient } from '@tanstack/react-query';
 import ImageField from './ImageField';
 import { projectsApi, type ProjectItem } from '@/lib/api';
+import { IMAGE_FORMATS } from '@/lib/imageFormats';
 import { toast } from 'sonner';
 
 const DEFAULT_CATEGORIES = ['Saúde Indígena', 'Evangelização', 'Assistência Social', 'Educação'];
@@ -242,6 +243,7 @@ const ProjectsManager = () => {
                   id="project-image"
                   value={formData.image}
                   onChange={(image) => setFormData((prev) => ({ ...prev, image }))}
+                  crop={IMAGE_FORMATS.card}
                 />
               </div>
 
@@ -350,7 +352,7 @@ const ProjectsManager = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                {item.image && <img src={item.image} alt={item.title} className="w-full h-32 object-cover rounded mb-3" />}
+                {item.image && <img src={item.image} alt={item.title} className="w-full aspect-[2/1] object-cover rounded mb-3" />}
                 <div className="space-y-2 text-sm text-gray-600">
                   <div className="flex flex-wrap items-center gap-3">
                     {item.category && (

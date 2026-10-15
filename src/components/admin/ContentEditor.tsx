@@ -41,7 +41,7 @@ const SimpleInput = ({ field, value, onChange, id }: {
   onChange: (v: string) => void;
   id: string;
 }) => {
-  if (field.type === 'image') return <ImageField id={id} value={value} onChange={onChange} />;
+  if (field.type === 'image') return <ImageField id={id} value={value} onChange={onChange} crop={field.crop} />;
   if (field.type === 'textarea') {
     return <Textarea id={id} rows={field.rows ?? 3} value={value} onChange={(e) => onChange(e.target.value)} />;
   }
