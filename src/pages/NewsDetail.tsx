@@ -2,6 +2,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import SmartLink from '@/components/SmartLink';
+import RichText from '@/components/RichText';
 import { useContent } from '@/content/SiteContentContext';
 import { newsApi, type NewsItem } from '@/lib/api';
 import { newsCategoryLabel } from '@/lib/categories';
@@ -79,8 +80,6 @@ const NewsDetail = () => {
     }
   };
 
-  // Conteúdo expandido da notícia
-  const fullContent = article.content;
 
   return (
     <div className="min-h-screen">
@@ -166,9 +165,7 @@ const NewsDetail = () => {
                 {article.subtitle}
               </p>
               
-              <div className="text-gray-700 leading-relaxed space-y-4 whitespace-pre-wrap">
-                {fullContent}
-              </div>
+              <RichText text={article.content} />
             </div>
 
             {/* Categoria */}

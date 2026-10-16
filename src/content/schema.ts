@@ -229,7 +229,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
         title: 'Nossa história',
         fields: [
           text('historyTitle', 'Título'),
-          area('historyText', 'Texto', PARAGRAPHS, 8),
+          area('historyText', 'Texto', `${PARAGRAPHS} Comece uma linha com ## para criar um subtítulo.`, 12),
           text('missionTitle', 'Título — Missão'),
           area('missionText', 'Texto — Missão'),
           text('visionTitle', 'Título — Visão'),
@@ -249,7 +249,7 @@ export const PAGE_SCHEMAS: PageSchema[] = [
             label: 'Marcos',
             itemLabel: 'Marco',
             titleKey: 'year',
-            fields: [text('year', 'Ano'), text('title', 'Título'), area('description', 'Descrição', undefined, 2)],
+            fields: [text('year', 'Ano'), text('title', 'Título (opcional)'), area('description', 'Descrição', undefined, 2)],
           },
         ],
       },

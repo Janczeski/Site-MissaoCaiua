@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import SmartLink from '@/components/SmartLink';
-import { paragraphs, useContent } from '@/content/SiteContentContext';
+import { useContent } from '@/content/SiteContentContext';
+import RichText from '@/components/RichText';
 import type { SiteContent } from '@/content/defaults';
 import { Heart, Users, Target, Award, Calendar, MapPin, ArrowRight, ChevronLeft, ChevronRight, FileText, User } from 'lucide-react';
 
@@ -70,9 +71,7 @@ const About = () => {
             </h2>
 
             <div className="prose prose-lg max-w-none font-nunito">
-              {paragraphs(about.historyText).map((p, i) => (
-                <p key={i} className="text-lg text-gray-600 leading-relaxed mb-6 whitespace-pre-line">{p}</p>
-              ))}
+              <RichText text={about.historyText} />
             </div>
 
             {/* Missão, Visão e Valores */}
@@ -150,9 +149,11 @@ const About = () => {
 
                           {/* Card de conteúdo */}
                           <div className="bg-white p-6 rounded-lg shadow-md border-2 border-gray-100 hover:border-[var(--c-primary)] transition-all">
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2 font-montserrat">
-                              {milestone.title}
-                            </h3>
+                            {milestone.title && (
+                              <h3 className="text-lg font-semibold text-gray-900 mb-2 font-montserrat">
+                                {milestone.title}
+                              </h3>
+                            )}
                             <p className="text-gray-600 text-sm font-nunito">{milestone.description}</p>
                           </div>
                         </div>

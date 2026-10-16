@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,6 +9,7 @@ import { Switch } from '@/components/ui/switch';
 import { Plus, Edit, Trash2, Calendar, Loader2, EyeOff } from 'lucide-react';
 import { useQueryClient } from '@tanstack/react-query';
 import ImageField from './ImageField';
+import RichTextEditor from './RichTextEditor';
 import { newsApi, type NewsItem } from '@/lib/api';
 import { NEWS_CATEGORIES, newsCategoryLabel } from '@/lib/categories';
 import { formatDate } from '@/lib/format';
@@ -139,7 +139,7 @@ const NewsManager = () => {
               Nova Notícia
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>{editingNews ? 'Editar Notícia' : 'Nova Notícia'}</DialogTitle>
               <DialogDescription>
@@ -217,12 +217,10 @@ const NewsManager = () => {
 
               <div className="space-y-2">
                 <Label htmlFor="content">Conteúdo *</Label>
-                <Textarea
+                <RichTextEditor
                   id="content"
-                  rows={10}
-                  placeholder="Digite o conteúdo completo da notícia..."
                   value={formData.content}
-                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                  onChange={(content) => setFormData((prev) => ({ ...prev, content }))}
                   required
                 />
               </div>

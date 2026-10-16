@@ -14,7 +14,9 @@ const { DATABASE_URL, ADMIN_PASSWORD } = process.env;
 const PORT = Number(process.env.PORT || 3001);
 const TOKEN_SECRET = process.env.TOKEN_SECRET || ADMIN_PASSWORD;
 const TOKEN_TTL_MS = 12 * 60 * 60 * 1000;
-const MAX_UPLOAD_BYTES = 30 * 1024 * 1024;
+// 90MB: abaixo do limite de 100MB por envio do Cloudflare (plano gratuito)
+const MAX_UPLOAD_BYTES = 90 * 1024 * 1024;
+const FILE_CHUNK_BYTES = 4 * 1024 * 1024;
 
 if (!DATABASE_URL) throw new Error('DATABASE_URL não configurada');
 if (!ADMIN_PASSWORD) throw new Error('ADMIN_PASSWORD não configurada');
@@ -89,6 +91,16 @@ async function migrate() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
+
+    -- Endereços do site antigo (WordPress) que redirecionam para o novo
+    CREATE TABLE IF NOT EXISTS redirects (
+      path TEXT PRIMARY KEY,
+      target TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    -- Sem compressão: permite ler trechos de arquivos grandes (vídeos) sem carregar tudo
+    ALTER TABLE files ALTER COLUMN data SET STORAGE EXTERNAL;
   `);
     await client.query('COMMIT');
   } catch (err) {
@@ -293,14 +305,14 @@ for (const table of Object.keys(TABLES)) {
   }));
 }
 
-// ---------- Arquivos (imagens e PDFs) ----------
+// ---------- Arquivos (imagens, PDFs e vídeos) ----------
 
 async function deleteStoredFile(url) {
   const id = /^\/files\/([a-f0-9]+)/.exec(url || '')?.[1];
   if (id) await pool.query('DELETE FROM files WHERE id = $1', [id]);
 }
 
-const ALLOWED_MIME = /^(image\/(png|jpe?g|gif|webp|svg\+xml|avif)|application\/pdf)$/;
+const ALLOWED_MIME = /^(image\/(png|jpe?g|gif|webp|svg\+xml|avif)|application\/pdf|video\/(mp4|webm|quicktime))$/;
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_UPLOAD_BYTES },
@@ -322,17 +334,96 @@ app.post('/api/upload', requireAdmin, upload.single('file'), asyncRoute(async (r
   res.status(201).json({ url: `/files/${id}/${slug}`, name: originalName, size: file.size });
 }));
 
+const readChunk = async (id, start, length) =>
+  (await pool.query('SELECT substring(data FROM $2 FOR $3) AS chunk FROM files WHERE id = $1', [id, start + 1, length]))
+    .rows[0]?.chunk;
+
+// Suporta "Range" (necessário para vídeos) e envia arquivos grandes em partes
 app.get('/files/:id/:name?', asyncRoute(async (req, res) => {
-  const { rows } = await pool.query('SELECT name, mime, data FROM files WHERE id = $1', [req.params.id]);
+  const { id } = req.params;
+  const { rows } = await pool.query('SELECT name, mime, size FROM files WHERE id = $1', [id]);
   const file = rows[0];
   if (!file) return res.status(404).send('Arquivo não encontrado');
+
   res.set('Content-Type', file.mime);
   res.set('Cache-Control', 'public, max-age=31536000, immutable');
   res.set('X-Content-Type-Options', 'nosniff');
+  res.set('Accept-Ranges', 'bytes');
   if (file.mime === 'image/svg+xml') res.set('Content-Security-Policy', "default-src 'none'; style-src 'unsafe-inline'");
   res.set('Content-Disposition', `inline; filename*=UTF-8''${encodeURIComponent(file.name)}`);
-  res.send(file.data);
+
+  let start = 0;
+  let end = file.size - 1;
+  const range = /^bytes=(\d*)-(\d*)$/.exec(req.headers.range || '');
+  if (range && (range[1] || range[2])) {
+    if (range[1]) {
+      start = Number(range[1]);
+      if (range[2]) end = Math.min(Number(range[2]), file.size - 1);
+    } else {
+      start = Math.max(0, file.size - Number(range[2]));
+    }
+    if (start > end || start >= file.size) {
+      res.set('Content-Range', `bytes */${file.size}`);
+      return res.status(416).end();
+    }
+    res.status(206).set('Content-Range', `bytes ${start}-${end}/${file.size}`);
+  }
+
+  res.set('Content-Length', String(end - start + 1));
+  if (req.method === 'HEAD') return res.end();
+
+  for (let pos = start; pos <= end; pos += FILE_CHUNK_BYTES) {
+    const chunk = await readChunk(id, pos, Math.min(FILE_CHUNK_BYTES, end - pos + 1));
+    if (!chunk || res.destroyed) break;
+    if (!res.write(chunk)) await new Promise((resolve) => res.once('drain', resolve));
+  }
+  res.end();
 }));
+
+// ---------- Redirecionamentos do site antigo ----------
+
+let redirectMap = new Map();
+const normalizePath = (p) => {
+  let v = p;
+  try {
+    v = decodeURIComponent(p);
+  } catch {
+    // mantém como veio
+  }
+  v = v.toLowerCase();
+  return v.length > 1 ? v.replace(/\/+$/, '') : v;
+};
+
+async function loadRedirects() {
+  const { rows } = await pool.query('SELECT path, target FROM redirects');
+  redirectMap = new Map(rows.map((r) => [normalizePath(r.path), r.target]));
+}
+
+app.get('/api/redirects', requireAdmin, asyncRoute(async (_req, res) => {
+  const { rows } = await pool.query('SELECT path, target FROM redirects ORDER BY path');
+  res.json(rows);
+}));
+
+// Recebe [{ path, target }] e grava (substitui se já existir)
+app.post('/api/redirects', requireAdmin, asyncRoute(async (req, res) => {
+  const items = Array.isArray(req.body) ? req.body : [];
+  for (const { path: p, target } of items) {
+    if (typeof p !== 'string' || typeof target !== 'string' || !p.startsWith('/')) continue;
+    await pool.query(
+      'INSERT INTO redirects (path, target) VALUES ($1, $2) ON CONFLICT (path) DO UPDATE SET target = EXCLUDED.target',
+      [normalizePath(p), target],
+    );
+  }
+  await loadRedirects();
+  res.json({ ok: true, total: redirectMap.size });
+}));
+
+app.use((req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+  const target = redirectMap.get(normalizePath(req.path));
+  if (target) return res.redirect(301, target);
+  next();
+});
 
 app.use('/api', (_req, res) => res.status(404).json({ error: 'Rota não encontrada' }));
 
@@ -368,11 +459,12 @@ if (fs.existsSync(indexFile)) {
 
 app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
-    return res.status(413).json({ error: 'Arquivo muito grande (máximo 30MB)' });
+    return res.status(413).json({ error: 'Arquivo muito grande (máximo 90MB)' });
   }
   console.error(err);
   res.status(500).json({ error: 'Erro interno' });
 });
 
 await migrate();
+await loadRedirects();
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
