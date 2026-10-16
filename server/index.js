@@ -112,7 +112,8 @@ async function migrate() {
 }
 
 // Colunas que o admin pode gravar em cada tabela, com o conversor de cada uma
-const str = (v) => (v == null ? '' : String(v));
+// Remove o caractere NUL, que o Postgres não aceita em texto
+const str = (v) => (v == null ? '' : String(v).replace(/\u0000/g, ''));
 const num = (v) => (Number.isFinite(Number(v)) ? Number(v) : 0);
 const bool = (v) => v !== false && v !== 'false';
 const date = (v) => (v ? String(v).slice(0, 10) : new Date().toISOString().slice(0, 10));

@@ -12,6 +12,26 @@ A senha não fica no código do site; a sessão expira em 12 horas.
 | **Projetos** | Cadastra projetos (com meta de arrecadação opcional e link de doação). Mesma regra: sem projetos ativos, somem do site. |
 | **Transparência** | Envia PDFs com título, descrição, categoria e data. Aparecem em `/transparencia` (link em "Links Rápidos" no rodapé). |
 
+### Conteúdo das notícias
+
+O texto das notícias usa um formato simples (o editor tem botões para tudo):
+
+| Escrever | Resultado |
+|---|---|
+| linha em branco | novo parágrafo |
+| `## Título` | subtítulo |
+| `- item` | lista |
+| `**texto**` | negrito |
+| `[texto](https://...)` | link |
+| `![](/files/...)` | imagem (várias seguidas viram galeria; `.mp4` vira vídeo) |
+| link do YouTube sozinho na linha | vídeo incorporado |
+
+### Endereços do site antigo
+
+Os endereços do WordPress antigo (notícias, páginas e arquivos em `/wp-content/uploads/...`)
+redirecionam (301) para as páginas e arquivos equivalentes do site novo. A lista fica na tabela
+`redirects` e pode ser ampliada via `POST /api/redirects` (admin) com `[{ "path": "/antigo", "target": "/novo" }]`.
+
 ### Idade da Missão
 
 Em qualquer texto, `{anos}` vira a idade da Missão (fundada em 28/08/1928), calculada no fuso de
