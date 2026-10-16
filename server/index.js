@@ -206,6 +206,20 @@ app.use(express.json({ limit: '2mb' }));
 
 const asyncRoute = (fn) => (req, res, next) => fn(req, res, next).catch(next);
 
+// Domínios alternativos (ex.: www, domínio antigo) redirecionam para o principal mantendo o caminho.
+// CANONICAL_HOST=missaocaiua.org.br  REDIRECT_HOSTS=www.missaocaiua.org.br,caiua.org.br,www.caiua.org.br
+const CANONICAL_HOST = (process.env.CANONICAL_HOST || '').toLowerCase();
+const REDIRECT_HOSTS = new Set(
+  (process.env.REDIRECT_HOSTS || '').split(',').map((h) => h.trim().toLowerCase()).filter(Boolean),
+);
+app.use((req, res, next) => {
+  const host = (req.headers.host || '').toLowerCase().split(':')[0];
+  if (CANONICAL_HOST && REDIRECT_HOSTS.has(host)) {
+    return res.redirect(301, `https://${CANONICAL_HOST}${req.originalUrl}`);
+  }
+  next();
+});
+
 app.post('/api/login', loginRateLimit, (req, res) => {
   if (!safeEqual(req.body?.password ?? '', ADMIN_PASSWORD)) {
     return res.status(401).json({ error: 'Senha incorreta' });
