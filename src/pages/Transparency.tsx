@@ -85,7 +85,7 @@ const Transparency = () => {
                         className="inline-flex items-center justify-center text-sm font-medium rounded-md px-4 py-2 text-white flex-shrink-0"
                         style={{ backgroundColor: 'var(--c-primary)' }}
                       >
-                        {t.openButton}
+                        {doc.file_url.startsWith('/files/') ? t.openButton : t.openLinkButton}
                         <ExternalLink className="ml-2 h-4 w-4" />
                       </span>
                     </a>

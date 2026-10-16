@@ -468,6 +468,7 @@ export const DEFAULT_CONTENT = {
       'Acreditamos que a transparência é fundamental para manter a confiança de nossos apoiadores e beneficiários. Aqui você encontra nossos relatórios e documentos para consulta.',
     allCategories: 'Todos',
     openButton: 'Abrir PDF',
+    openLinkButton: 'Abrir link',
     emptyText: 'Nenhum documento publicado ainda.',
   },
 };

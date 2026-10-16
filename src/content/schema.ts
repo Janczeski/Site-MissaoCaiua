@@ -635,7 +635,8 @@ export const PAGE_SCHEMAS: PageSchema[] = [
         fields: [
           area('intro', 'Texto de introdução', undefined, 3),
           text('allCategories', 'Filtro "todos"'),
-          text('openButton', 'Botão de abrir'),
+          text('openButton', 'Botão de abrir (PDF)'),
+          text('openLinkButton', 'Botão de abrir (link externo)'),
           text('emptyText', 'Mensagem quando não há documentos'),
         ],
       },
