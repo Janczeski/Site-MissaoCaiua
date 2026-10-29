@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { documentsApi, newsApi, projectsApi } from '@/lib/api';
+import { campaignsApi, documentsApi, newsApi, projectsApi } from '@/lib/api';
 
 // Listas públicas (só itens ativos), compartilhadas entre header, rodapé e páginas
 const options = { staleTime: 60_000, retry: 1 };
@@ -12,3 +12,9 @@ export const usePublicProjects = () =>
 
 export const usePublicDocuments = () =>
   useQuery({ queryKey: ['public', 'documents'], queryFn: () => documentsApi.list(), ...options });
+
+export const usePublicCampaigns = () =>
+  useQuery({ queryKey: ['public', 'campaigns'], queryFn: () => campaignsApi.list(), ...options });
+
+export const usePublicCampaign = (uuid: string) =>
+  useQuery({ queryKey: ['public', 'campaigns', uuid], queryFn: () => campaignsApi.get(uuid), ...options });

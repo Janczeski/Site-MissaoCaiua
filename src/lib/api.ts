@@ -47,6 +47,43 @@ export interface DocumentItem {
   updated_at?: string;
 }
 
+// Campanha da Transforme.tech: os dados (textos, banners, valores) vêm de lá automaticamente
+export interface CampaignSlide {
+  desktop: string;
+  mobile: string | null;
+}
+
+export interface CampaignData {
+  uuid: string;
+  origin: string;
+  title: string;
+  tagline: string;
+  summary: string;
+  description: string;
+  url: string;
+  open: boolean;
+  values: number[];
+  customValue: boolean;
+  monthly: boolean;
+  oneTime: boolean;
+  raised: number;
+  donors: number;
+  goal: number;
+  showRaised: boolean;
+  slides: CampaignSlide[];
+  background: string | null;
+}
+
+// Antes da primeira leitura da Transforme, só os campos do cadastro existem
+export interface CampaignItem extends Partial<CampaignData> {
+  id: number;
+  uuid: string;
+  origin: string;
+  active: boolean;
+  fetched_at: string | null;
+  fetch_error: string;
+}
+
 export const getToken = () => {
   try {
     return sessionStorage.getItem(TOKEN_KEY);
@@ -114,6 +151,18 @@ function crud<T extends { id: number }>(table: string) {
 export const newsApi = crud<NewsItem>('news');
 export const projectsApi = crud<ProjectItem>('projects');
 export const documentsApi = crud<DocumentItem>('documents');
+
+// Campanhas: o admin só cola o código do widget; o resto o servidor busca na Transforme.tech
+export const campaignsApi = {
+  list: (admin = false) => request<CampaignItem[]>('/api/campaigns', {}, admin),
+  get: (uuid: string) => request<CampaignItem>(`/api/campaigns/${encodeURIComponent(uuid)}`, {}, false),
+  preview: (code: string) => request<CampaignData>('/api/campaigns/preview', { method: 'POST', body: json({ code }) }),
+  create: (code: string) => request<CampaignItem>('/api/campaigns', { method: 'POST', body: json({ code }) }),
+  setActive: (id: number, active: boolean) =>
+    request<CampaignItem>(`/api/campaigns/${id}`, { method: 'PUT', body: json({ active }) }),
+  refresh: (id: number) => request<CampaignItem>(`/api/campaigns/${id}/refresh`, { method: 'POST' }),
+  remove: (id: number) => request<{ ok: true }>(`/api/campaigns/${id}`, { method: 'DELETE' }),
+};
 
 // ==================== ARQUIVOS ====================
 

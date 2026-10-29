@@ -490,11 +490,44 @@ export const PAGE_SCHEMAS: PageSchema[] = [
         description:
           'Cole o código de widget do hotsite (menu do hotsite na Transforme.tech). Sem widget, a página mostra um botão para o link do hotsite; sem nenhum dos dois, mostra o aviso "em breve".',
         fields: [
-          { type: 'textarea', key: 'widgetCode', label: 'Código do widget', rows: 6, mono: true, help: 'Cole exatamente como a Transforme.tech fornecer (iframe ou script).' },
+          { type: 'textarea', key: 'widgetCode', label: 'Código do widget', rows: 6, mono: true, help: 'Cole exatamente como a Transforme.tech fornecer (iframe ou script). No widget de script, o site mostra só o formulário, no visual do site, qualquer que seja o modo escolhido lá.' },
           link('hotsiteUrl', 'Link do hotsite', 'Ex.: https://... Usado como botão quando não há widget, e como link alternativo abaixo do widget.'),
           text('hotsiteButton', 'Texto do botão do hotsite'),
           text('widgetTitle', 'Título acima da doação'),
           area('widgetText', 'Texto acima da doação', undefined, 2),
+          text('secureNote', 'Aviso de segurança abaixo da doação', HIDE_IF_EMPTY),
+        ],
+      },
+      {
+        title: 'Quadro da campanha',
+        description: 'Quadro colorido ao lado do formulário de doação. Deixe o título em branco para esconder o quadro.',
+        fields: [
+          text('campaignLabel', 'Etiqueta', HIDE_IF_EMPTY),
+          text('campaignTitle', 'Título'),
+          area('campaignText', 'Texto', undefined, 3),
+          text('campaignAmount', 'Valor em destaque', `Ex.: R$ 200. ${HIDE_IF_EMPTY}`),
+          text('campaignAmountLabel', 'Texto ao lado do valor'),
+          text('campaignItemsTitle', 'Título da lista', HIDE_IF_EMPTY),
+          area('campaignItems', 'Lista', `${LINES} ${HIDE_IF_EMPTY}`, 4),
+        ],
+      },
+      {
+        title: 'Campanhas da Transforme.tech',
+        description:
+          'Textos usados na lista "Outras campanhas" e nas páginas de cada campanha. As campanhas em si (título, banners, valores) são cadastradas na aba Campanhas e vêm automaticamente da Transforme.tech.',
+        fields: [
+          text('campaignsTitle', 'Título da lista na página Doação'),
+          area('campaignsText', 'Texto da lista', undefined, 2),
+          text('campaignsButton', 'Botão dos cartões'),
+          text('campaignFromLabel', 'Rótulo "a partir de"'),
+          text('campaignMonthly', 'Texto para doação mensal'),
+          text('campaignRaised', 'Texto após o valor arrecadado'),
+          text('campaignDonors', 'Texto após o número de doadores'),
+          text('campaignGoal', 'Rótulo da meta'),
+          text('campaignAboutTitle', 'Título da descrição completa'),
+          text('campaignClosedTitle', 'Título quando a campanha está encerrada'),
+          area('campaignClosedText', 'Texto quando a campanha está encerrada', undefined, 2),
+          text('campaignBackButton', 'Botão para a página Doação'),
         ],
       },
       {

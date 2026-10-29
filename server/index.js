@@ -9,6 +9,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { fetchCampaign, parseWidgetCode } from './transforme.js';
 
 const { DATABASE_URL, ADMIN_PASSWORD } = process.env;
 const PORT = Number(process.env.PORT || 3001);
@@ -96,6 +97,28 @@ async function migrate() {
     CREATE TABLE IF NOT EXISTS redirects (
       path TEXT PRIMARY KEY,
       target TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    -- Campanhas da Transforme.tech: o admin cola o código do widget e os dados vêm de lá
+    -- (data guarda a última leitura, usada enquanto a próxima não chega)
+    CREATE TABLE IF NOT EXISTS campaigns (
+      id BIGSERIAL PRIMARY KEY,
+      uuid TEXT NOT NULL UNIQUE,
+      origin TEXT NOT NULL,
+      code TEXT NOT NULL DEFAULT '',
+      active BOOLEAN NOT NULL DEFAULT TRUE,
+      data JSONB,
+      fetched_at TIMESTAMPTZ,
+      fetch_error TEXT NOT NULL DEFAULT '',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+
+    -- Banners da Transforme já convertidos (origem → URLs em /files)
+    CREATE TABLE IF NOT EXISTS remote_images (
+      source TEXT PRIMARY KEY,
+      urls JSONB NOT NULL,
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
@@ -320,6 +343,127 @@ for (const table of Object.keys(TABLES)) {
   }));
 }
 
+// ---------- Campanhas da Transforme.tech ----------
+
+// Os dados são relidos da Transforme quando a última leitura tem mais de 10 minutos.
+// A leitura acontece em segundo plano: o site responde na hora com a versão guardada.
+const CAMPAIGN_STALE_MS = 10 * 60 * 1000;
+const refreshing = new Map();
+
+function refreshCampaign(row) {
+  if (refreshing.has(row.id)) return refreshing.get(row.id);
+  const job = (async () => {
+    try {
+      const data = await fetchCampaign(pool, row);
+      const { rows } = await pool.query(
+        `UPDATE campaigns SET data = $1, fetched_at = NOW(), fetch_error = '' WHERE id = $2 RETURNING *`,
+        [JSON.stringify(data), row.id],
+      );
+      return rows[0];
+    } catch (err) {
+      // Guarda o erro e mantém os dados anteriores; tenta de novo só depois do intervalo
+      await pool.query('UPDATE campaigns SET fetched_at = NOW(), fetch_error = $1 WHERE id = $2', [
+        str(err.message).slice(0, 300), row.id,
+      ]);
+      throw err;
+    } finally {
+      refreshing.delete(row.id);
+    }
+  })();
+  refreshing.set(row.id, job);
+  return job;
+}
+
+const isStale = (row) => !row.fetched_at || Date.now() - new Date(row.fetched_at).getTime() > CAMPAIGN_STALE_MS;
+const refreshInBackground = (row) => {
+  if (isStale(row)) refreshCampaign(row).catch((err) => console.error(`Campanha ${row.uuid}:`, err.message));
+};
+
+const campaignView = (row) => ({
+  id: Number(row.id),
+  uuid: row.uuid,
+  origin: row.origin,
+  active: row.active,
+  fetched_at: row.fetched_at,
+  fetch_error: row.fetch_error,
+  ...(row.data || {}),
+});
+
+// Público: publicadas no site, já lidas e abertas na Transforme
+const isPublic = (row) => row.active && row.data && row.data.open !== false;
+
+const parseCode = (code) => {
+  const target = parseWidgetCode(code);
+  if (!target) {
+    const err = new Error('Código não reconhecido. Cole o código do widget da Transforme.tech ou o link do hotsite.');
+    throw Object.assign(err, { status: 400, expose: true });
+  }
+  return target;
+};
+
+// No admin, mostra o motivo quando a Transforme não responde ou a campanha não existe
+const fetchForAdmin = (target) =>
+  fetchCampaign(pool, target).catch((err) => {
+    throw Object.assign(err, { status: 502, expose: true });
+  });
+
+app.get('/api/campaigns', asyncRoute(async (req, res) => {
+  const all = isAdminRequest(req);
+  const { rows } = await pool.query('SELECT * FROM campaigns ORDER BY created_at DESC, id DESC');
+  rows.forEach(refreshInBackground);
+  res.set('Cache-Control', 'no-cache');
+  res.json(rows.filter((r) => all || isPublic(r)).map(campaignView));
+}));
+
+app.get('/api/campaigns/:uuid', asyncRoute(async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM campaigns WHERE uuid = $1', [str(req.params.uuid)]);
+  const row = rows[0];
+  if (!row || !(isAdminRequest(req) || (row.active && row.data))) return res.status(404).json({ error: 'Não encontrada' });
+  refreshInBackground(row);
+  res.set('Cache-Control', 'no-cache');
+  res.json(campaignView(row));
+}));
+
+// Prévia no admin antes de salvar (também já converte os banners, então salvar fica instantâneo)
+app.post('/api/campaigns/preview', requireAdmin, asyncRoute(async (req, res) => {
+  const target = parseCode(req.body?.code);
+  res.json({ ...target, ...(await fetchForAdmin(target)) });
+}));
+
+app.post('/api/campaigns', requireAdmin, asyncRoute(async (req, res) => {
+  const target = parseCode(req.body?.code);
+  const data = await fetchForAdmin(target);
+  const { rows } = await pool.query(
+    `INSERT INTO campaigns (uuid, origin, code, data, fetched_at) VALUES ($1, $2, $3, $4, NOW())
+     ON CONFLICT (uuid) DO NOTHING RETURNING *`,
+    [target.uuid, target.origin, str(req.body.code), JSON.stringify(data)],
+  );
+  if (!rows[0]) return res.status(409).json({ error: `A campanha ${target.uuid} já está cadastrada.` });
+  res.status(201).json(campaignView(rows[0]));
+}));
+
+app.put('/api/campaigns/:id', requireAdmin, asyncRoute(async (req, res) => {
+  const { rows } = await pool.query(
+    'UPDATE campaigns SET active = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
+    [bool(req.body?.active), Number(req.params.id) || 0],
+  );
+  if (!rows[0]) return res.status(404).json({ error: 'Não encontrada' });
+  res.json(campaignView(rows[0]));
+}));
+
+app.post('/api/campaigns/:id/refresh', requireAdmin, asyncRoute(async (req, res) => {
+  const { rows } = await pool.query('SELECT * FROM campaigns WHERE id = $1', [Number(req.params.id) || 0]);
+  if (!rows[0]) return res.status(404).json({ error: 'Não encontrada' });
+  res.json(campaignView(await refreshCampaign(rows[0]).catch((err) => {
+    throw Object.assign(err, { status: 502, expose: true });
+  })));
+}));
+
+app.delete('/api/campaigns/:id', requireAdmin, asyncRoute(async (req, res) => {
+  await pool.query('DELETE FROM campaigns WHERE id = $1', [Number(req.params.id) || 0]);
+  res.json({ ok: true });
+}));
+
 // ---------- Arquivos (imagens, PDFs e vídeos) ----------
 
 async function deleteStoredFile(url) {
@@ -476,6 +620,7 @@ app.use((err, _req, res, _next) => {
   if (err instanceof multer.MulterError && err.code === 'LIMIT_FILE_SIZE') {
     return res.status(413).json({ error: 'Arquivo muito grande (máximo 90MB)' });
   }
+  if (err.expose) return res.status(err.status || 400).json({ error: err.message });
   console.error(err);
   res.status(500).json({ error: 'Erro interno' });
 });

@@ -16,6 +16,7 @@ import News from './pages/News';
 import NewsDetail from './pages/NewsDetail';
 import HowToHelp from './pages/HowToHelp';
 import Donation from './pages/Donation';
+import Campaign from './pages/Campaign';
 import Contact from './pages/Contact';
 import Transparency from './pages/Transparency';
 import NotFound from './pages/NotFound';
@@ -45,6 +46,7 @@ const PublicLayout = () => {
           <Route path="/noticias/:id" element={<NewsDetail />} />
           <Route path="/como-ajudar" element={<HowToHelp />} />
           <Route path="/doacao" element={<Donation />} />
+          <Route path="/campanhas/:uuid" element={<Campaign />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="/transparencia" element={<Transparency />} />
           <Route path="*" element={<NotFound />} />
