@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Menu } from 'lucide-react';
 import SiteLogo from '@/components/SiteLogo';
 import { useContent } from '@/content/SiteContentContext';
-import { usePublicNews, usePublicProjects } from '@/hooks/use-public-data';
+import { usePublicCampaigns, usePublicNews, usePublicProjects } from '@/hooks/use-public-data';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,12 +14,13 @@ const Header = () => {
   const { siteName, nav } = useContent('global');
   const { data: news = [] } = usePublicNews();
   const { data: projects = [] } = usePublicProjects();
+  const { data: campaigns = [] } = usePublicCampaigns();
 
-  // Projetos e Notícias só aparecem no menu quando há algo publicado
+  // Projetos (ou campanhas, listadas na mesma página) e Notícias só aparecem no menu quando há algo publicado
   const navigation = [
     { name: nav.home, href: '/' },
     { name: nav.about, href: '/quem-somos' },
-    ...(projects.length ? [{ name: nav.projects, href: '/projetos' }] : []),
+    ...(projects.length || campaigns.length ? [{ name: nav.projects, href: '/projetos' }] : []),
     ...(news.length ? [{ name: nav.news, href: '/noticias' }] : []),
     { name: nav.help, href: '/como-ajudar' },
     { name: nav.contact, href: '/contato' },

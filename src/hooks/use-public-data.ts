@@ -18,3 +18,6 @@ export const usePublicCampaigns = () =>
 
 export const usePublicCampaign = (uuid: string) =>
   useQuery({ queryKey: ['public', 'campaigns', uuid], queryFn: () => campaignsApi.get(uuid), ...options });
+
+export const usePublicProject = (id: string) =>
+  useQuery({ queryKey: ['public', 'projects', id], queryFn: () => projectsApi.get(id), ...options });

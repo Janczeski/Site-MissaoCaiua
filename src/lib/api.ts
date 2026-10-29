@@ -82,6 +82,7 @@ export interface CampaignItem extends Partial<CampaignData> {
   active: boolean;
   fetched_at: string | null;
   fetch_error: string;
+  created_at?: string;
 }
 
 export const getToken = () => {

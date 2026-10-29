@@ -2,10 +2,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import SmartLink from '@/components/SmartLink';
 import { parseTransformeCode } from '@/components/TransformeWidget';
-import { CampaignPanel, DonationFormCard, DonationGrid, formatBRL } from '@/components/donation/DonationLayout';
+import CampaignCard from '@/components/donation/CampaignCard';
+import { CampaignPanel, DonationFormCard, DonationGrid } from '@/components/donation/DonationLayout';
 import { lines, useContent } from '@/content/SiteContentContext';
 import { usePublicCampaigns, usePublicProjects } from '@/hooks/use-public-data';
-import { Heart, Shield, CheckCircle, ExternalLink, Clock, ArrowRight } from 'lucide-react';
+import { Heart, Shield, CheckCircle, ExternalLink, Clock } from 'lucide-react';
 
 const usageColors = ['var(--c-primary)', 'var(--c-secondary)', 'var(--c-accent)', 'var(--c-tertiary)'];
 
@@ -143,40 +144,7 @@ const Donation = () => {
                 {t.campaignsText && <p className="text-gray-600 font-nunito">{t.campaignsText}</p>}
               </div>
               <div className={`grid grid-cols-1 gap-6 ${campaigns.length > 1 ? 'md:grid-cols-2' : ''}`}>
-                {campaigns.map((campaign) => {
-                  const image = campaign.slides?.[0]?.desktop || campaign.background;
-                  const minValue = campaign.values?.[0];
-                  return (
-                    <SmartLink
-                      key={campaign.id}
-                      to={`/campanhas/${campaign.uuid}`}
-                      className="group bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow overflow-hidden flex flex-col border border-gray-100"
-                    >
-                      {image ? (
-                        <img src={image} alt={campaign.title} loading="lazy" className="w-full aspect-[16/5] object-cover" />
-                      ) : (
-                        <div className="w-full aspect-[16/5] site-hero" />
-                      )}
-                      <div className="p-6 flex flex-col flex-1">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2 font-montserrat">{campaign.title}</h3>
-                        {campaign.summary && (
-                          <p className="text-gray-600 font-nunito line-clamp-3 mb-5">{campaign.summary.replace(/\*\*/g, '')}</p>
-                        )}
-                        <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
-                          {minValue ? (
-                            <span className="text-sm text-gray-500 font-nunito">
-                              {t.campaignFromLabel} <strong className="text-gray-900">{formatBRL(minValue)}</strong>
-                            </span>
-                          ) : <span />}
-                          <span className="inline-flex items-center gap-1.5 font-semibold" style={{ color: 'var(--c-primary)' }}>
-                            {t.campaignsButton}
-                            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                          </span>
-                        </div>
-                      </div>
-                    </SmartLink>
-                  );
-                })}
+                {campaigns.map((campaign) => <CampaignCard key={campaign.id} campaign={campaign} />)}
               </div>
             </div>
           </div>

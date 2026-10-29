@@ -386,6 +386,7 @@ const campaignView = (row) => ({
   active: row.active,
   fetched_at: row.fetched_at,
   fetch_error: row.fetch_error,
+  created_at: row.created_at,
   ...(row.data || {}),
 });
 

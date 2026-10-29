@@ -12,6 +12,7 @@ import ScrollToTop from '@/components/ScrollToTop';
 import Index from './pages/Index';
 import About from './pages/About';
 import Projects from './pages/Projects';
+import ProjectDetail from './pages/ProjectDetail';
 import News from './pages/News';
 import NewsDetail from './pages/NewsDetail';
 import HowToHelp from './pages/HowToHelp';
@@ -42,6 +43,7 @@ const PublicLayout = () => {
           <Route path="/" element={<Index />} />
           <Route path="/quem-somos" element={<About />} />
           <Route path="/projetos" element={<Projects />} />
+          <Route path="/projetos/:id" element={<ProjectDetail />} />
           <Route path="/noticias" element={<News />} />
           <Route path="/noticias/:id" element={<NewsDetail />} />
           <Route path="/como-ajudar" element={<HowToHelp />} />

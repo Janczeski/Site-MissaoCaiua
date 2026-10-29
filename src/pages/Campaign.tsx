@@ -1,52 +1,13 @@
 import { useParams } from 'react-router-dom';
-import { BookOpen, Loader2 } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import BannerCarousel from '@/components/BannerCarousel';
-import RichText from '@/components/RichText';
 import SmartLink from '@/components/SmartLink';
-import { CampaignPanel, DonationFormCard, DonationGrid } from '@/components/donation/DonationLayout';
+import { AboutCard, CampaignPanel, DonationFormCard, DonationGrid } from '@/components/donation/DonationLayout';
 import CampaignHighlights from '@/components/donation/CampaignHighlights';
 import { useContent } from '@/content/SiteContentContext';
 import { usePublicCampaign } from '@/hooks/use-public-data';
 import NotFound from './NotFound';
-
-// Descrição completa da campanha: o primeiro parágrafo aparece em destaque
-const CampaignAbout = ({ title, description, className = '' }: { title: string; description: string; className?: string }) => {
-  const blocks = description.split(/\n\s*\n/);
-  const hasLead = blocks.length > 1 && !/^(##|-|!\[|\[)/.test(blocks[0].trim());
-  const lead = hasLead ? blocks[0] : '';
-  const rest = hasLead ? blocks.slice(1).join('\n\n') : description;
-
-  return (
-    <article className={`bg-white rounded-2xl shadow-md overflow-hidden ${className}`}>
-      <div className="h-1.5" style={{ background: 'linear-gradient(90deg, var(--c-primary), var(--c-secondary))' }} />
-      <div className="p-8 md:p-10">
-        <div className="flex items-center gap-3 mb-6">
-          <span
-            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-full"
-            style={{ backgroundColor: 'color-mix(in srgb, var(--c-primary) 12%, transparent)', color: 'var(--c-primary)' }}
-          >
-            <BookOpen className="h-5 w-5" />
-          </span>
-          <h2 className="text-2xl font-bold text-gray-900 font-montserrat">{title}</h2>
-        </div>
-        {/* Negritos da Transforme ganham a cor do site */}
-        <div className="font-nunito [&_strong]:font-bold [&_strong]:text-[color:var(--c-primary)]">
-          {lead && (
-            <div className="mb-6 border-l-4 pl-5 text-gray-800 [&_p]:text-lg [&_p]:leading-relaxed" style={{ borderColor: 'var(--c-secondary)' }}>
-              <RichText text={lead} />
-            </div>
-          )}
-          {rest && (
-            <div className="[&_p]:text-base [&_h2]:text-xl">
-              <RichText text={rest} />
-            </div>
-          )}
-        </div>
-      </div>
-    </article>
-  );
-};
 
 // Página de uma campanha da Transforme.tech: tudo (banners, textos, valores) vem de lá
 const Campaign = () => {
@@ -121,7 +82,7 @@ const Campaign = () => {
               </div>
             )}
 
-            {description && <CampaignAbout className="lg:col-span-2" title={t.campaignAboutTitle} description={description} />}
+            {description && <AboutCard className="lg:col-span-2" title={t.campaignAboutTitle} text={description} />}
           </DonationGrid>
         </div>
       </section>
