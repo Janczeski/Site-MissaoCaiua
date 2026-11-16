@@ -9,6 +9,8 @@ import { buildThemeCss } from '@/content/theme';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ScrollToTop from '@/components/ScrollToTop';
+import TrackingRouteListener from '@/components/tracking/TrackingRouteListener';
+import CookieConsentBanner from '@/components/tracking/CookieConsentBanner';
 import Index from './pages/Index';
 import About from './pages/About';
 import Projects from './pages/Projects';
@@ -20,6 +22,7 @@ import Donation from './pages/Donation';
 import Campaign from './pages/Campaign';
 import Contact from './pages/Contact';
 import Transparency from './pages/Transparency';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import NotFound from './pages/NotFound';
 
 // O admin só é baixado por quem acessa /admin
@@ -37,6 +40,8 @@ const PublicLayout = () => {
     <div className="site-theme min-h-screen flex flex-col">
       {/* Cores editáveis no admin (Páginas → Cores) */}
       <style>{buildThemeCss(content.theme, '.site-theme')}</style>
+      {/* Primeiro no DOM: é o primeiro item do Tab (visualmente fica fixo embaixo) */}
+      <CookieConsentBanner />
       <Header />
       <main className="flex-1">
         <Routes>
@@ -51,6 +56,7 @@ const PublicLayout = () => {
           <Route path="/campanhas/:uuid" element={<Campaign />} />
           <Route path="/contato" element={<Contact />} />
           <Route path="/transparencia" element={<Transparency />} />
+          <Route path="/politica-de-privacidade" element={<PrivacyPolicy />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>
@@ -67,6 +73,8 @@ const App = () => (
           <Toaster />
           <BrowserRouter>
             <ScrollToTop />
+            {/* Fora do PublicLayout para também tratar a ida ao admin */}
+            <TrackingRouteListener />
             <Routes>
               {/* Rotas de Admin (sem Header/Footer) */}
               <Route path="/admin/login" element={<Suspense fallback={null}><AdminLogin /></Suspense>} />

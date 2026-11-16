@@ -4,6 +4,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import SmartLink from '@/components/SmartLink';
+import FormUnavailableNotice from '@/components/FormUnavailableNotice';
 import { useContent } from '@/content/SiteContentContext';
 import { Heart, Users, Gift, BookOpen, Home, Stethoscope, Check } from 'lucide-react';
 
@@ -23,10 +24,9 @@ const HowToHelp = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  // Ainda não há envio real: o formulário fica desativado (ver FormUnavailableNotice)
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert(t.formSuccess);
-    setFormData({ name: '', email: '', phone: '', message: '' });
   };
 
   return (
@@ -114,7 +114,14 @@ const HowToHelp = () => {
             {/* Formulário de Interesse */}
             <div className="bg-white rounded-lg shadow-lg p-8">
               <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center font-montserrat">{t.formTitle}</h3>
-              <form onSubmit={handleSubmit} className="max-w-2xl mx-auto">
+              <div className="max-w-2xl mx-auto mb-6">
+                <FormUnavailableNotice>
+                  Formulário temporariamente indisponível: o cadastro de interesse por este site ainda não está
+                  funcionando, e nada pode ser enviado por aqui no momento.
+                </FormUnavailableNotice>
+              </div>
+              <form onSubmit={handleSubmit} className="max-w-2xl mx-auto" aria-disabled="true">
+                <fieldset disabled className="disabled:opacity-60">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                   <div>
                     <Label htmlFor="name">{t.formName}</Label>
@@ -161,6 +168,7 @@ const HowToHelp = () => {
                 <Button type="submit" className="w-full" style={{ backgroundColor: 'var(--c-primary)' }} onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary-hover)'} onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}>
                   {t.formButton}
                 </Button>
+                </fieldset>
               </form>
             </div>
           </div>

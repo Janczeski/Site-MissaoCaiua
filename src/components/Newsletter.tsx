@@ -1,49 +1,18 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Mail, CheckCircle } from 'lucide-react';
+import { Mail } from 'lucide-react';
+import FormUnavailableNotice from '@/components/FormUnavailableNotice';
 import { useContent } from '@/content/SiteContentContext';
 
 const Newsletter = () => {
   const [email, setEmail] = useState('');
-  const [isSubscribed, setIsSubscribed] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const { newsletter: t } = useContent('global');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Ainda não há envio real: o formulário fica desativado (ver FormUnavailableNotice)
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!email) return;
-    
-    setIsLoading(true);
-    
-    // Simular envio
-    setTimeout(() => {
-      setIsLoading(false);
-      setIsSubscribed(true);
-      setEmail('');
-    }, 1000);
   };
-
-  if (isSubscribed) {
-    return (
-      <div id="newsletter" className="py-12 site-cta">
-        <div className="container mx-auto px-4">
-          <div className="max-w-2xl mx-auto text-center">
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <CheckCircle className="h-16 w-16 mx-auto mb-4" style={{ color: 'var(--c-primary)' }} />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2 font-montserrat">
-                {t.successTitle}
-              </h3>
-              <p className="text-gray-600 font-nunito">
-                {t.successText}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div id="newsletter" className="py-12 site-cta">
@@ -59,7 +28,13 @@ const Newsletter = () => {
             </p>
           </div>
           
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+          <div className="max-w-md mx-auto mb-4">
+            <FormUnavailableNotice>
+              Inscrições temporariamente indisponíveis: a newsletter ainda não recebe inscrições por este site.
+            </FormUnavailableNotice>
+          </div>
+          <form onSubmit={handleSubmit} className="max-w-md mx-auto" aria-disabled="true">
+            <fieldset disabled className="flex flex-col sm:flex-row gap-4 disabled:opacity-60">
             <Input
               type="email"
               placeholder={t.placeholder}
@@ -70,19 +45,16 @@ const Newsletter = () => {
             />
             <Button 
               type="submit" 
-              disabled={isLoading}
               className="h-12 px-8 whitespace-nowrap"
               style={{ backgroundColor: 'var(--c-accent)' }}
               onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent-hover)'}
               onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-accent)'}
             >
-              {isLoading ? '...' : t.button}
+              {t.button}
             </Button>
+            </fieldset>
           </form>
-          
-          <p className="text-white opacity-80 text-sm mt-4 font-nunito">
-            {t.privacy}
-          </p>
+          {/* t.privacy promete cancelamento de inscrição: volta quando o envio real existir */}
         </div>
       </div>
     </div>

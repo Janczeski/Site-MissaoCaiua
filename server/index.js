@@ -10,6 +10,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { fetchCampaign, parseWidgetCode } from './transforme.js';
+import { publicSiteConfig, readMetaPixelEnv, requestHost, serializeForScript } from './tracking.js';
 
 const { DATABASE_URL, ADMIN_PASSWORD } = process.env;
 const PORT = Number(process.env.PORT || 3001);
@@ -596,17 +597,29 @@ if (fs.existsSync(indexFile)) {
   const indexHtml = fs.readFileSync(indexFile, 'utf8');
   app.use(express.static(distDir, { index: false, maxAge: '1h' }));
 
+  // Pixel da Meta: desativado salvo META_PIXEL_ENABLED=true (ver server/tracking.js)
+  const metaPixelEnv = readMetaPixelEnv();
+  console.log(
+    metaPixelEnv
+      ? `Pixel da Meta habilitado somente em ${metaPixelEnv.canonicalHost} (depende de consentimento e de rotas liberadas)`
+      : 'Pixel da Meta desativado',
+  );
+
   // Injeta o conteúdo no HTML para a página já abrir com os textos certos
-  app.get('*', asyncRoute(async (_req, res) => {
+  app.get('*', asyncRoute(async (req, res) => {
     let content = {};
     try {
       content = await loadContent();
     } catch (err) {
       console.error('Erro ao carregar conteúdo:', err);
     }
-    const payload = JSON.stringify(content).replace(/</g, '\\u003c');
+    const payload = serializeForScript(content);
+    const siteConfig = serializeForScript(publicSiteConfig(metaPixelEnv, { host: requestHost(req), path: req.path }));
     res.set('Cache-Control', 'no-cache');
-    let html = indexHtml.replace('</head>', `<script>window.__SITE_CONTENT__=${payload}</script></head>`);
+    let html = indexHtml.replace(
+      '</head>',
+      `<script>window.__SITE_CONTENT__=${payload};window.__SITE_CONFIG__=${siteConfig}</script></head>`,
+    );
     // Ícone da aba enviado no admin (Geral → Logo e ícones)
     const favicon = String(content.global?.favicon || '').trim();
     if (favicon) {

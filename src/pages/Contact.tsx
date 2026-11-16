@@ -4,8 +4,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import SmartLink from '@/components/SmartLink';
+import FormUnavailableNotice from '@/components/FormUnavailableNotice';
 import { lines, useContent } from '@/content/SiteContentContext';
 import { MapPin, Phone, Mail, Clock, Send, MessageCircle, Users, Heart } from 'lucide-react';
 
@@ -19,24 +20,13 @@ const Contact = () => {
     message: '',
     contactReason: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Ainda não há envio real: o formulário fica desativado (ver FormUnavailableNotice)
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    
-    // Simular envio
-    setTimeout(() => {
-      alert(t.successMessage);
-      setFormData({
-        name: '', email: '', phone: '', subject: '', message: '', contactReason: ''
-      });
-      setIsSubmitting(false);
-    }, 1000);
   };
 
   const contactIcons = [
@@ -77,12 +67,15 @@ const Contact = () => {
                     <MessageCircle className="h-5 w-5 mr-2" style={{ color: 'var(--c-primary)' }} />
                     {t.formTitle}
                   </CardTitle>
-                  <CardDescription>
-                    {t.formDescription}
-                  </CardDescription>
+                  {/* t.formDescription promete retorno: volta quando o envio real existir */}
+                  <FormUnavailableNotice>
+                    Formulário temporariamente indisponível: o envio de mensagens por este site ainda não está
+                    funcionando, e nada pode ser enviado por aqui no momento.
+                  </FormUnavailableNotice>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleSubmit} className="space-y-6">
+                  <form onSubmit={handleSubmit} aria-disabled="true">
+                    <fieldset disabled className="space-y-6 disabled:opacity-60">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="name">{t.nameLabel}</Label>
@@ -159,17 +152,11 @@ const Contact = () => {
                       style={{ backgroundColor: 'var(--c-primary)' }}
                       onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary-hover)'}
                       onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--c-primary)'}
-                      disabled={isSubmitting}
                     >
-                      {isSubmitting ? (
-                        t.sendingButton
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" />
-                          {t.sendButton}
-                        </>
-                      )}
+                      <Send className="h-4 w-4 mr-2" />
+                      {t.sendButton}
                     </Button>
+                    </fieldset>
                   </form>
                 </CardContent>
               </Card>

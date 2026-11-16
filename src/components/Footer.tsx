@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin, Facebook, Instagram, Twitter, Youtube } from 'lucide-react';
 import SmartLink from '@/components/SmartLink';
 import SiteLogo from '@/components/SiteLogo';
+import { cookieBannerAvailable, cookiePreferences } from '@/lib/tracking';
 import { lines, useContent } from '@/content/SiteContentContext';
 import { usePublicNews, usePublicProjects } from '@/hooks/use-public-data';
 
@@ -129,6 +130,16 @@ const Footer = () => {
                 <SmartLink to={footer.termsLink} className="text-gray-400 hover:text-white text-sm transition-colors">
                   {footer.termsLabel}
                 </SmartLink>
+              )}
+              {/* Só aparece quando há rastreamento de marketing configurado para este site */}
+              {cookieBannerAvailable && (
+                <button
+                  type="button"
+                  onClick={cookiePreferences.open}
+                  className="text-gray-400 hover:text-white text-sm transition-colors"
+                >
+                  Preferências de cookies
+                </button>
               )}
             </div>
           </div>

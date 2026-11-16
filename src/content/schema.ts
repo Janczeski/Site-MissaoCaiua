@@ -462,7 +462,6 @@ export const PAGE_SCHEMAS: PageSchema[] = [
           text('formMessage', 'Campo mensagem'),
           text('formMessagePlaceholder', 'Dica do campo mensagem'),
           text('formButton', 'Botão'),
-          text('formSuccess', 'Mensagem após enviar'),
         ],
       },
       {
@@ -597,8 +596,6 @@ export const PAGE_SCHEMAS: PageSchema[] = [
           text('messageLabel', 'Campo mensagem'),
           text('messagePlaceholder', 'Dica do campo mensagem'),
           text('sendButton', 'Botão'),
-          text('sendingButton', 'Botão enquanto envia'),
-          text('successMessage', 'Mensagem após enviar'),
         ],
       },
       {
@@ -785,8 +782,6 @@ export const PAGE_SCHEMAS: PageSchema[] = [
           text('newsletter.placeholder', 'Dica do campo de e-mail'),
           text('newsletter.button', 'Botão'),
           text('newsletter.privacy', 'Aviso de privacidade'),
-          text('newsletter.successTitle', 'Título após inscrição'),
-          text('newsletter.successText', 'Texto após inscrição'),
         ],
       },
       {
