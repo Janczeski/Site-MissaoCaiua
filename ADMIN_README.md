@@ -139,7 +139,10 @@ Em `npm run dev`, `/?previewConsent` mostra o banner para revisão visual, sem c
   documento; os das navegações internas seguintes saem do rastreador de histórico do próprio SDK
   (`pushState`/`replaceState`/`popstate`), porque o SDK **descarta** qualquer `fbq('track', 'PageView')`
   repetido no mesmo documento. Por isso `disablePushState` **não** é usado. O SDK compara o endereço completo:
-  hoje nenhuma página liberada muda só `#` ou `?parâmetro` pelo histórico (`/projetos?filtro=` não é liberada).
+  em teste real (16/11/2026), numa página liberada, `pushState`/`replaceState` só de `?query` e mudança só de
+  `#hash` geraram **um PageView cada**; mesmo endereço repetido não gerou. Hoje nenhum link ou controle das
+  páginas liberadas faz isso (`/projetos?filtro=` não é liberada); só aconteceria se o visitante editasse o
+  endereço ou se uma página liberada passar a usar `#`/`?` — revise antes de criar algo assim.
   Correspondência avançada e configuração automática ficam desligadas no código. Não há fallback `<noscript>`.
 - **Restrição da Meta (verificada em 16/11/2026):** a configuração que a Meta entrega para este pixel
   (`connect.facebook.net/signals/config/<id>`) ativa `ProtectedDataMode`. Com ele o SDK reduz `dl` e `rl` à
@@ -240,8 +243,8 @@ notícia) recarrega a página inteira.
 2. **Recusa:** recuse e percorra várias páginas. Nenhuma requisição, nenhum cookie `_fbp`/`_fbc`.
 3. **Aceite:** em janela nova, aceite em `/`. Um único `fbevents.js` e **um** `PageView` (`ev=PageView`).
 4. **Uma visita por navegação:** percorra `/` → `/quem-somos` → `/doacao` → `/campanhas/2363` → `/noticias` →
-   `/transparencia` → `/contato`. Exatamente um PageView em cada uma. Recarregar = mais um. Mudar só `#` ou
-   `?parâmetro` na mesma página = nenhum a mais. Voltar/avançar = um por página.
+   `/transparencia` → `/contato`. Exatamente um PageView em cada uma. Recarregar = mais um. Voltar/avançar =
+   um por página. Mudar só `#` ou `?parâmetro` na mesma página = um a mais (rastreador do SDK; ver acima).
 5. **Não liberadas:** de `/noticias`, abra uma notícia; de `/`, abra `/projetos` e `/projetos/1`. A página
    recarrega e, a partir daí, nenhuma requisição à Meta. Ao voltar para uma liberada, um PageView novo.
    Teste também `/pagina-que-nao-existe` e `/campanhas/9999`: nenhuma requisição.
