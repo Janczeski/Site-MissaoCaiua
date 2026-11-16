@@ -24,6 +24,7 @@ export interface MetaPixelController {
   readonly active: boolean;
   /** Carrega (uma vez) e ativa o envio. false se não for possível ou se já foi encerrado. */
   start(): boolean;
+  /** Registra a visita atual: envia o 1º PageView do documento; os seguintes ficam com o SDK. */
   trackPageView(): boolean;
   /** Encerra o SDK nesta página (sem apagar cookies), antes de abrir um documento novo. */
   suspend(): void;
@@ -73,6 +74,7 @@ export function createMetaPixel(options: {
   let active = false;
   // Depois de suspend/revoke o documento está sendo substituído: o SDK não volta a enviar aqui.
   let ended = false;
+  let pageViewSent = false;
 
   const call = (...args: unknown[]) => win.fbq?.(...args);
 
@@ -114,11 +116,10 @@ export function createMetaPixel(options: {
       fbq.version = '2.0';
       fbq.queue = [];
       fbq[OWNER_MARK] = true;
-      // Os PageViews são disparados pelo site, a cada navegação elegível (ver pageViews.ts).
-      // A Meta cita esta opção na página de SPAs ("not recommended"); aqui é só uma camada
-      // extra contra PageViews automáticos em mudanças de histórico: a validação em
-      // Eventos de teste deve confirmar que não há duplicidade.
-      fbq.disablePushState = true;
+      // Sem `disablePushState`: o SDK descarta todo fbq('track', 'PageView') repetido no mesmo
+      // documento e só aceita os PageViews seguintes vindos do seu próprio rastreador de histórico
+      // (pushState/replaceState/popstate). Ver trackPageView. A saída para rotas não liberadas é
+      // interceptada antes dele pelo navigationGuard.ts.
       win.fbq = fbq;
       if (!win._fbq) win._fbq = fbq;
 
@@ -139,7 +140,12 @@ export function createMetaPixel(options: {
     },
     trackPageView() {
       if (!active) return false;
-      call('track', 'PageView');
+      // Só o primeiro PageView do documento sai daqui; nas navegações internas seguintes quem
+      // envia é o rastreador de histórico do SDK (uma chamada manual seria descartada pelo SDK).
+      if (!pageViewSent) {
+        call('track', 'PageView');
+        pageViewSent = true;
+      }
       return true;
     },
     suspend: end,

@@ -90,7 +90,8 @@ test('aceite: um script, configuração automática desligada antes do init, sem
   assert.equal(s.dom.appended.length, 1);
   assert.equal(s.dom.appended[0].src, META_PIXEL_SCRIPT_SRC);
   assert.equal(s.dom.appended[0].async, true);
-  assert.equal(s.win.fbq!.disablePushState, true);
+  // O rastreador de histórico do SDK fica ligado: é ele que envia os PageViews das navegações internas
+  assert.equal(s.win.fbq!.disablePushState, undefined);
   assert.deepEqual(s.calls(), [
     ['set', 'autoConfig', false, PIXEL_ID],
     ['init', PIXEL_ID],
@@ -98,21 +99,17 @@ test('aceite: um script, configuração automática desligada antes do init, sem
   ]);
 });
 
-test('A → B → A gera um PageView por visita; init continua único', () => {
-  const s = setup();
-  s.runtime.grant();
-  for (const path of ['/a', '/b', '/a']) s.runtime.onLocation(path);
-  assert.equal(s.pageViews(), 3);
-  assert.equal(s.inits(), 1);
-  assert.equal(s.dom.appended.length, 1);
-});
-
-test('voltar/avançar: um PageView por passo', () => {
-  const s = setup();
-  s.runtime.grant();
-  // push /a, push /b, voltar → /a, avançar → /b
-  for (const path of ['/a', '/b', '/a', '/b']) s.runtime.onLocation(path);
-  assert.equal(s.pageViews(), 4);
+// O SDK real descarta fbq('track', 'PageView') repetido no mesmo documento; as visitas seguintes
+// (push, voltar/avançar) são enviadas pelo rastreador de histórico dele, não por chamadas nossas.
+test('A → B → A e voltar/avançar: só o 1º PageView do documento é manual; init continua único', () => {
+  for (const sdkRuns of [false, true]) {
+    const s = setup({ sdkRuns });
+    s.runtime.grant();
+    for (const path of ['/a', '/b', '/a', '/b']) s.runtime.onLocation(path);
+    assert.equal(s.pageViews(), 1);
+    assert.equal(s.inits(), 1);
+    assert.equal(s.dom.appended.length, 1);
+  }
 });
 
 test('StrictMode (efeito executado duas vezes) e mudança só de hash: sem duplicidade', () => {

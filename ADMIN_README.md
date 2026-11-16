@@ -135,8 +135,18 @@ Em `npm run dev`, `/?previewConsent` mostra o banner para revisão visual, sem c
 - Recusar depois de aceitar: o envio para na hora, o SDK recebe `consent revoke`, os cookies `_fbp`/`_fbc`
   são apagados e a página recarrega (sem o SDK). Vale também para outras abas abertas.
   Isso não apaga dados que já foram enviados à Meta.
-- Um PageView por página visitada (voltar/avançar contam; só mudar `#` ou `?filtro` não conta).
+- Um PageView por página visitada (voltar/avançar contam). O código envia só o **primeiro** PageView de cada
+  documento; os das navegações internas seguintes saem do rastreador de histórico do próprio SDK
+  (`pushState`/`replaceState`/`popstate`), porque o SDK **descarta** qualquer `fbq('track', 'PageView')`
+  repetido no mesmo documento. Por isso `disablePushState` **não** é usado. O SDK compara o endereço completo:
+  hoje nenhuma página liberada muda só `#` ou `?parâmetro` pelo histórico (`/projetos?filtro=` não é liberada).
   Correspondência avançada e configuração automática ficam desligadas no código. Não há fallback `<noscript>`.
+- **Restrição da Meta (verificada em 16/11/2026):** a configuração que a Meta entrega para este pixel
+  (`connect.facebook.net/signals/config/<id>`) ativa `ProtectedDataMode`. Com ele o SDK reduz `dl` e `rl` à
+  origem (`https://missaocaiua.org.br`, sem caminho) e marca o envio com `pm=1`. O código do site chama apenas
+  `fbq('track', 'PageView')`, sem URL. Consequência: na Meta todos os PageViews aparecem como a página inicial
+  e **não é possível contar visualizações por página** enquanto essa restrição valer. É uma decisão da Meta
+  (ligada à categoria do conjunto de dados): não contorne com eventos personalizados, parâmetros ou `?query`.
 - **A lista limita o SDK inteiro, não só os nossos PageViews.** O SDK só é carregado num documento cuja rota
   está liberada. Com ele carregado, qualquer ida a uma rota não liberada (inclusive `/admin`) abre um
   **documento novo**, que não carrega o SDK, antes de o endereço mudar no documento atual: cliques em links,
@@ -247,7 +257,8 @@ notícia) recarrega a página inteira.
    acima, se o caminho da URL chega inteiro ou se a Meta o restringe/remove (o conjunto de dados está na
    categoria Religião). Veja **Diagnóstico** (duplicidade, dados sensíveis, restrições). Anote o resultado por
    página. Se a Meta restringir, **aceite a restrição**: não renomeie eventos, não crie eventos personalizados e
-   não mova o caminho para `?parâmetros` para contornar.
+   não mova o caminho para `?parâmetros` para contornar. Resultado em 16/11/2026: restringe — `dl` chega só
+   com a origem e `pm=1` em todas as páginas (ver "Restrição da Meta" acima).
 
 Registre o resultado de cada item (data, navegador, prints). Só depois disso considere a integração validada.
 
