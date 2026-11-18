@@ -74,8 +74,22 @@ export interface CampaignData {
   background: string | null;
 }
 
+// Edições do admin por cima da Transforme (campo ausente = usa o da Transforme)
+export interface CampaignOverrides {
+  title?: string;
+  tagline?: string;
+  summary?: string;
+  description?: string;
+  /** Banner próprio: substitui os banners da Transforme */
+  banner?: string;
+}
+
 // Antes da primeira leitura da Transforme, só os campos do cadastro existem
 export interface CampaignItem extends Partial<CampaignData> {
+  /** Só no admin */
+  overrides?: CampaignOverrides;
+  /** Só no admin: dados originais da Transforme, sem as edições */
+  source?: CampaignData | null;
   id: number;
   uuid: string;
   origin: string;
@@ -161,6 +175,8 @@ export const campaignsApi = {
   create: (code: string) => request<CampaignItem>('/api/campaigns', { method: 'POST', body: json({ code }) }),
   setActive: (id: number, active: boolean) =>
     request<CampaignItem>(`/api/campaigns/${id}`, { method: 'PUT', body: json({ active }) }),
+  setOverrides: (id: number, overrides: CampaignOverrides) =>
+    request<CampaignItem>(`/api/campaigns/${id}`, { method: 'PUT', body: json({ overrides }) }),
   refresh: (id: number) => request<CampaignItem>(`/api/campaigns/${id}/refresh`, { method: 'POST' }),
   remove: (id: number) => request<{ ok: true }>(`/api/campaigns/${id}`, { method: 'DELETE' }),
 };

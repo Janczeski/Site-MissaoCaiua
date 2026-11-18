@@ -123,6 +123,9 @@ async function migrate() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
     );
 
+    -- Edições feitas no admin por cima dos dados da Transforme (campo vazio = usa o da Transforme)
+    ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS overrides JSONB NOT NULL DEFAULT '{}';
+
     -- Sem compressão: permite ler trechos de arquivos grandes (vídeos) sem carregar tudo
     ALTER TABLE files ALTER COLUMN data SET STORAGE EXTERNAL;
   `);
@@ -380,7 +383,28 @@ const refreshInBackground = (row) => {
   if (isStale(row)) refreshCampaign(row).catch((err) => console.error(`Campanha ${row.uuid}:`, err.message));
 };
 
-const campaignView = (row) => ({
+// Campos que o admin pode reescrever; o banner próprio substitui os banners da Transforme
+const CAMPAIGN_TEXT_FIELDS = ['title', 'tagline', 'summary', 'description'];
+const CAMPAIGN_OVERRIDE_FIELDS = [...CAMPAIGN_TEXT_FIELDS, 'banner'];
+
+const cleanOverrides = (input) => {
+  const out = {};
+  for (const key of CAMPAIGN_OVERRIDE_FIELDS) {
+    const value = str(input?.[key]).trim();
+    if (value) out[key] = key === 'title' || key === 'tagline' ? value.replace(/\s+/g, ' ') : value;
+  }
+  return out;
+};
+
+const applyOverrides = (data, overrides = {}) => {
+  if (!data) return data;
+  const merged = { ...data };
+  for (const key of CAMPAIGN_TEXT_FIELDS) if (overrides[key]) merged[key] = overrides[key];
+  if (overrides.banner) merged.slides = [{ desktop: overrides.banner, mobile: null }];
+  return merged;
+};
+
+const campaignView = (row, admin = false) => ({
   id: Number(row.id),
   uuid: row.uuid,
   origin: row.origin,
@@ -388,7 +412,9 @@ const campaignView = (row) => ({
   fetched_at: row.fetched_at,
   fetch_error: row.fetch_error,
   created_at: row.created_at,
-  ...(row.data || {}),
+  ...(applyOverrides(row.data, row.overrides) || {}),
+  // No admin: o que foi editado e o original da Transforme (para comparar e desfazer)
+  ...(admin ? { overrides: row.overrides || {}, source: row.data || null } : {}),
 });
 
 // Público: publicadas no site, já lidas e abertas na Transforme
@@ -414,16 +440,17 @@ app.get('/api/campaigns', asyncRoute(async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM campaigns ORDER BY created_at DESC, id DESC');
   rows.forEach(refreshInBackground);
   res.set('Cache-Control', 'no-cache');
-  res.json(rows.filter((r) => all || isPublic(r)).map(campaignView));
+  res.json(rows.filter((r) => all || isPublic(r)).map((r) => campaignView(r, all)));
 }));
 
 app.get('/api/campaigns/:uuid', asyncRoute(async (req, res) => {
   const { rows } = await pool.query('SELECT * FROM campaigns WHERE uuid = $1', [str(req.params.uuid)]);
   const row = rows[0];
-  if (!row || !(isAdminRequest(req) || (row.active && row.data))) return res.status(404).json({ error: 'Não encontrada' });
+  const admin = isAdminRequest(req);
+  if (!row || !(admin || (row.active && row.data))) return res.status(404).json({ error: 'Não encontrada' });
   refreshInBackground(row);
   res.set('Cache-Control', 'no-cache');
-  res.json(campaignView(row));
+  res.json(campaignView(row, admin));
 }));
 
 // Prévia no admin antes de salvar (também já converte os banners, então salvar fica instantâneo)
@@ -441,16 +468,23 @@ app.post('/api/campaigns', requireAdmin, asyncRoute(async (req, res) => {
     [target.uuid, target.origin, str(req.body.code), JSON.stringify(data)],
   );
   if (!rows[0]) return res.status(409).json({ error: `A campanha ${target.uuid} já está cadastrada.` });
-  res.status(201).json(campaignView(rows[0]));
+  res.status(201).json(campaignView(rows[0], true));
 }));
 
+// Aceita só o que foi enviado: { active } (publicar/ocultar) e/ou { overrides } (edição do post)
 app.put('/api/campaigns/:id', requireAdmin, asyncRoute(async (req, res) => {
+  const body = req.body || {};
   const { rows } = await pool.query(
-    'UPDATE campaigns SET active = $1, updated_at = NOW() WHERE id = $2 RETURNING *',
-    [bool(req.body?.active), Number(req.params.id) || 0],
+    `UPDATE campaigns SET active = COALESCE($1, active), overrides = COALESCE($2, overrides), updated_at = NOW()
+     WHERE id = $3 RETURNING *`,
+    [
+      'active' in body ? bool(body.active) : null,
+      'overrides' in body ? JSON.stringify(cleanOverrides(body.overrides)) : null,
+      Number(req.params.id) || 0,
+    ],
   );
   if (!rows[0]) return res.status(404).json({ error: 'Não encontrada' });
-  res.json(campaignView(rows[0]));
+  res.json(campaignView(rows[0], true));
 }));
 
 app.post('/api/campaigns/:id/refresh', requireAdmin, asyncRoute(async (req, res) => {
@@ -458,7 +492,7 @@ app.post('/api/campaigns/:id/refresh', requireAdmin, asyncRoute(async (req, res)
   if (!rows[0]) return res.status(404).json({ error: 'Não encontrada' });
   res.json(campaignView(await refreshCampaign(rows[0]).catch((err) => {
     throw Object.assign(err, { status: 502, expose: true });
-  })));
+  }), true));
 }));
 
 app.delete('/api/campaigns/:id', requireAdmin, asyncRoute(async (req, res) => {

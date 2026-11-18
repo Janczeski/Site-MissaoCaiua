@@ -2,16 +2,151 @@ import { useEffect, useState } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { AlertTriangle, ExternalLink, Eye, EyeOff, Image as ImageIcon, Loader2, Plus, RefreshCw, Search, Trash2 } from 'lucide-react';
+import { AlertTriangle, Edit, ExternalLink, Eye, EyeOff, Image as ImageIcon, Loader2, Plus, RefreshCw, RotateCcw, Search, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Textarea } from '@/components/ui/textarea';
 import { formatBRL } from '@/components/donation/DonationLayout';
-import { campaignsApi, type CampaignData, type CampaignItem } from '@/lib/api';
+import { campaignsApi, type CampaignData, type CampaignItem, type CampaignOverrides } from '@/lib/api';
+import { IMAGE_FORMATS } from '@/lib/imageFormats';
+import ImageField from './ImageField';
+import RichTextEditor from './RichTextEditor';
+
+type OverrideKey = keyof CampaignOverrides;
+const EMPTY_OVERRIDES: Required<CampaignOverrides> = { title: '', tagline: '', summary: '', description: '', banner: '' };
+
+// Rótulo de cada campo, com o aviso de "editado" e o botão para voltar ao texto da Transforme
+const OverrideLabel = ({ htmlFor, label, edited, onReset }: { htmlFor: string; label: string; edited: boolean; onReset: () => void }) => (
+  <div className="flex items-center justify-between gap-2">
+    <Label htmlFor={htmlFor}>
+      {label}
+      {edited && <span className="ml-2 rounded bg-amber-100 px-1.5 py-0.5 text-[11px] font-normal text-amber-800">editado</span>}
+    </Label>
+    {edited && (
+      <button type="button" onClick={onReset} className="inline-flex items-center gap-1 text-xs text-gray-600 underline">
+        <RotateCcw className="h-3 w-3" />
+        Usar o da Transforme
+      </button>
+    )}
+  </div>
+);
+
+// Edição do post da campanha: o que for mudado aqui substitui o que vem da Transforme.tech
+const CampaignEditDialog = ({ item, onClose, onSaved }: { item: CampaignItem | null; onClose: () => void; onSaved: () => void }) => {
+  const [form, setForm] = useState(EMPTY_OVERRIDES);
+  const [isSaving, setIsSaving] = useState(false);
+  const source = item?.source;
+
+  // Abre com o texto atual (editado ou da Transforme), para editar a partir dele
+  useEffect(() => {
+    if (!item) return;
+    const o = item.overrides || {};
+    setForm({
+      title: o.title || source?.title || '',
+      tagline: o.tagline || source?.tagline || '',
+      summary: o.summary || source?.summary || '',
+      description: o.description || source?.description || '',
+      banner: o.banner || '',
+    });
+  }, [item, source]);
+
+  const set = (key: OverrideKey, value: string) => setForm((prev) => ({ ...prev, [key]: value }));
+  const original = (key: OverrideKey) => (key === 'banner' ? '' : (source?.[key] ?? ''));
+  // Igual ao da Transforme (ou vazio) não conta como edição: o campo continua acompanhando a Transforme
+  const isEdited = (key: OverrideKey) => form[key].trim() !== '' && form[key].trim() !== original(key).trim();
+  const reset = (key: OverrideKey) => set(key, original(key));
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!item) return;
+    setIsSaving(true);
+    const overrides: CampaignOverrides = {};
+    (Object.keys(EMPTY_OVERRIDES) as OverrideKey[]).forEach((key) => {
+      if (isEdited(key)) overrides[key] = form[key].trim();
+    });
+    try {
+      await campaignsApi.setOverrides(item.id, overrides);
+      toast.success('Campanha atualizada!');
+      onSaved();
+      onClose();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Erro ao salvar campanha');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <Dialog open={Boolean(item)} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle>Editar campanha</DialogTitle>
+          <DialogDescription>
+            O que você mudar aqui vale só para o site e tem prioridade sobre a Transforme.tech. Campos iguais aos da
+            Transforme continuam se atualizando sozinhos. Valores, meta e o formulário de doação continuam vindo de lá.
+          </DialogDescription>
+        </DialogHeader>
+
+        {!source ? (
+          <p className="text-sm text-gray-600">A campanha ainda não foi lida da Transforme.tech. Clique em atualizar e tente de novo.</p>
+        ) : (
+          <form onSubmit={handleSave} className="space-y-5">
+            <div className="space-y-2">
+              <OverrideLabel htmlFor="campaign-title" label="Título" edited={isEdited('title')} onReset={() => reset('title')} />
+              <Input id="campaign-title" value={form.title} onChange={(e) => set('title', e.target.value)} required />
+            </div>
+
+            <div className="space-y-2">
+              <OverrideLabel htmlFor="campaign-tagline" label="Frase do topo" edited={isEdited('tagline')} onReset={() => reset('tagline')} />
+              <Input id="campaign-tagline" value={form.tagline} onChange={(e) => set('tagline', e.target.value)} />
+              <p className="text-xs text-gray-500">Aparece no topo da página só quando a campanha não tem banner.</p>
+            </div>
+
+            <div className="space-y-2">
+              <OverrideLabel htmlFor="campaign-summary" label="Resumo" edited={isEdited('summary')} onReset={() => reset('summary')} />
+              <Textarea id="campaign-summary" rows={4} value={form.summary} onChange={(e) => set('summary', e.target.value)} />
+              <p className="text-xs text-gray-500">Quadro colorido ao lado do formulário e cartões da campanha.</p>
+            </div>
+
+            <div className="space-y-2">
+              <OverrideLabel
+                htmlFor="campaign-description"
+                label="Descrição completa"
+                edited={isEdited('description')}
+                onReset={() => reset('description')}
+              />
+              <RichTextEditor id="campaign-description" value={form.description} onChange={(v) => set('description', v)} />
+              <p className="text-xs text-gray-500">Seção "Sobre a campanha".</p>
+            </div>
+
+            <div className="space-y-2">
+              <OverrideLabel htmlFor="campaign-banner" label="Banner próprio (opcional)" edited={isEdited('banner')} onReset={() => reset('banner')} />
+              <ImageField id="campaign-banner" value={form.banner} onChange={(url) => set('banner', url)} crop={IMAGE_FORMATS.campaignBanner} />
+              <p className="text-xs text-gray-500">
+                Se enviar, substitui {source.slides?.length ? 'os banners da Transforme' : 'o topo da página'} e a imagem dos cartões.
+              </p>
+            </div>
+
+            <div className="flex gap-2 justify-end">
+              <Button type="button" variant="outline" onClick={onClose}>
+                Cancelar
+              </Button>
+              <Button type="submit" disabled={isSaving} style={{ backgroundColor: '#3b660a' }}>
+                {isSaving && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                Salvar
+              </Button>
+            </div>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
+  );
+};
 
 // Resumo do que foi puxado da Transforme (usado na prévia e na lista)
 const CampaignSummary = ({ campaign }: { campaign: Partial<CampaignData> }) => (
@@ -52,6 +187,7 @@ const CampaignsManager = () => {
   const [isFetching, setIsFetching] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [refreshingId, setRefreshingId] = useState<number | null>(null);
+  const [editing, setEditing] = useState<CampaignItem | null>(null);
 
   const loadCampaigns = async () => {
     try {
@@ -247,6 +383,7 @@ const CampaignsManager = () => {
                     <CardTitle className="text-lg font-montserrat">{item.title || `Campanha ${item.uuid}`}</CardTitle>
                     <CardDescription className="font-nunito">
                       Campanha {item.uuid}
+                      {item.overrides && Object.keys(item.overrides).length > 0 && ' · editada no site'}
                       {item.fetched_at && ` · lida ${formatDistanceToNow(new Date(item.fetched_at), { locale: ptBR, addSuffix: true })}`}
                     </CardDescription>
                   </div>
@@ -255,6 +392,9 @@ const CampaignsManager = () => {
                       <a href={`/campanhas/${item.uuid}`} target="_blank" rel="noopener noreferrer">
                         <Eye className="h-4 w-4" />
                       </a>
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => setEditing(item)} title="Editar" aria-label="Editar">
+                      <Edit className="h-4 w-4" />
                     </Button>
                     <Button
                       size="sm"
@@ -301,6 +441,15 @@ const CampaignsManager = () => {
           ))
         )}
       </div>
+
+      <CampaignEditDialog
+        item={editing}
+        onClose={() => setEditing(null)}
+        onSaved={() => {
+          loadCampaigns();
+          refreshPublic();
+        }}
+      />
     </div>
   );
 };

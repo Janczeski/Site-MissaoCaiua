@@ -47,6 +47,12 @@ O site monta sozinho a página `/campanhas/<número>` no visual do site e lista 
 | Campanha desativada | Some da lista; a página mostra "Campanha encerrada" |
 
 Os dados são relidos da Transforme a cada 10 minutos (o botão de atualizar no admin força na hora).
+
+**Editar o post no site:** o botão de lápis de cada campanha abre a edição de título, frase do topo, resumo,
+descrição completa e um banner próprio (16:5). O que for mudado ali vale só para o site e tem prioridade sobre a
+Transforme. Campos deixados iguais aos da Transforme continuam se atualizando sozinhos, e "Usar o da Transforme"
+desfaz a edição de um campo. Valores, meta, arrecadação e o formulário de doação sempre vêm da Transforme.
+As edições ficam na coluna `campaigns.overrides`, criada automaticamente na inicialização do servidor.
 As imagens são convertidas para WebP e guardadas no banco do site, então não dependem da Transforme para carregar.
 O formulário de doação é sempre o da Transforme, em modo `embed`, dentro do layout do site.
 

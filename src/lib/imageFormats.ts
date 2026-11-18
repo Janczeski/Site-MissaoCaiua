@@ -9,4 +9,6 @@ export const IMAGE_FORMATS = {
   team: { aspect: 1, round: true, maxWidth: 600, label: 'quadrado, exibido em círculo' },
   // Notícias e projetos: mesmo formato nos cards e nas páginas
   card: { aspect: 2, maxWidth: 1400, label: '2:1, igual nos cards e na página' },
+  // Banner próprio de campanha: mesmo formato dos cartões de campanha (aspect-[16/5])
+  campaignBanner: { aspect: 16 / 5, maxWidth: 1600, label: 'faixa 16:5, topo da página e cartões da campanha' },
 } satisfies Record<string, CropOptions>;
